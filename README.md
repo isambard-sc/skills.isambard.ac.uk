@@ -26,7 +26,7 @@ the environment from scratch every session.
 Add the Isambard marketplace (all skills at once):
 
 ```
-/plugin marketplace add isambard-sc/skills.isambard.ac.uk
+/plugin marketplace add https://skills.isambard.ac.uk/.claude-plugin/marketplace.json
 ```
 
 Install a specific skill by name:
@@ -41,7 +41,10 @@ Or add to your project's `.claude/settings.json` to enable automatically:
 {
   "extraKnownMarketplaces": {
     "isambard-skills": {
-      "source": { "source": "github", "repo": "isambard-sc/skills.isambard.ac.uk" }
+      "source": {
+        "source": "url",
+        "url": "https://skills.isambard.ac.uk/.claude-plugin/marketplace.json"
+      }
     }
   },
   "enabledPlugins": { "slurm@isambard-skills": true }

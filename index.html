@@ -158,7 +158,7 @@
       Add the Isambard marketplace so Claude Code can browse and install
       all available skills:
     </p>
-    <pre><code>/plugin marketplace add isambard-sc/skills.isambard.ac.uk</code></pre>
+    <pre><code>/plugin marketplace add https://skills.isambard.ac.uk/.claude-plugin/marketplace.json</code></pre>
     <p>
       Then install a specific skill by name:
     </p>
@@ -171,8 +171,8 @@
   "extraKnownMarketplaces": {
     "isambard-skills": {
       "source": {
-        "source": "github",
-        "repo": "isambard-sc/skills.isambard.ac.uk"
+        "source": "url",
+        "url": "https://skills.isambard.ac.uk/.claude-plugin/marketplace.json"
       }
     }
   },

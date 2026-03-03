@@ -233,57 +233,6 @@ summary has changed materially.
 
 ---
 
-## Content Transformation Guidelines
-
-When converting docs.isambard.ac.uk content to a SKILL.md file, apply
-these transformations:
-
-### Isambard system names
-
-Always use the exact system names from the docs:
-
-| Official name | Notes |
-|---|---|
-| **Isambard-AI** | Grace Hopper (CPU+GPU) Superchip cluster |
-| **Isambard-AI Phase 1** | 38 × 4-GH200 nodes, `workq` partition |
-| **Isambard-AI Phase 2** | 1320 × 4-GH200 nodes, `workq` partition |
-| **Isambard 3 Grace** | 384 × 2-Grace-CPU-Superchip nodes, `grace` partition |
-| **Isambard 3 MACS** | Multi-Architecture Comparison System, `macs_qos` |
-
-### Tabbed content in the docs
-
-The docs site often shows content in tabs labelled "Isambard-AI" and
-"Isambard 3". In the skill, include content for **both** systems,
-clearly labelled with inline headings or a note like "Isambard-AI:" and
-"Isambard 3 Grace:".
-
-### Warnings and admonitions
-
-The docs use callout boxes (e.g. "Disruptive use", "Fair Use",
-"Job time limit"). Convert each to either:
-
-- A `## ⚠️ Critical Rule: <Title>` section if it is a hard constraint
-  the agent must enforce
-- A regular paragraph prefixed with **Note:** if it is advisory
-
-### Command examples
-
-When the docs show actual terminal sessions (with prompt, command, and
-output), include the representative examples. Strip the username/hostname
-prefix from prompts for clarity, or use a generic `$` prefix. Use login
-node name formats as shown in the docs (e.g. `nid001040`-style for
-Isambard-AI, `login02`-style for Isambard 3 Grace) — these are examples
-from the documentation, not fixed node names.
-
-### Links
-
-- All links to docs.isambard.ac.uk: use the full canonical URL
-- Do **not** use relative links in skill files
-- Do **not** use raw GitHub URLs for other skill files; use
-  `https://skills.isambard.ac.uk/skills/...`
-
----
-
 ## Checking All Skills for Staleness
 
 To check every skill in the repository at once:
