@@ -14,6 +14,9 @@ compatibility: >
 metadata:
   author: isambard-sc
   version: "1.1"
+  source_url: https://docs.isambard.ac.uk/user-documentation/guides/slurm/
+  supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
 ---
 
 # Slurm on Isambard — Agent Skill

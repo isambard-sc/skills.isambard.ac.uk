@@ -68,6 +68,9 @@ compatibility: >
 metadata:
   author: isambard-sc
   version: "1.0"
+  source_url: https://docs.isambard.ac.uk/<path-to-source-page>/
+  supplementary_urls:            # optional — list additional docs pages
+    - https://docs.isambard.ac.uk/<path-to-supplementary-page>/
 ---
 ```
 
@@ -77,6 +80,10 @@ metadata:
   the skill does AND when to use it
 - `compatibility`: optional but recommended for Isambard-specific skills
 - `metadata.version`: increment when making significant changes
+- `metadata.source_url`: the primary docs.isambard.ac.uk URL this skill
+  was derived from; used by the update agent to detect stale content
+- `metadata.supplementary_urls`: optional list of additional
+  docs.isambard.ac.uk pages that contributed content to this skill
 
 ### Markdown body sections
 
