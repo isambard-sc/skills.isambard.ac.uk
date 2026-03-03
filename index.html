@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isambard AI Skills</title>
+  <style>
+    :root {
+      --primary: #1a3a6b;
+      --accent: #0077cc;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #222222;
+      --muted: #555555;
+      --border: #dde1e7;
+      --code-bg: #eef0f3;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 2rem 1.5rem;
+    }
+    header h1 { font-size: 1.8rem; font-weight: 700; }
+    header p {
+      margin-top: 0.5rem;
+      opacity: 0.85;
+      max-width: 680px;
+    }
+    main {
+      max-width: 860px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+    section { margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.3rem;
+      color: var(--primary);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    p { margin-bottom: 0.75rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .skill-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .skill-card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .skill-card p { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .skill-card a { font-size: 0.85rem; font-weight: 600; }
+    code {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 0.15em 0.4em;
+      font-size: 0.88em;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+    }
+    pre code { background: none; padding: 0; font-size: 0.85em; }
+    ol, ul { padding-left: 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .note {
+      background: #e8f4fd;
+      border-left: 4px solid var(--accent);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Isambard AI Skills</h1>
+  <p>
+    A curated collection of agent skills for working with Isambard HPC
+    systems — designed for use with Claude Code and other AI coding tools.
+  </p>
+</header>
+
+<main>
+
+  <section id="about">
+    <h2>What are Skills?</h2>
+    <p>
+      <strong>Agent skills</strong> are plain-text instruction files (usually
+      Markdown) that teach AI coding assistants how to perform specific tasks
+      in your environment. When a skill is loaded into a tool like
+      <a href="https://claude.ai/code" target="_blank">Claude Code</a>, the
+      agent reads the instructions and uses them to answer questions, write
+      scripts, and run commands correctly for that environment.
+    </p>
+    <p>
+      Skills hosted here cover Isambard-specific workflows such as submitting
+      and managing HPC jobs. Each skill is a single file served directly from
+      this site so that the URLs remain stable regardless of where the
+      underlying repository is hosted.
+    </p>
+    <div class="note">
+      For full Isambard documentation visit
+      <a href="https://docs.isambard.ac.uk" target="_blank">docs.isambard.ac.uk</a>.
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>Available Skills</h2>
+    <div class="skills-grid">
+
+      <div class="skill-card">
+        <h3>Slurm</h3>
+        <p>
+          Submit, monitor, and manage HPC jobs using the Slurm workload
+          manager on Isambard systems. Covers job scripts, resource
+          allocation, monitoring, and safe polling intervals.
+        </p>
+        <a href="skills/slurm/slurm.md">View skill file &rarr;</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>How to Install a Skill</h2>
+
+    <h3 style="font-size:1rem;margin:1rem 0 0.5rem;">Claude Code</h3>
+    <p>
+      In Claude Code you can add a skill by referencing the raw skill URL
+      inside your project's <code>CLAUDE.md</code> or by running the
+      <code>/add-skill</code> slash command:
+    </p>
+    <pre><code>/add-skill https://skills.isambard.ac.uk/skills/slurm/slurm.md</code></pre>
+    <p>
+      Alternatively, add the marketplace index so Claude Code can browse all
+      available skills at once:
+    </p>
+    <pre><code>/add-marketplace https://skills.isambard.ac.uk/marketplace.json</code></pre>
+
+    <h3 style="font-size:1rem;margin:1rem 0 0.5rem;">Other Agent Tools</h3>
+    <p>
+      For other agent-based coding tools, paste the skill URL into the
+      tool's context or skill configuration. The raw Markdown content is
+      served directly from this site.
+    </p>
+    <p>
+      Skill URLs follow the pattern:
+    </p>
+    <pre><code>https://skills.isambard.ac.uk/skills/&lt;name&gt;/&lt;name&gt;.md</code></pre>
+
+    <div class="note">
+      More information on using skills with specific tools can be found in
+      the
+      <a href="https://docs.isambard.ac.uk" target="_blank">Isambard documentation</a>.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  &copy; Isambard SC &mdash;
+  <a href="https://github.com/isambard-sc/skills.isambard.ac.uk"
+     target="_blank">View on GitHub</a> &mdash;
+  <a href="https://docs.isambard.ac.uk" target="_blank">Full documentation</a>
+</footer>
+
+</body>
+</html>
