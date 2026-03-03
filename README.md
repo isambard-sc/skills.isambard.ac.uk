@@ -15,7 +15,7 @@ the environment from scratch every session.
 
 | Skill | Description | URL |
 |---|---|---|
-| [Slurm](skills/slurm/slurm.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/skills/slurm/slurm.md` |
+| [Slurm](skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/skills/slurm/SKILL.md` |
 
 ---
 
@@ -23,16 +23,29 @@ the environment from scratch every session.
 
 ### Claude Code
 
-Add a single skill:
+Add the Isambard marketplace (all skills at once):
 
 ```
-/add-skill https://skills.isambard.ac.uk/skills/slurm/slurm.md
+/plugin marketplace add isambard-sc/skills.isambard.ac.uk
 ```
 
-Add the full marketplace (all skills at once):
+Install a specific skill by name:
 
 ```
-/add-marketplace https://skills.isambard.ac.uk/marketplace.json
+/plugin install slurm@isambard-skills
+```
+
+Or add to your project's `.claude/settings.json` to enable automatically:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "isambard-skills": {
+      "source": { "source": "github", "repo": "isambard-sc/skills.isambard.ac.uk" }
+    }
+  },
+  "enabledPlugins": { "slurm@isambard-skills": true }
+}
 ```
 
 ### Other agent-based tools
@@ -45,6 +58,8 @@ raw Markdown content is served directly from this site.
 ## Repository Structure
 
 ```
+.claude-plugin/
+  marketplace.json           # Claude Code plugin marketplace catalog
 .github/
   agents/
     skills-agent.md        # Instructions for AI agents on creating skills
@@ -52,9 +67,9 @@ raw Markdown content is served directly from this site.
   settings.json            # Word-wrap settings for Markdown/.chatagent files
 skills/
   slurm/
-    slurm.md               # Slurm skill file
+    SKILL.md               # Slurm skill file (AgentSkills spec format)
 index.html                 # Public site landing page
-marketplace.json           # Skills index for agent tools
+marketplace.json           # Simple skills index for other agent tools
 CNAME                      # Custom domain configuration
 README.md                  # This file
 ```

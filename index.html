@@ -144,7 +144,7 @@
           manager on Isambard systems. Covers job scripts, resource
           allocation, monitoring, and safe polling intervals.
         </p>
-        <a href="skills/slurm/slurm.md">View skill file &rarr;</a>
+        <a href="skills/slurm/SKILL.md">View skill file &rarr;</a>
       </div>
 
     </div>
@@ -155,27 +155,42 @@
 
     <h3 style="font-size:1rem;margin:1rem 0 0.5rem;">Claude Code</h3>
     <p>
-      In Claude Code you can add a skill by referencing the raw skill URL
-      inside your project's <code>CLAUDE.md</code> or by running the
-      <code>/add-skill</code> slash command:
+      Add the Isambard marketplace so Claude Code can browse and install
+      all available skills:
     </p>
-    <pre><code>/add-skill https://skills.isambard.ac.uk/skills/slurm/slurm.md</code></pre>
+    <pre><code>/plugin marketplace add isambard-sc/skills.isambard.ac.uk</code></pre>
     <p>
-      Alternatively, add the marketplace index so Claude Code can browse all
-      available skills at once:
+      Then install a specific skill by name:
     </p>
-    <pre><code>/add-marketplace https://skills.isambard.ac.uk/marketplace.json</code></pre>
+    <pre><code>/plugin install slurm@isambard-skills</code></pre>
+    <p>
+      Or enable a skill automatically for a project by adding this to
+      your project's <code>.claude/settings.json</code>:
+    </p>
+    <pre><code>{
+  "extraKnownMarketplaces": {
+    "isambard-skills": {
+      "source": {
+        "source": "github",
+        "repo": "isambard-sc/skills.isambard.ac.uk"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "slurm@isambard-skills": true
+  }
+}</code></pre>
 
     <h3 style="font-size:1rem;margin:1rem 0 0.5rem;">Other Agent Tools</h3>
     <p>
       For other agent-based coding tools, paste the skill URL into the
-      tool's context or skill configuration. The raw Markdown content is
-      served directly from this site.
+      tool's context or skill configuration. Skill files are served
+      directly from this site as plain Markdown.
     </p>
     <p>
       Skill URLs follow the pattern:
     </p>
-    <pre><code>https://skills.isambard.ac.uk/skills/&lt;name&gt;/&lt;name&gt;.md</code></pre>
+    <pre><code>https://skills.isambard.ac.uk/skills/&lt;name&gt;/SKILL.md</code></pre>
 
     <div class="note">
       More information on using skills with specific tools can be found in

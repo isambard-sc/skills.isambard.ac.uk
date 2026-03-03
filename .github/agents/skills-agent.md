@@ -18,81 +18,124 @@ tools such as Claude Code.
 
 ## Folder and Naming Conventions
 
+Skills follow the [AgentSkills specification](https://agentskills.io/specification).
+
 ```
 skills/
   <skill-name>/
-    <skill-name>.md
+    SKILL.md           # Required — primary skill file with YAML frontmatter
+    references/        # Optional — supplementary reference files
+    scripts/           # Optional — helper scripts
+    assets/            # Optional — static resources
 ```
 
 Rules:
 - The skill name must be lowercase, using hyphens instead of spaces
   (e.g. `slurm`, `python-venv`, `mpi-profiling`).
 - Each skill lives in its own subdirectory under `skills/`.
-- The primary skill file must be named `<skill-name>.md` and placed
-  directly inside `skills/<skill-name>/`.
-- If a skill needs supplementary files (examples, schemas, images), they
-  may be added inside the same `skills/<skill-name>/` directory.
+- The primary skill file **must be named `SKILL.md`** (uppercase) and
+  placed directly inside `skills/<skill-name>/`.
+- The `SKILL.md` file must start with YAML frontmatter (see below).
+- Supplementary files may be added in `references/`, `scripts/`, or
+  `assets/` subdirectories within the skill directory.
 
 Examples:
 
 | Skill topic | Directory | Primary file |
 |---|---|---|
-| Slurm job management | `skills/slurm/` | `skills/slurm/slurm.md` |
-| Python virtual environments | `skills/python-venv/` | `skills/python-venv/python-venv.md` |
-| MPI profiling | `skills/mpi-profiling/` | `skills/mpi-profiling/mpi-profiling.md` |
+| Slurm job management | `skills/slurm/` | `skills/slurm/SKILL.md` |
+| Python virtual environments | `skills/python-venv/` | `skills/python-venv/SKILL.md` |
+| MPI profiling | `skills/mpi-profiling/` | `skills/mpi-profiling/SKILL.md` |
 
 ---
 
 ## Skill File Structure
 
-Every skill file must begin with a level-1 heading that describes the
-skill, followed by a one-sentence summary. The rest of the file is
-structured Markdown that an AI agent reads as instructions or reference
-material.
+Every `SKILL.md` file must begin with YAML frontmatter followed by
+Markdown content, per the AgentSkills specification.
+
+### Required YAML frontmatter
+
+```yaml
+---
+name: <skill-name>
+description: >
+  <One to two sentences: what the skill does and when to use it.
+  Be specific — include keywords agents use to identify relevant tasks.>
+compatibility: >
+  <Environment requirements — intended system, required tools, network
+  access needs, etc.>
+metadata:
+  author: isambard-sc
+  version: "1.0"
+---
+```
+
+- `name`: must match the parent directory name exactly (lowercase,
+  hyphens, 1–64 characters)
+- `description`: required, max 1024 characters, should describe what
+  the skill does AND when to use it
+- `compatibility`: optional but recommended for Isambard-specific skills
+- `metadata.version`: increment when making significant changes
+
+### Markdown body sections
 
 Required sections (add in this order where applicable):
 
 1. **Title** (`# <Skill Name> — Agent Skill`)
-2. **One-sentence summary** immediately after the title
-3. **Link to full documentation** (canonical `docs.isambard.ac.uk` URL)
-4. **Critical Rules** — any hard constraints the agent must never violate
+2. **Links to full documentation** (canonical `docs.isambard.ac.uk` URLs)
+3. **Critical Rules** — any hard constraints the agent must never violate
    (use `⚠️` emoji and a clear prohibition list)
-5. **Overview** — brief context about the technology
-6. **How-to sections** — step-by-step instructions, command examples,
+4. **Overview** — brief context about the technology
+5. **How-to sections** — step-by-step instructions, command examples,
    code blocks
-7. **Common Issues / Troubleshooting**
-8. **Further Reading** — links to `docs.isambard.ac.uk` and other sources
+6. **Common Issues / Troubleshooting**
+7. **Further Reading** — links to `docs.isambard.ac.uk` and other sources
 
 Skill files must use fenced code blocks (triple backticks with language
 hint) for all command and script examples.
 
+Keep `SKILL.md` under 500 lines. Move detailed reference material to
+`references/` files if needed.
+
 ---
 
-## Updating `marketplace.json`
+## Updating `.claude-plugin/marketplace.json`
 
-Every skill must have an entry in `marketplace.json` at the root of the
-repository. The JSON structure is:
+Every skill must have an entry in `.claude-plugin/marketplace.json` for
+Claude Code plugin marketplace support. The plugin entry format is:
 
 ```json
 {
-  "name": "Isambard AI Skills",
-  "description": "AI agent skills for Isambard HPC systems",
-  "url": "https://skills.isambard.ac.uk",
-  "skills": [
-    {
-      "name": "<Human-readable skill name>",
-      "description": "<One or two sentence description>",
-      "url": "https://skills.isambard.ac.uk/skills/<skill-name>/<skill-name>.md"
-    }
-  ]
+  "name": "<skill-name>",
+  "source": "./skills/<skill-name>",
+  "description": "<One or two sentence description>",
+  "version": "<semver>",
+  "author": { "name": "Isambard SC" },
+  "homepage": "https://skills.isambard.ac.uk",
+  "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+  "agents": ["./SKILL.md"]
 }
 ```
 
-When adding a new skill:
-1. Add a new object to the `"skills"` array.
-2. Use the canonical `https://skills.isambard.ac.uk/...` URL — never the
-   raw GitHub URL.
-3. Keep the array sorted alphabetically by `"name"`.
+When adding a new skill, append to the `"plugins"` array and keep the
+array sorted alphabetically by `"name"`.
+
+## Updating `marketplace.json`
+
+Also add an entry to the simple `marketplace.json` at the root (used by
+other agent tools). The structure is:
+
+```json
+{
+  "name": "<Human-readable skill name>",
+  "description": "<One or two sentence description>",
+  "url": "https://skills.isambard.ac.uk/skills/<skill-name>/SKILL.md"
+}
+```
+
+Use the canonical `https://skills.isambard.ac.uk/...` URL — never the
+raw GitHub URL. Keep the array sorted alphabetically by `"name"`.
 
 ---
 
@@ -112,7 +155,7 @@ description and a link to the skill file. When adding or updating a skill:
   <p>
     <Short description of what the skill covers — one to two sentences.>
   </p>
-  <a href="skills/<skill-name>/<skill-name>.md">View skill file &rarr;</a>
+  <a href="skills/<skill-name>/SKILL.md">View skill file &rarr;</a>
 </div>
 ```
 
@@ -126,18 +169,21 @@ description and a link to the skill file. When adding or updating a skill:
 When creating a new skill, complete the following steps in order:
 
 - [ ] Create the directory `skills/<skill-name>/`
-- [ ] Create `skills/<skill-name>/<skill-name>.md` with the required
-      sections listed above
-- [ ] Add an entry to `marketplace.json`
+- [ ] Create `skills/<skill-name>/SKILL.md` with YAML frontmatter and
+      the required sections listed above
+- [ ] Add an entry to `.claude-plugin/marketplace.json` `plugins` array
+- [ ] Add an entry to `marketplace.json` `skills` array
 - [ ] Add a skill card to `index.html`
-- [ ] Update `README.md` skills table if present
+- [ ] Update `README.md` skills table
 
 ---
 
 ## Updating an Existing Skill
 
-- Edit `skills/<skill-name>/<skill-name>.md` directly.
-- Update the `"description"` in `marketplace.json` if the summary changed.
+- Edit `skills/<skill-name>/SKILL.md` directly.
+- Increment `metadata.version` in the frontmatter for significant changes.
+- Update the `"description"` in both `marketplace.json` files if the
+  summary changed.
 - Update the skill card description in `index.html` if the summary changed.
 - Do **not** rename or move skill files once published — existing
   integrations may already reference the URL.

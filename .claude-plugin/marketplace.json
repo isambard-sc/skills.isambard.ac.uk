@@ -1,0 +1,25 @@
+{
+  "name": "isambard-skills",
+  "owner": {
+    "name": "Isambard SC",
+    "email": "support@isambard.ac.uk"
+  },
+  "metadata": {
+    "description": "AI agent skills for Isambard HPC systems",
+    "version": "1.0"
+  },
+  "plugins": [
+    {
+      "name": "slurm",
+      "source": "./skills/slurm",
+      "description": "Submit, monitor, and manage HPC jobs using Slurm on Isambard-AI (GH200 GPU) and Isambard 3 (Grace CPU, MACS) systems.",
+      "version": "1.1",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+      "agents": ["./SKILL.md"]
+    }
+  ]
+}

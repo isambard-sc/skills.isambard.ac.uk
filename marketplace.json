@@ -6,7 +6,7 @@
     {
       "name": "Slurm",
       "description": "Submit, monitor, and manage HPC jobs using the Slurm workload manager on Isambard systems. Includes guidance on resource allocation, job scripts, and safe polling intervals.",
-      "url": "https://skills.isambard.ac.uk/skills/slurm/slurm.md"
+      "url": "https://skills.isambard.ac.uk/skills/slurm/SKILL.md"
     }
   ]
 }
