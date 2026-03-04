@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "slurm",
-      "source": "./skills/slurm",
+      "source": "../skills/slurm",
       "description": "Submit, monitor, and manage HPC jobs using Slurm on Isambard-AI (GH200 GPU) and Isambard 3 (Grace CPU, MACS) systems.",
       "version": "1.1",
       "author": {
