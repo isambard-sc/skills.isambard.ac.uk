@@ -2,8 +2,7 @@
 
 ## Purpose
 
-Use this agent to create a new skill file or update an existing one by
-fetching the authoritative content from `https://docs.isambard.ac.uk`.
+Use this agent to create a new skill file or update an existing one by fetching the authoritative content from `https://docs.isambard.ac.uk`.
 
 Invoke this agent when:
 
@@ -15,8 +14,7 @@ Invoke this agent when:
 
 ## Known Documentation Sources
 
-The table below maps docs.isambard.ac.uk pages to their corresponding
-skill names. Use this as the starting point for create or update tasks.
+The table below maps docs.isambard.ac.uk pages to their corresponding skill names. Use this as the starting point for create or update tasks.
 
 ### Guides
 
@@ -48,8 +46,7 @@ skill names. Use this as the starting point for create or update tasks.
 |---|---|---|---|
 | https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/ | *(supplementary to `slurm`)* | — | — |
 
-When new pages appear on docs.isambard.ac.uk that are not listed above,
-add them to the appropriate table before proceeding.
+When new pages appear on docs.isambard.ac.uk that are not listed above, add them to the appropriate table before proceeding.
 
 ---
 
@@ -59,8 +56,7 @@ Follow these steps in order.
 
 ### Step 1 — Confirm the docs page exists and is in scope
 
-Fetch the docs page URL to confirm it loads and contains actionable
-content that would help an AI agent assist users.
+Fetch the docs page URL to confirm it loads and contains actionable content that would help an AI agent assist users.
 
 Good candidates:
 - How-to guides with concrete commands and examples
@@ -75,31 +71,24 @@ Poor candidates:
 
 ### Step 2 — Read the existing skills-agent.md
 
-Read `.github/agents/skills-agent.md` in full to confirm the current
-folder structure, frontmatter schema, and file creation checklist before
-writing any files.
+Read `.github/agents/skills-agent.md` in full to confirm the current folder structure, frontmatter schema, and file creation checklist before writing any files.
 
 ### Step 3 — Fetch the source documentation
 
-Fetch the docs page. If the content is paginated or truncated, fetch
-additional chunks until you have the full page. Also fetch any linked
-sub-pages that are important to the skill topic.
+Fetch the docs page. If the content is paginated or truncated, fetch additional chunks until you have the full page. Also fetch any linked sub-pages that are important to the skill topic.
 
-For the Slurm skill, the supplementary job-scheduling page was also
-fetched:
+For the Slurm skill, the supplementary job-scheduling page was also fetched:
 https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
 
 ### Step 4 — Identify Critical Rules
 
-Before writing the skill, identify any constraints mentioned in the docs
-that an agent must never violate. Examples from existing skills:
+Before writing the skill, identify any constraints mentioned in the docs that an agent must never violate. Examples from existing skills:
 
 - Polling rate limits (e.g. never run squeue faster than 60 s)
 - Resource policies (e.g. never run compute work on login nodes)
 - Fair-use rules (e.g. always set --time on salloc)
 
-These must appear at the top of the skill body, before all other
-sections, under a `## ⚠️ Critical Rule: <Title>` heading.
+These must appear at the top of the skill body, before all other sections, under a `## ⚠️ Critical Rule: <Title>` heading.
 
 ### Step 5 — Determine the skill name
 
@@ -107,10 +96,8 @@ Derive the skill name from the docs page slug. Rules:
 
 - Lowercase only
 - Hyphens instead of spaces or underscores
-- Match the last segment of the docs URL path (e.g. `file_transfer` →
-  `file-transfer`, `ML-packages` → `ml-packages`)
-- Must be 1–64 characters, no consecutive hyphens, no leading/trailing
-  hyphen
+- Match the last segment of the docs URL path (e.g. `file_transfer` → `file-transfer`, `ML-packages` → `ml-packages`)
+- Must be 1–64 characters, no consecutive hyphens, no leading/trailing hyphen
 
 ### Step 6 — Create the SKILL.md file
 
@@ -153,8 +140,7 @@ metadata:
 - Include actual command output examples where the docs provide them
 - All code in fenced blocks with language hint (`bash`, `yaml`, etc.)
 - Wrap lines at 80 characters
-- Keep body under 500 lines; move reference detail to
-  `skills/<skill-name>/references/` if needed
+- Keep body under 500 lines; move reference detail to `skills/<skill-name>/references/` if needed
 
 ### Step 7 — Register the skill
 
@@ -167,8 +153,7 @@ Follow the checklist from `skills-agent.md` exactly:
 
 ### Step 8 — Update the Known Documentation Sources table
 
-Update the table in this file (`.github/agents/update-skills-from-docs.md`)
-to mark the skill as `✅ exists` for the relevant row.
+Update the table in this file (`.github/agents/update-skills-from-docs.md`) to mark the skill as `✅ exists` for the relevant row.
 
 ---
 
@@ -181,18 +166,14 @@ needed.
 
 Read the `SKILL.md` file for the skill. Note:
 - `metadata.source_url` — the primary docs page it was derived from
-- `metadata.supplementary_urls` — any additional docs pages that
-  contributed content (may be absent if none were used)
+- `metadata.supplementary_urls` — any additional docs pages that contributed content (may be absent if none were used)
 - `metadata.version` — the current version
 
 ### Step 2 — Fetch the source docs pages
 
-Fetch the URL in `metadata.source_url`. If the page is long, fetch in
-chunks to get the full content.
+Fetch the URL in `metadata.source_url`. If the page is long, fetch in chunks to get the full content.
 
-Also fetch every URL listed in `metadata.supplementary_urls`. These are
-additional docs pages whose content was incorporated into the skill and
-which may independently have changed.
+Also fetch every URL listed in `metadata.supplementary_urls`. These are additional docs pages whose content was incorporated into the skill and which may independently have changed.
 
 ### Step 3 — Compare content
 
@@ -223,8 +204,7 @@ Do **not** update the skill for:
 
 Edit `skills/<skill-name>/SKILL.md`:
 
-- Apply the minimum diff needed — preserve existing structure where
-  accurate, only change what is actually different
+- Apply the minimum diff needed — preserve existing structure where accurate, only change what is actually different
 - Increment `metadata.version` (e.g. `"1.0"` → `"1.1"`)
 - Do **not** rename or move the file
 
@@ -240,13 +220,10 @@ To check every skill in the repository at once:
 1. List all `SKILL.md` files:
    `find skills/ -name SKILL.md`
 
-2. For each file, read `metadata.source_url` and
-   `metadata.supplementary_urls` from the frontmatter.
+2. For each file, read `metadata.source_url` and `metadata.supplementary_urls` from the frontmatter.
 
-3. Fetch each source URL (and supplementary URLs) and compare against
-   the skill body using the comparison criteria in Workflow B, Step 3.
+3. Fetch each source URL (and supplementary URLs) and compare against the skill body using the comparison criteria in Workflow B, Step 3.
 
-4. Report which skills are up to date, which need minor updates, and
-   which need significant rewrites.
+4. Report which skills are up to date, which need minor updates, and which need significant rewrites.
 
 5. For each stale skill, apply Workflow B.

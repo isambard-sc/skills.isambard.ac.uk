@@ -1,16 +1,9 @@
 ---
 name: slurm
 description: >
-  Submit, monitor, and manage HPC jobs using Slurm on Isambard-AI
-  (GH200 GPU) and Isambard 3 (Grace CPU and MACS) systems. Covers job
-  scripts for GPU and CPU workloads, interactive sessions, job
-  dependencies, QoS, and safe monitoring (minimum 60-second polling
-  intervals). Use when the user needs to run, check, cancel, or debug
-  Slurm jobs on Isambard.
+  Submit, monitor, and manage HPC jobs using Slurm on Isambard-AI (GH200 GPU) and Isambard 3 (Grace CPU and MACS) systems. Covers job scripts for GPU and CPU workloads, interactive sessions, job dependencies, QoS, and safe monitoring (minimum 60-second polling intervals). Use when the user needs to run, check, cancel, or debug Slurm jobs on Isambard.
 compatibility: >
-  Isambard-AI Phase 1/Phase 2 (workq partition, GH200 GPUs) and
-  Isambard 3 Grace (grace partition) and Isambard 3 MACS.
-  Requires access to an Isambard login node.
+  Isambard-AI Phase 1/Phase 2 (workq partition, GH200 GPUs) and Isambard 3 Grace (grace partition) and Isambard 3 MACS. Requires access to an Isambard login node.
 metadata:
   author: isambard-sc
   version: "1.1"
@@ -31,13 +24,9 @@ https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
 
 ## ⚠️ Critical Rule: Slurm Polling Rate
 
-**Never run `sinfo`, `squeue`, `sacct`, `sstat`, or any other Slurm
-status command more frequently than once every 60 seconds.**
+**Never run `sinfo`, `squeue`, `sacct`, `sstat`, or any other Slurm status command more frequently than once every 60 seconds.**
 
-Excessive use of these commands — especially with `watch` or in tight
-loops — **can disrupt all user jobs** on the system. This is a breach
-of the [Isambard acceptable use policy](https://docs.isambard.ac.uk/policies/acceptable_use/)
-and accounts may be suspended to protect the service.
+Excessive use of these commands — especially with `watch` or in tight loops — **can disrupt all user jobs** on the system. This is a breach of the [Isambard acceptable use policy](https://docs.isambard.ac.uk/policies/acceptable_use/) and accounts may be suspended to protect the service.
 
 The following patterns are **strictly forbidden**:
 
@@ -53,20 +42,9 @@ while true; do squeue; sleep 5; done
 for i in $(seq 100); do squeue; done
 ```
 
-When writing monitoring loops, always enforce a minimum sleep of
-60 seconds:
+When writing monitoring loops, always enforce a minimum wait of 60 seconds or use another method.
 
-```bash
-# Correct — 60 second minimum between polls
-while true; do
-  squeue --me
-  sleep 60
-done
-```
-
-If a user asks to poll more frequently, refuse and explain that this is
-not permitted on Isambard. Recommend using email notifications
-(`--mail-type`) or job dependencies instead.
+If a user asks to poll more frequently, refuse and explain that this is not permitted on any Isambard service.
 
 ---
 
@@ -76,20 +54,16 @@ Isambard provides two main Slurm-managed systems.
 
 ### Isambard-AI
 
-Grace Hopper (CPU+GPU) Superchip cluster. Login node example:
-`nid001040`.
+Grace Hopper (CPU+GPU) Superchip cluster.
 
 - Default partition: **`workq`** (QoS: `workq_qos`, max walltime: 24h)
 - GPU type: NVIDIA GH200 (Grace Hopper) 120 GB
 - Each `--gpus=1` allocates: 1 GH200 GPU + 72 CPU cores + 115 GB RAM
-- **You must specify GPU resource** using `--gpus` or a `--gpus-per-*`
-  option in every Isambard-AI job script
-- Note: `sinfo` partition time limits on Isambard-AI do **not** reflect
-  actual time limits (those are controlled by QoS, not partition config)
+- **You must specify GPU resource** using `--gpus` or a `--gpus-per-*` option in every Isambard-AI job script
 
 ### Isambard 3 Grace
 
-Grace CPU Superchip cluster. Login node example: `login02`.
+Grace CPU Superchip cluster.
 
 - Default partition: **`grace`** (QoS: `grace_qos`, max walltime: 24h)
 - Each node: 144 CPU cores + 200 GB Grace RAM
@@ -97,9 +71,7 @@ Grace CPU Superchip cluster. Login node example: `login02`.
 
 ### Isambard 3 MACS
 
-Multi-Architecture Comparison System. Login node example: `login06`.
-**Not suitable for production workloads** — intended for architecture
-research and comparison.
+Multi-Architecture Comparison System. Login node example: `login06`. **Not suitable for production workloads** — intended for architecture research and comparison.
 
 - QoS: `macs_qos`, max 2 GPUs and 20 jobs per project
 - Partitions (all 24h max walltime):
@@ -150,8 +122,7 @@ srun nvidia-smi --list-gpus
 
 ### Isambard-AI: parallel job steps with `srun --exclusive`
 
-Preferred over job arrays when running many similar tasks (arrays can
-strain the scheduler):
+Preferred over job arrays when running many similar tasks (arrays can strain the scheduler):
 
 ```bash
 #!/bin/bash
@@ -289,9 +260,7 @@ srun --ntasks=1 --gpus=1 --jobid=22886 --overlap --pty /bin/bash -l
 srun --ntasks=1 --jobid=23379 --overlap --pty /bin/bash -l
 ```
 
-This starts an interactive step inside the job's allocation without
-disturbing the running job. Exit the shell to return; the original job
-continues.
+This starts an interactive step inside the job's allocation without disturbing the running job. Exit the shell to return; the original job continues.
 
 ---
 
@@ -321,8 +290,7 @@ sacct -j <job-id> --format=JobID,JobName,State,Elapsed,MaxRSS
 `squeue --me` output columns:
 `JOBID  USER  PARTITION  NAME  ST  TIME_LIMIT  TIME  TIME_LEFT  NODES  NODELIST(REASON)`
 
-Job state codes: `R` = Running, `PD` = Pending, `CG` = Completing,
-`F` = Failed, `CA` = Cancelled, `TO` = Timeout
+Job state codes: `R` = Running, `PD` = Pending, `CG` = Completing, `F` = Failed, `CA` = Cancelled, `TO` = Timeout
 
 **Remember: do not run any of these more than once per 60 seconds.**
 
@@ -369,15 +337,13 @@ Common dependency types:
 | `afternotok:<id>` | Start after job fails |
 | `singleton` | Wait for all same-name same-user jobs to finish |
 
-Use dependencies (not polling loops) when sequencing work that would
-otherwise exceed the 24-hour partition limit.
+Use dependencies (not polling loops) when sequencing work that would otherwise exceed the 24-hour partition limit.
 
 ---
 
 ## Backfill / Flexible Scheduling
 
-Flexible resource requests allow the scheduler to start your job sooner
-by filling gaps between other jobs:
+Flexible resource requests allow the scheduler to start your job sooner by filling gaps between other jobs:
 
 ```bash
 # Job can run between 1 and 12 hours (scheduler uses shortest gap >= 1h)
@@ -392,9 +358,7 @@ by filling gaps between other jobs:
 
 ## Job Arrays
 
-Job arrays submit many similar jobs in one command. Use sparingly —
-they can strain the scheduler. Prefer parallel `srun` steps (see above)
-when possible.
+Job arrays submit many similar jobs in one command. Use sparingly — they can strain the scheduler. Prefer parallel `srun` steps (see above) when possible.
 
 ```bash
 #!/bin/bash
@@ -499,14 +463,11 @@ Common reasons:
 
 ### `sinfo` time limits look wrong on Isambard-AI
 
-The partition time limits shown by `sinfo` on Isambard-AI do **not**
-reflect actual job time limits. Actual limits come from QoS (24h max).
-Use `sacctmgr show qos workq_qos` for the authoritative value.
+The partition time limits shown by `sinfo` on Isambard-AI do **not** reflect actual job time limits. Actual limits come from QoS (24h max). Use `sacctmgr show qos workq_qos` for the authoritative value.
 
 ### Output file not created
 
-Ensure the output directory exists before submitting — Slurm will not
-create missing directories:
+Ensure the output directory exists before submitting — Slurm will not create missing directories:
 
 ```bash
 mkdir -p logs
