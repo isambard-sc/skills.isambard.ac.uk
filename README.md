@@ -15,7 +15,7 @@ the environment from scratch every session.
 
 | Skill | Description | URL |
 |---|---|---|
-| [Slurm](skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/skills/slurm/SKILL.md` |
+| [Slurm](site/skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/skills/slurm/SKILL.md` |
 
 ---
 
@@ -61,20 +61,21 @@ raw Markdown content is served directly from this site.
 ## Repository Structure
 
 ```
-.claude-plugin/
-  marketplace.json           # Claude Code plugin marketplace catalog
+site/                      # All web-served content (GitHub Pages source)
+  .claude-plugin/
+    marketplace.json         # Claude Code plugin marketplace catalog
+  skills/
+    slurm/
+      SKILL.md               # Slurm skill file (AgentSkills spec format)
+  index.html                 # Public site landing page
+  marketplace.json           # Simple skills index for other agent tools
+  CNAME                      # Custom domain configuration
 .github/
   agents/
-    skills-agent.md        # Instructions for AI agents on creating skills
+    skills-agent.md          # Instructions for AI agents on creating skills
 .vscode/
-  settings.json            # Word-wrap settings for Markdown/.chatagent files
-skills/
-  slurm/
-    SKILL.md               # Slurm skill file (AgentSkills spec format)
-index.html                 # Public site landing page
-marketplace.json           # Simple skills index for other agent tools
-CNAME                      # Custom domain configuration
-README.md                  # This file
+  settings.json              # Word-wrap settings for Markdown/.chatagent files
+README.md                    # This file
 ```
 
 ---

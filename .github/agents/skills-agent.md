@@ -15,7 +15,7 @@ A skill is a plain Markdown file that gives an AI agent the knowledge and rules 
 Skills follow the [AgentSkills specification](https://agentskills.io/specification).
 
 ```
-skills/
+site/skills/
   <skill-name>/
     SKILL.md           # Required — primary skill file with YAML frontmatter
     references/        # Optional — supplementary reference files
@@ -25,8 +25,8 @@ skills/
 
 Rules:
 - The skill name must be lowercase, using hyphens instead of spaces (e.g. `slurm`, `python-venv`, `mpi-profiling`).
-- Each skill lives in its own subdirectory under `skills/`.
-- The primary skill file **must be named `SKILL.md`** (uppercase) and placed directly inside `skills/<skill-name>/`.
+- Each skill lives in its own subdirectory under `site/skills/`.
+- The primary skill file **must be named `SKILL.md`** (uppercase) and placed directly inside `site/skills/<skill-name>/`.
 - The `SKILL.md` file must start with YAML frontmatter (see below).
 - Supplementary files may be added in `references/`, `scripts/`, or `assets/` subdirectories within the skill directory.
 
@@ -34,9 +34,9 @@ Examples:
 
 | Skill topic | Directory | Primary file |
 |---|---|---|
-| Slurm job management | `skills/slurm/` | `skills/slurm/SKILL.md` |
-| Python virtual environments | `skills/python-venv/` | `skills/python-venv/SKILL.md` |
-| MPI profiling | `skills/mpi-profiling/` | `skills/mpi-profiling/SKILL.md` |
+| Slurm job management | `site/skills/slurm/` | `site/skills/slurm/SKILL.md` |
+| Python virtual environments | `site/skills/python-venv/` | `site/skills/python-venv/SKILL.md` |
+| MPI profiling | `site/skills/mpi-profiling/` | `site/skills/mpi-profiling/SKILL.md` |
 
 ---
 
@@ -97,7 +97,7 @@ Every skill must have an entry in `.claude-plugin/marketplace.json` for Claude C
 ```json
 {
   "name": "<skill-name>",
-  "source": "./skills/<skill-name>",
+  "source": "../skills/<skill-name>",
   "description": "<One or two sentence description>",
   "version": "<semver>",
   "author": { "name": "Isambard SC" },
@@ -111,7 +111,7 @@ When adding a new skill, append to the `"plugins"` array and keep the array sort
 
 ## Updating `marketplace.json`
 
-Also add an entry to the simple `marketplace.json` at the root (used by other agent tools). The structure is:
+Also add an entry to `site/marketplace.json` (used by other agent tools). The structure is:
 
 ```json
 {
@@ -127,10 +127,10 @@ Use the canonical `https://skills.isambard.ac.uk/...` URL — never the raw GitH
 
 ## Updating `index.html`
 
-The main page at `index.html` lists all available skills with a short
+The main page at `site/index.html` lists all available skills with a short
 description and a link to the skill file. When adding or updating a skill:
 
-1. Open `index.html`.
+1. Open `site/index.html`.
 2. Locate the `<div class="skills-grid">` element inside the `<section id="skills">` section.
 3. Add a new `<div class="skill-card">` block following this template:
 
@@ -153,18 +153,18 @@ description and a link to the skill file. When adding or updating a skill:
 
 When creating a new skill, complete the following steps in order:
 
-- [ ] Create the directory `skills/<skill-name>/`
-- [ ] Create `skills/<skill-name>/SKILL.md` with YAML frontmatter and the required sections listed above
-- [ ] Add an entry to `.claude-plugin/marketplace.json` `plugins` array
-- [ ] Add an entry to `marketplace.json` `skills` array
-- [ ] Add a skill card to `index.html`
+- [ ] Create the directory `site/skills/<skill-name>/`
+- [ ] Create `site/skills/<skill-name>/SKILL.md` with YAML frontmatter and the required sections listed above
+- [ ] Add an entry to `site/.claude-plugin/marketplace.json` `plugins` array
+- [ ] Add an entry to `site/marketplace.json` `skills` array
+- [ ] Add a skill card to `site/index.html`
 - [ ] Update `README.md` skills table
 
 ---
 
 ## Updating an Existing Skill
 
-- Edit `skills/<skill-name>/SKILL.md` directly.
+- Edit `site/skills/<skill-name>/SKILL.md` directly.
 - Increment `metadata.version` in the frontmatter for significant changes.
 - Update the `"description"` in both `marketplace.json` files if the summary changed.
 - Update the skill card description in `index.html` if the summary changed.
