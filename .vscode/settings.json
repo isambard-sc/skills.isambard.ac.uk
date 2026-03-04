@@ -1,0 +1,18 @@
+{
+  "files.associations": {
+    "**/skills/**/*.md": "markdown",
+    "**/.github/agents/*.md": "chatagent"
+  },
+  "[markdown]": {
+    "editor.rulers": [80],
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 80,
+    "files.trimTrailingWhitespace": false
+  },
+  "[chatagent]": {
+    "editor.rulers": [80],
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 80,
+    "files.trimTrailingWhitespace": false
+  }
+}
