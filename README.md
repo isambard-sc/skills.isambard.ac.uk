@@ -67,6 +67,8 @@ site/                      # All web-served content (GitHub Pages source)
   skills/
     slurm/
       SKILL.md               # Slurm skill file (AgentSkills spec format)
+    docs/
+      SKILL.md               # User documentation skill file (AgentSkills spec format)
   index.html                 # Public site landing page
   marketplace.json           # Simple skills index for other agent tools
   CNAME                      # Custom domain configuration
