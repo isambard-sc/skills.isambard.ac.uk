@@ -23,14 +23,14 @@ The table below maps docs.isambard.ac.uk pages to their corresponding skill name
 | https://docs.isambard.ac.uk/user-documentation/guides/slurm/ | `slurm` | `skills/slurm/SKILL.md` | ✅ exists |
 | https://docs.isambard.ac.uk/user-documentation/guides/login/ | `login` | `skills/login/SKILL.md` | ❌ not yet created |
 | https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/ | `file-transfer` | `skills/file-transfer/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/python/ | `python` | `skills/python/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/containers/ | `containers` | `skills/containers/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/modules/ | `modules` | `skills/modules/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/guides/python/ | `python` | `skills/python/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/containers/ | `containers` | `skills/containers/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/modules/ | `modules-and-compilers` | `skills/modules-and-compilers/SKILL.md` | ✅ |
 | https://docs.isambard.ac.uk/user-documentation/guides/jupyter/ | `jupyter` | `skills/jupyter/SKILL.md` | ❌ not yet created |
 | https://docs.isambard.ac.uk/user-documentation/guides/vscode/ | `vscode` | `skills/vscode/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/mpi/ | `mpi` | `skills/mpi/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/spack/ | `spack` | `skills/spack/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/nccl/ | `nccl` | `skills/nccl/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/guides/mpi/ | `mpi` | `skills/mpi/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/spack/ | `spack` | `skills/spack/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/nccl/ | `nccl` | `skills/nccl/SKILL.md` | ✅ |
 | https://docs.isambard.ac.uk/user-documentation/guides/accounting/ | `accounting` | `skills/accounting/SKILL.md` | ❌ not yet created |
 
 ### Applications
