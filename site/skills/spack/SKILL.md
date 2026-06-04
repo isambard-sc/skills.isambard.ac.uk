@@ -16,7 +16,8 @@ description: >
 metadata:
   author: isambard-sc
   version: "1.0"
-  source_url: https://docs.isambard.ac.uk/user-documentation/guides/spack/---
+  source_url: https://docs.isambard.ac.uk/user-documentation/guides/spack/
+---
 
 # Spack on Isambard
 

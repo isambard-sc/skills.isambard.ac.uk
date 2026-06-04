@@ -16,7 +16,7 @@ compatibility: >
 metadata:
   author: isambard-sc
   version: "1.0"
-  source_url: https://docs.isambard.ac.uk/user-documentation/guides/cuda/
+  source_url: https://docs.isambard.ac.uk/user-documentation/guides/gpus_and_cuda/
 ---
 
 # GPUs and CUDA on Isambard
