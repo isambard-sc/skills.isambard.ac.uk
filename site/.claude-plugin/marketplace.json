@@ -34,8 +34,8 @@
       "agents": ["./SKILL.md"]
     },
     {
-      "name": "modules-and-compilers",
-      "source": "../skills/modules-and-compilers",
+      "name": "modules",
+      "source": "../skills/modules",
       "description": "Use the modules system, Cray Programming Environments (PrgEnv-gnu, PrgEnv-cray), compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools (gprof, Cray perftools, Nsight) on Isambard.",
       "version": "1.0",
       "author": {

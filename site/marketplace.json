@@ -14,9 +14,9 @@
       "url": "https://skills.isambard.ac.uk/skills/python/SKILL.md"
     },
     {
-      "name": "Modules and Compilers",
+      "name": "Modules",
       "description": "Use the modules system, Cray Programming Environments (PrgEnv-gnu, PrgEnv-cray), compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools (gprof, Cray perftools, Nsight) on Isambard.",
-      "url": "https://skills.isambard.ac.uk/skills/modules-and-compilers/SKILL.md"
+      "url": "https://skills.isambard.ac.uk/skills/modules/SKILL.md"
     },
     {
       "name": "Spack",

@@ -25,7 +25,7 @@ The table below maps docs.isambard.ac.uk pages to their corresponding skill name
 | https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/ | `file-transfer` | `skills/file-transfer/SKILL.md` | ❌ not yet created |
 | https://docs.isambard.ac.uk/user-documentation/guides/python/ | `python` | `skills/python/SKILL.md` | ✅ |
 | https://docs.isambard.ac.uk/user-documentation/guides/containers/ | `containers` | `skills/containers/SKILL.md` | ✅ |
-| https://docs.isambard.ac.uk/user-documentation/guides/modules/ | `modules-and-compilers` | `skills/modules-and-compilers/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/modules/ | `modules` | `skills/modules/SKILL.md` | ✅ |
 | https://docs.isambard.ac.uk/user-documentation/guides/jupyter/ | `jupyter` | `skills/jupyter/SKILL.md` | ❌ not yet created |
 | https://docs.isambard.ac.uk/user-documentation/guides/vscode/ | `vscode` | `skills/vscode/SKILL.md` | ❌ not yet created |
 | https://docs.isambard.ac.uk/user-documentation/guides/mpi/ | `mpi` | `skills/mpi/SKILL.md` | ✅ |

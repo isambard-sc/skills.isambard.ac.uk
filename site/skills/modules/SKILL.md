@@ -1,5 +1,5 @@
 ---
-name: modules-and-compilers
+name: modules
 description: >
   Guide for using the modules system, programming environments, compilers, and profiling tools
   on Isambard AI (BriCS) supercomputers (Isambard-AI and Isambard 3).
