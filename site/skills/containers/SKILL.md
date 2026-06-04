@@ -34,6 +34,16 @@ Both engines support single-node and multi-node operation. Multi-node jobs requi
 > will run. When browsing registries like [NGC](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch/tags),
 > filter tags by `linux/arm64` before pulling.
 
+## Critical Rules
+
+- Only use container images built for `linux/arm64` on Isambard.
+- Never run x86 or `amd64` images on Isambard compute nodes.
+- Multi-node container jobs must use the host MPI/NCCL libraries and `/host/adapt.sh`.
+- Use `--nv` for GPU containers in Apptainer and `--device=nvidia.com/gpu=all` or
+  `--gpu` for Podman-HPC.
+- Do not rely on non-shared local image stores on compute nodes; use shared filesystem paths
+  or container migration tools.
+
 ---
 
 ## Multi-node Networking Overview

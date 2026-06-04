@@ -23,6 +23,19 @@ Isambard supercomputers run **Linux on Arm64 (`aarch64`)** — this shapes almos
 
 Python and packages can be managed with `pip`, `conda`, or `uv`. **Conda via Miniforge** is the recommended approach. All workflows should use **virtual environments** to isolate dependencies.
 
+Use:
+- **Conda** for reproducible environment management, binary packages, and complex dependency sets.
+- **uv** for fast venv creation and lightweight dependency installation when system Python is not required.
+- **Cray Python** only when the environment is already module-managed and you want the system-supported runtime.
+
+## Critical Rules
+
+- Always use a virtual environment for every project.
+- Never install packages into the Conda `base` environment.
+- Do not run `conda init`; activate Miniforge manually.
+- Always use `python3 -m pip` rather than bare `pip`.
+- Prefer Conda on Isambard, and use `uv` only when you need a simpler local venv workflow.
+
 ---
 
 ## Conda: Miniforge (Recommended)

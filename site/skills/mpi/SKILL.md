@@ -32,6 +32,15 @@ MPI application → libfabric → Slingshot 11 NIC → network
 > you can supply the correct `--mpi` flag for the PMI type. Using `mpirun`/`mpiexec`
 > bypasses Slurm's process management and will not work correctly.
 
+## Critical Rules
+
+- Always start MPI jobs with `srun` on Isambard.
+- Never use `mpirun` or `mpiexec` on Isambard.
+- Always choose the `--mpi` value that matches the MPI implementation in use.
+- Load MPI through a Cray `PrgEnv` or a Conda/MPI build that is explicitly configured
+  for Slingshot 11.
+- Do not mix raw GCC invocations with Cray compiler wrappers in the same build.
+
 ---
 
 ## Default MPI: Cray MPICH

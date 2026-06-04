@@ -10,7 +10,8 @@ description: >
   Also trigger for questions about building HPC software from source on Isambard,
   managing Spack environments, or using system compilers and MPI within Spack — even if
   the user doesn't explicitly say "Spack" but is clearly trying to build software with
-  dependency management on Isambard.compatibility: >
+  dependency management on Isambard.
+compatibility: >
   Isambard-AI and Isambard 3. Requires access to an Isambard login node and a
   Spack installation or clone.
 metadata:
@@ -32,6 +33,15 @@ architecture and interconnect.
 **Prerequisites:** Familiarity with [modules](https://docs.isambard.ac.uk/user-documentation/guides/modules/),
 [MPI](https://docs.isambard.ac.uk/user-documentation/guides/mpi/), and
 [system specs](https://docs.isambard.ac.uk/specs/) (especially the Slingshot 11 interconnect).
+
+## Critical Rules
+
+- Install and run Spack only from a supported Spack clone and the BriCS `buildit` config.
+- Set `SPACK_DISABLE_LOCAL_CONFIG=true` to avoid conflicts with local `~/.spack` settings.
+- Always source `spack/share/spack/setup-env.sh` before using `spack`.
+- Always activate a Spack environment before running `spack install`, `spack add`, or
+  `spack env create`.
+- Match the Spack version to the `buildit` config branch.
 
 ---
 

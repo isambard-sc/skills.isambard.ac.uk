@@ -31,6 +31,15 @@ resources become available.
 > every user. Minimum polling interval from scripts: **60 seconds**. Disruptive polling
 > is a breach of the acceptable use policy and may result in account suspension.
 
+## Critical Rules
+
+- Never poll `squeue`, `sinfo`, or any scheduler status command in a tight loop.
+- Always submit jobs with `sbatch` or launch commands with `srun`; do not use `mpirun`
+  or `mpiexec` on Isambard.
+- Always set explicit `--time`, `--nodes`, and `--gpus` when applicable.
+- Use `--exclusive` only when the workload truly requires an entire node.
+- Do not request GPUs on Isambard 3 systems.
+
 ---
 
 ## System Differences
