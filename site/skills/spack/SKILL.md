@@ -1,5 +1,5 @@
 ---
-name: isambard-spack
+name: spack
 description: >
   Guide for installing, configuring, and using Spack to build software on Isambard AI (BriCS)
   supercomputers (Isambard-AI Phase 1, Phase 2, Isambard 3 Grace, Isambard 3 MACS).
@@ -10,8 +10,13 @@ description: >
   Also trigger for questions about building HPC software from source on Isambard,
   managing Spack environments, or using system compilers and MPI within Spack — even if
   the user doesn't explicitly say "Spack" but is clearly trying to build software with
-  dependency management on Isambard.
----
+  dependency management on Isambard.compatibility: >
+  Isambard-AI and Isambard 3. Requires access to an Isambard login node and a
+  Spack installation or clone.
+metadata:
+  author: isambard-sc
+  version: "1.0"
+  source_url: https://docs.isambard.ac.uk/user-documentation/guides/spack/---
 
 # Spack on Isambard
 

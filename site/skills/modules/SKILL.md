@@ -10,6 +10,13 @@ description: >
   Also trigger for questions about linking MPI or scientific libraries on Isambard, or
   troubleshooting compiler and build issues on the Cray HPE system — even if the user
   doesn't explicitly say "modules".
+compatibility: >
+  Isambard-AI and Isambard 3. Requires access to an Isambard login node and the
+  Cray Programming Environment module system.
+metadata:
+  author: isambard-sc
+  version: "1.0"
+  source_url: https://docs.isambard.ac.uk/user-documentation/guides/modules/
 ---
 
 # Modules and Compilers on Isambard

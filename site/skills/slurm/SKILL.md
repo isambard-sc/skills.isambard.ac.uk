@@ -11,6 +11,13 @@ description: >
   Also trigger for questions about acceptable use of the Slurm queue, what PENDING reasons
   mean, how to chain jobs, or how to debug a running job — even if the user doesn't
   explicitly say "Slurm".
+compatibility: >
+  Isambard-AI and Isambard 3. Requires access to an Isambard login node, Slurm
+  commands, and the scheduler environment.
+metadata:
+  author: isambard-sc
+  version: "1.0"
+  source_url: https://docs.isambard.ac.uk/user-documentation/guides/slurm/
 ---
 
 # Slurm on Isambard
