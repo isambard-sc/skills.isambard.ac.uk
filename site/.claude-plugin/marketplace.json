@@ -20,6 +20,90 @@
       "homepage": "https://skills.isambard.ac.uk",
       "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
       "agents": ["./SKILL.md"]
+    },
+    {
+      "name": "python",
+      "source": "../skills/python",
+      "description": "Install and manage Python environments on Isambard using Conda (Miniforge), uv, or Cray Python. Covers virtual environments, building aarch64 packages from source, compiler flags, mpi4py, and finding arm64-compatible packages.",
+      "version": "1.0",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+      "agents": ["./SKILL.md"]
+    },
+    {
+      "name": "modules",
+      "source": "../skills/modules",
+      "description": "Use the modules system, Cray Programming Environments (PrgEnv-gnu, PrgEnv-cray), compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools (gprof, Cray perftools, Nsight) on Isambard.",
+      "version": "1.0",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+      "agents": ["./SKILL.md"]
+    },
+    {
+      "name": "spack",
+      "source": "../skills/spack",
+      "description": "Install, configure, and use Spack to build HPC software on Isambard-AI and Isambard 3. Covers Miniforge setup, the buildit config repository, Spack environments, concretizing, installing, and targeting neoverse_v2 / aarch64.",
+      "version": "1.0",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+      "agents": ["./SKILL.md"]
+    },
+    {
+      "name": "containers",
+      "source": "../skills/containers",
+      "description": "Run containers on Isambard using Podman-HPC and Apptainer (formerly Singularity). Covers pulling, building, and migrating images, GPU access, single-node and multi-node MPI/NCCL workloads over Slingshot 11, and aarch64 image selection.",
+      "version": "1.0",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+      "agents": ["./SKILL.md"]
+    },
+    {
+      "name": "mpi",
+      "source": "../skills/mpi",
+      "description": "Use MPI on Isambard with Cray MPICH, OpenMPI, or conda-installed MPI. Covers PrgEnv loading, PMI types (cray_shasta, pmi2, pmix), srun --mpi flags, libfabric and Slingshot 11 performance, and why mpirun/mpiexec must not be used.",
+      "version": "1.0",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+      "agents": ["./SKILL.md"]
+    },
+    {
+      "name": "nccl",
+      "source": "../skills/nccl",
+      "description": "Use NCCL for multi-node GPU communication on Isambard-AI over Slingshot 11. Covers the brics/nccl module, aws-ofi-nccl plugin, Slingshot environment variables, building NCCL from source, benchmarking with nccl-tests, and NCCL in Apptainer containers.",
+      "version": "1.0",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+      "agents": ["./SKILL.md"]
+    },
+    {
+      "name": "cuda",
+      "source": "../skills/cuda",
+      "description": "Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers loading cudatoolkit/nvhpc modules, compiling with nvcc -arch=sm_90, CUDA forward compatibility for newer CUDA versions via NGC containers, NVIDIA HPC SDK, or conda cuda-compat.",
+      "version": "1.0",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
+      "agents": ["./SKILL.md"]
     }
   ]
 }

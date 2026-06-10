@@ -138,6 +138,65 @@
     <div class="skills-grid">
 
       <div class="skill-card">
+        <h3>Containers</h3>
+        <p>
+          Run containers on Isambard using Podman-HPC and Apptainer. Covers
+          image management, GPU access, and multi-node MPI/NCCL workloads over
+          Slingshot 11.
+        </p>
+        <a href="skills/containers/SKILL.md">View skill file &rarr;</a>
+      </div>
+
+      <div class="skill-card">
+        <h3>GPUs and CUDA</h3>
+        <p>
+          Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers
+          loading cudatoolkit/nvhpc modules, compiling with nvcc, and CUDA
+          forward compatibility.
+        </p>
+        <a href="skills/cuda/SKILL.md">View skill file &rarr;</a>
+      </div>
+
+      <div class="skill-card">
+        <h3>MPI</h3>
+        <p>
+          Use MPI on Isambard with Cray MPICH or OpenMPI. Covers PMI types,
+          srun --mpi flags, Slingshot 11 performance, and why mpirun/mpiexec
+          must not be used.
+        </p>
+        <a href="skills/mpi/SKILL.md">View skill file &rarr;</a>
+      </div>
+
+      <div class="skill-card">
+        <h3>NCCL</h3>
+        <p>
+          Use NCCL for multi-node GPU communication on Isambard-AI over
+          Slingshot 11. Covers the brics/nccl module, aws-ofi-nccl plugin, and
+          NCCL in containers.
+        </p>
+        <a href="skills/nccl/SKILL.md">View skill file &rarr;</a>
+      </div>
+
+      <div class="skill-card">
+        <h3>Modules</h3>
+        <p>
+          Use the modules system, Cray Programming Environments, compiler
+          wrappers, and profiling tools on Isambard.
+        </p>
+        <a href="skills/modules/SKILL.md">View skill file &rarr;</a>
+      </div>
+
+      <div class="skill-card">
+        <h3>Python</h3>
+        <p>
+          Install and manage Python environments on Isambard using Conda
+          (Miniforge), uv, or Cray Python. Covers aarch64 package builds and
+          mpi4py.
+        </p>
+        <a href="skills/python/SKILL.md">View skill file &rarr;</a>
+      </div>
+
+      <div class="skill-card">
         <h3>Slurm</h3>
         <p>
           Submit, monitor, and manage HPC jobs using the Slurm workload
@@ -147,13 +206,18 @@
         <a href="skills/slurm/SKILL.md">View skill file &rarr;</a>
       </div>
 
-    </div>
-  </section>
+      <div class="skill-card">
+        <h3>Spack</h3>
+        <p>
+          Install, configure, and use Spack to build HPC software on Isambard.
+          Covers the buildit config repository, environments, concretizing,
+          installing, and aarch64 target builds.
+        </p>
+        <a href="skills/spack/SKILL.md">View skill file &rarr;</a>
+      </div>
 
-  <section id="install">
-    <h2>How to Install a Skill</h2>
-
-    <h3 style="font-size:1rem;margin:1rem 0 0.5rem;">Claude Code</h3>
+      </div>
+    </section>
     <p>
       Add the Isambard marketplace so Claude Code can browse and install
       all available skills:

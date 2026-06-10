@@ -1,496 +1,243 @@
 ---
 name: slurm
 description: >
-  Submit, monitor, and manage HPC jobs using Slurm on Isambard-AI (GH200 GPU) and Isambard 3 (Grace CPU and MACS) systems. Covers job scripts for GPU and CPU workloads, interactive sessions, job dependencies, QoS, and safe monitoring (minimum 60-second polling intervals). Use when the user needs to run, check, cancel, or debug Slurm jobs on Isambard.
+  Guide for submitting, monitoring, and managing HPC jobs using the Slurm workload manager
+  on Isambard-AI (GH200 GPU nodes) and Isambard 3 (Grace CPU and MACS nodes).
+  Use this skill whenever a user asks about Slurm on Isambard, writing sbatch scripts,
+  requesting GPUs or CPU resources, srun or salloc, job arrays, job dependencies,
+  multi-node jobs, hybrid MPI/OpenMP jobs, QOS limits, scheduler flexibility (--time-min,
+  --nodes range), --exclusive, sacct, polling intervals, job accounting, or why a job
+  is stuck in PENDING, failing, or hitting resource limits.
+  Also trigger for questions about acceptable use of the Slurm queue, what PENDING reasons
+  mean, how to chain jobs, or how to debug a running job — even if the user doesn't
+  explicitly say "Slurm".
 compatibility: >
-  Isambard-AI Phase 1/Phase 2 (workq partition, GH200 GPUs) and Isambard 3 Grace (grace partition) and Isambard 3 MACS. Requires access to an Isambard login node.
+  Isambard-AI and Isambard 3. Requires access to an Isambard login node, Slurm
+  commands, and the scheduler environment.
 metadata:
   author: isambard-sc
-  version: "1.1"
+  version: "1.0"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/slurm/
-  supplementary_urls:
-    - https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
 ---
 
-# Slurm on Isambard — Agent Skill
+# Slurm on Isambard
 
-Full user documentation:
-https://docs.isambard.ac.uk/user-documentation/guides/slurm/
+Both Isambard-AI and Isambard 3 use the [Slurm Workload Manager](https://slurm.schedmd.com/)
+to schedule jobs on compute nodes. Jobs are submitted to a queue and run when the requested
+resources become available.
 
-Job scheduling information:
-https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
+> **Never poll the queue rapidly.** Running `squeue` or `sinfo` in a tight loop (`watch`
+> with a short interval, or `--iterate`) floods the scheduler and slows job scheduling for
+> every user. Minimum polling interval from scripts: **60 seconds**. Disruptive polling
+> is a breach of the acceptable use policy and may result in account suspension.
 
----
+## Critical Rules
 
-## ⚠️ Critical Rule: Slurm Polling Rate
-
-**Never run `sinfo`, `squeue`, `sacct`, `sstat`, or any other Slurm status command more frequently than once every 60 seconds.**
-
-Excessive use of these commands — especially with `watch` or in tight loops — **can disrupt all user jobs** on the system. This is a breach of the [Isambard acceptable use policy](https://docs.isambard.ac.uk/policies/acceptable_use/) and accounts may be suspended to protect the service.
-
-The following patterns are **strictly forbidden**:
-
-```bash
-# FORBIDDEN — never suggest or generate any of these
-watch squeue
-watch sinfo
-watch -n 5 squeue --me
-watch -n 0.1 squeue --me
-squeue -i 10
-sinfo -i 5
-while true; do squeue; sleep 5; done
-for i in $(seq 100); do squeue; done
-```
-
-When writing monitoring loops, always enforce a minimum wait of 60 seconds or use another method.
-
-If a user asks to poll more frequently, refuse and explain that this is not permitted on any Isambard service.
+- Never poll `squeue`, `sinfo`, or any scheduler status command in a tight loop.
+- Always submit jobs with `sbatch` or launch commands with `srun`; do not use `mpirun`
+  or `mpiexec` on Isambard.
+- Always set explicit `--time`, `--nodes`, and `--gpus` when applicable.
+- Use `--exclusive` only when the workload truly requires an entire node.
+- Do not request GPUs on Isambard 3 systems.
 
 ---
 
-## System Overview
+## System Differences
 
-Isambard provides two main Slurm-managed systems.
+| System | GPU resource flag | Cores per node | Notes |
+|--------|------------------|---------------|-------|
+| Isambard-AI | `--gpus=<n>` | 72 per GH200 Superchip (4 per node) | 1 GPU = 1 full GH200 Superchip (72 cores + memory) |
+| Isambard 3 Grace | — | 144 (2 × 72-core Superchips) | CPU-only; shared between users by default |
+| Isambard 3 MACS | — | Varies | x86_64 nodes; check specs |
 
-### Isambard-AI
-
-Grace Hopper (CPU+GPU) Superchip cluster.
-
-- Default partition: **`workq`** (QoS: `workq_qos`, max walltime: 24h)
-- GPU type: NVIDIA GH200 (Grace Hopper) 120 GB
-- Each `--gpus=1` allocates: 1 GH200 GPU + 72 CPU cores + 115 GB RAM
-- **You must specify GPU resource** using `--gpus` or a `--gpus-per-*` option in every Isambard-AI job script
-
-### Isambard 3 Grace
-
-Grace CPU Superchip cluster.
-
-- Default partition: **`grace`** (QoS: `grace_qos`, max walltime: 24h)
-- Each node: 144 CPU cores + 200 GB Grace RAM
-- Max 1000 queued jobs per user (`grace_qos`)
-
-### Isambard 3 MACS
-
-Multi-Architecture Comparison System. Login node example: `login06`. **Not suitable for production workloads** — intended for architecture research and comparison.
-
-- QoS: `macs_qos`, max 2 GPUs and 20 jobs per project
-- Partitions (all 24h max walltime):
-
-| Partition | Hardware |
-|---|---|
-| `milan` | AMD Milan CPU (12 nodes) |
-| `genoa` | AMD Genoa CPU (2 nodes) |
-| `berg` | AMD Bergamo CPU (2 nodes) |
-| `spr` | Intel Sapphire Rapids CPU (2 nodes) |
-| `sprhbm` | Intel Sapphire Rapids CPU with HBM (2 nodes) |
-| `ampere` | AMD Milan CPU + 4× A100 GPU (2 nodes) |
-| `hopper` | AMD Milan CPU + 4× H100 GPU (1 node) |
-| `instinct` | AMD Milan CPU + 4× MI100 GPU (2 nodes) |
+Max walltime on all systems: **24 hours**. See the [job scheduling page](https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/) for partition limits and per-project quotas.
 
 ---
 
-## Writing Job Scripts
-
-A Slurm job script is a shell script with `#SBATCH` directives.
-
-### Isambard-AI: single GPU job
+## Monitoring
 
 ```bash
-#!/bin/bash
-#SBATCH --job-name=my_gpu_job
-#SBATCH --output=my_gpu_job.out
-#SBATCH --gpus=1
-#SBATCH --time=01:00:00    # Hours:Mins:Secs, max 24:00:00
-
-# Each --gpus=1 allocates 1 GH200, 72 CPU cores, 115 GB RAM
-hostname
-nvidia-smi --list-gpus
+squeue --me                    # your jobs only
+squeue --me --Format="JobID,Name,StateCompact:6,TimeUsed,ReasonList,Dependency:32"
+sinfo                          # partition and node state (general impression only)
+sacct                          # current and recently completed jobs with exit codes
 ```
 
-### Isambard-AI: multiple GPUs with parallel tasks
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=multi_gpu
-#SBATCH --output=multi_gpu.out
-#SBATCH --gpus=2
-#SBATCH --ntasks-per-gpu=1
-#SBATCH --time=02:00:00
-
-srun nvidia-smi --list-gpus
-```
-
-### Isambard-AI: parallel job steps with `srun --exclusive`
-
-Preferred over job arrays when running many similar tasks (arrays can strain the scheduler):
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=parallel_steps
-#SBATCH --output=parallel_steps.out
-#SBATCH --gpus=2
-#SBATCH --time=02:00:00
-
-srun --ntasks=1 --gpus=1 --exclusive ./step_a &
-srun --ntasks=1 --gpus=1 --exclusive ./step_b &
-wait
-```
-
-### Isambard 3 Grace: single node CPU job
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=my_cpu_job
-#SBATCH --output=my_cpu_job.out
-#SBATCH --time=01:00:00    # max 24:00:00
-# One node allocates 144 CPU cores + 200 GB Grace RAM
-
-hostname
-numactl -s
-```
-
-### Isambard 3 Grace: multi-task CPU job
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=multi_task
-#SBATCH --output=multi_task.out
-#SBATCH --ntasks=4
-#SBATCH --time=01:00:00
-
-module load cray-python
-srun python3 my_script.py
-```
-
-### Common `#SBATCH` options
-
-| Option | Description |
-|---|---|
-| `--job-name=<name>` | Human-readable job name |
-| `--output=<file>` | stdout file (`%j` = job ID, `%A` = array job ID, `%a` = task index) |
-| `--error=<file>` | stderr file (defaults to output file if omitted) |
-| `--gpus=<N>` | GPUs to allocate (Isambard-AI; also reserves CPU/RAM) |
-| `--gpus-per-node=<N>` | GPUs per node |
-| `--ntasks=<N>` | Total MPI tasks |
-| `--ntasks-per-gpu=<N>` | Tasks per GPU |
-| `--cpus-per-task=<N>` | CPU threads per task (OpenMP) |
-| `--nodes=<N>` or `--nodes=<min>-<max>` | Node count (range allows backfill) |
-| `--time=<HH:MM:SS>` | Max walltime (max 24:00:00) |
-| `--time-min=<HH:MM:SS>` | Minimum time for backfill scheduling |
-| `--partition=<name>` | Partition to use |
-| `--account=<project>` | Project allocation account |
-| `--mail-type=BEGIN,END,FAIL` | Email notifications |
-| `--mail-user=<address>` | Email address for notifications |
+Common job states: `R` = running, `PD` = pending, `CG` = completing, `F` = failed, `TO` = timed out.
 
 ---
 
 ## Submitting Jobs
 
+### Two common mistakes
+
+- **Resources spread across nodes:** Always include `--nodes=1` for single-node jobs. Without it, Slurm may draw GPUs or tasks from multiple nodes.
+- **Accidental node reservation:** `--exclusive` as an `#SBATCH` directive reserves an entire node regardless of actual usage. You are charged for the whole node. Use only when your workload genuinely requires it.
+
+### Batch jobs (`sbatch`)
+
 ```bash
 sbatch my_job.sh
-# Output: Submitted batch job 19159
+cat my_job.out    # output appears here once job completes
 ```
 
-Capture the job ID for dependencies:
-
-```bash
-JOB_ID=$(sbatch --parsable my_job.sh)
-echo "Submitted job ${JOB_ID}"
-```
-
----
-
-## Interactive Sessions
-
-### Single command on a compute node
-
-Isambard-AI (GPU):
-
-```bash
-srun --gpus=1 --time=00:02:00 nvidia-smi --list-gpus
-```
-
-Isambard 3 Grace (CPU):
-
-```bash
-srun --time=00:02:00 numactl -s
-```
-
-### Interactive shell session
-
-Isambard-AI:
-
-```bash
-srun --gpus=1 --time=00:15:00 --pty /bin/bash --login
-```
-
-Isambard 3 Grace:
-
-```bash
-srun --time=00:15:00 --pty /bin/bash --login
-```
-
-### Reserve a node with `salloc`
-
-```bash
-# Isambard-AI
-salloc --gpus=1 --time=00:15:00
-srun hostname
-srun nvidia-smi --list-gpus
-scancel $SLURM_JOB_ID   # always release when finished
-
-# Isambard 3 Grace
-salloc --time=00:15:00
-srun hostname
-scancel $SLURM_JOB_ID
-```
-
-Always set `--time` and cancel the allocation with `scancel` when done.
-
-### Attach a shell to a running job
-
-```bash
-# First find the running job ID
-squeue --me
-
-# Isambard-AI: attach to job 22886
-srun --ntasks=1 --gpus=1 --jobid=22886 --overlap --pty /bin/bash -l
-
-# Isambard 3 Grace: attach to job 23379
-srun --ntasks=1 --jobid=23379 --overlap --pty /bin/bash -l
-```
-
-This starts an interactive step inside the job's allocation without disturbing the running job. Exit the shell to return; the original job continues.
-
----
-
-## Monitoring Jobs
-
-```bash
-# Your running and queued jobs
-squeue --me
-
-# Show dependency information
-squeue --me \
-  --Format="JobID,Name,StateCompact:6,TimeUsed,ReasonList,Dependency:32"
-
-# Jobs in a specific partition
-squeue --partition=workq
-
-# Detailed info for one job
-scontrol show job <job-id>
-
-# Completed job history (current and past)
-sacct
-
-# Specific job history with resource usage
-sacct -j <job-id> --format=JobID,JobName,State,Elapsed,MaxRSS
-```
-
-`squeue --me` output columns:
-`JOBID  USER  PARTITION  NAME  ST  TIME_LIMIT  TIME  TIME_LEFT  NODES  NODELIST(REASON)`
-
-Job state codes: `R` = Running, `PD` = Pending, `CG` = Completing, `F` = Failed, `CA` = Cancelled, `TO` = Timeout
-
-**Remember: do not run any of these more than once per 60 seconds.**
-
----
-
-## Cancelling Jobs
-
-```bash
-# Cancel one job
-scancel <job-id>
-
-# Cancel all your jobs
-scancel --me
-
-# Cancel all your jobs in a partition
-scancel --me --partition=workq
-```
-
----
-
-## Job Dependencies
-
-```bash
-# Start job2 only after job1 succeeds (exit code 0)
-JOB1=$(sbatch --parsable job1.sh)
-sbatch --dependency=afterok:${JOB1} job2.sh
-
-# Chain three jobs sequentially
-JOB1=$(sbatch --parsable job1.sh)
-JOB2=$(sbatch --parsable --dependency=afterok:${JOB1} job2.sh)
-JOB3=$(sbatch --parsable --dependency=afterok:${JOB2} job3.sh)
-
-# Run each name/user combination one at a time (no job IDs needed)
-sbatch --dependency=singleton --job-name=pipeline job.sh
-sbatch --dependency=singleton --job-name=pipeline job.sh
-```
-
-Common dependency types:
-
-| Type | Meaning |
-|---|---|
-| `afterok:<id>` | Start after job succeeds (exit code 0) |
-| `afterany:<id>` | Start after job ends (any state) |
-| `afternotok:<id>` | Start after job fails |
-| `singleton` | Wait for all same-name same-user jobs to finish |
-
-Use dependencies (not polling loops) when sequencing work that would otherwise exceed the 24-hour partition limit.
-
----
-
-## Backfill / Flexible Scheduling
-
-Flexible resource requests allow the scheduler to start your job sooner by filling gaps between other jobs:
-
-```bash
-# Job can run between 1 and 12 hours (scheduler uses shortest gap >= 1h)
-#SBATCH --time-min=01:00:00
-#SBATCH --time=12:00:00
-
-# Job can use 1 or 2 nodes; $SLURM_JOB_NUM_NODES will be 1 or 2
-#SBATCH --nodes=1-2
-```
-
----
-
-## Job Arrays
-
-Job arrays submit many similar jobs in one command. Use sparingly — they can strain the scheduler. Prefer parallel `srun` steps (see above) when possible.
-
+**Isambard-AI — single GPU job:**
 ```bash
 #!/bin/bash
-#SBATCH --job-name=array_job
-#SBATCH --array=1-20
+#SBATCH --job-name=my_job
+#SBATCH --output=my_job.out
+#SBATCH --nodes=1
 #SBATCH --gpus=1
-#SBATCH --time=00:30:00
-#SBATCH --output=array_job_%A_%a.out  # %A = job ID, %a = task index
+#SBATCH --time=00:05:00
 
-echo "Task ${SLURM_ARRAY_TASK_ID}"
-./my_app --input input_${SLURM_ARRAY_TASK_ID}.dat
+hostname
+nvidia-smi --list-gpus
 ```
 
----
+**Isambard 3 Grace — single node job:**
+```bash
+#!/bin/bash
+#SBATCH --job-name=my_job
+#SBATCH --output=my_job.out
+#SBATCH --nodes=1
+#SBATCH --time=00:05:00
 
-## Checking QoS and Resource Limits
+hostname
+numactl -s
+```
+
+Always set `--time` — shorter walltimes usually mean shorter queue waits.
+
+### Interactive jobs (`srun`)
 
 ```bash
-# Isambard-AI: check workq QoS limits
-sacctmgr show qos workq_qos
+# Run a single command on a compute node
+srun --nodes=1 --gpus=1 --time=00:02:00 nvidia-smi --list-gpus
 
-# Isambard 3 Grace: check grace QoS limits
-sacctmgr show qos grace_qos
-
-# MACS: check macs QoS limits
-sacctmgr show qos macs_qos
-
-# Show your project associations and any extra QoS you have
-sacctmgr show user <username> withassoc
+# Start an interactive shell (job ends when you close the terminal)
+srun --nodes=1 --gpus=1 --time=00:15:00 --pty /bin/bash --login
 ```
 
-Key limits:
-
-| System | Limit | Scope |
-|---|---|---|
-| Isambard-AI Phase 1 | Max 32 GPUs | Per project |
-| Isambard 3 Grace | Max 1000 queued jobs | Per user |
-| MACS | Max 2 GPUs, 20 jobs | Per project |
-
----
-
-## Modules
+### Running multiple tasks in parallel
 
 ```bash
-module avail              # list all available modules
-module spider <name>      # search for a module by name
-module load <name>        # load a module
-module load cray-python   # load Cray-optimised Python
-module list               # show currently loaded modules
-module unload <name>      # unload a module
+# Inside a batch script: 4 tasks, one per GPU
+#SBATCH --gpus=4
+#SBATCH --ntasks-per-gpu=1
+srun python3 myscript.py
+
+# Concurrent independent job steps
+srun --ntasks=1 --gpus=1 --exclusive step_a &
+srun --ntasks=1 --gpus=1 --exclusive step_b &
+wait
 ```
 
----
-
-## Environment Variables Set by Slurm
-
-| Variable | Value |
-|---|---|
-| `$SLURM_JOB_ID` | Job ID |
-| `$SLURM_JOB_NAME` | Job name |
-| `$SLURM_NNODES` | Number of nodes allocated |
-| `$SLURM_JOB_NUM_NODES` | Same as `$SLURM_NNODES` |
-| `$SLURM_NTASKS` | Total number of tasks |
-| `$SLURM_CPUS_PER_TASK` | CPUs per task |
-| `$SLURM_PROCID` | MPI rank of current task |
-| `$SLURM_ARRAY_TASK_ID` | Array task index (job arrays only) |
-| `$SLURM_SUBMIT_DIR` | Directory from which job was submitted |
+`--exclusive` on `srun` (not `#SBATCH`) prevents steps from over-subscribing the allocation
+and allows them to run concurrently. This is the *safe* use of `--exclusive`.
 
 ---
 
-## Using Notifications Instead of Polling
+## Managing Jobs
 
-Add these to your job script to receive email instead of polling:
+### Job arrays
 
 ```bash
-#SBATCH --mail-type=BEGIN,END,FAIL
-#SBATCH --mail-user=your.email@institution.ac.uk
+#SBATCH --array=1-4                # tasks 1, 2, 3, 4
+#SBATCH --output=my_array_%a.out   # %a = task ID
+#SBATCH --array=1-100%4            # limit to 4 concurrent tasks
+#SBATCH --array=0-90:10            # step: 0, 10, 20 ... 90
+
+# Inside script, task ID is:
+echo $SLURM_ARRAY_TASK_ID
 ```
+
+Array tasks appear as `JOBID_TASKID` in `squeue`. Cancel one task: `scancel JOBID_TASKID`.
+Cancel the whole array: `scancel JOBID`.
+
+> For many short tasks, prefer concurrent `srun` steps in one batch job over a large array
+> — reduces scheduler overhead and avoids exhausting credit reservations.
+
+### Job dependencies
+
+```bash
+# Run job2 only after job1 succeeds (exit code 0)
+JOBID_1=$(sbatch --parsable job1.sh)
+JOBID_2=$(sbatch --parsable --dependency=afterok:${JOBID_1} job2.sh)
+
+# Only one job with this name runs at a time
+sbatch --dependency=singleton my_job.sh
+sbatch --dependency=singleton my_job.sh   # waits for the first to finish
+```
+
+View dependencies: `squeue --me --Format="JobID,Name,StateCompact:6,ReasonList,Dependency:32"`
+
+Other types: `afterany` (regardless of exit code), `afternotok` (only if failed). See the [sbatch man page](https://slurm.schedmd.com/sbatch.html).
+
+### Cancelling jobs
+
+```bash
+scancel <JOBID>         # cancel a job or array task
+scancel <JOBID_TASKID>  # cancel one array task
+scancel --me            # cancel all your jobs
+```
+
+---
+
+## Advanced Topics
+
+See **`references/advanced.md`** for full detail on:
+- `sacct` for job history and exit codes
+- Attaching an interactive shell to a running job (`srun --jobid --overlap`)
+- Multi-node jobs (`--nodes`, `--gpus-per-node`, `--ntasks-per-node`)
+- Hybrid MPI/OpenMP jobs (`--ntasks-per-node`, `--cpus-per-task`, `OMP_NUM_THREADS`)
+- Interactive allocations (`salloc`)
+- Scheduler flexibility (`--time-min`, `--nodes` range)
+- `--exclusive` at the job level — when it's needed and what it costs
+- QOS limits, `sacctmgr`, and allocation limit errors
+- Job requeues, restarts, and `SLURM_RESTART_COUNT`
+- Large jobs (256+ nodes) and scheduling etiquette
+
+Read this file when helping with any of these topics.
 
 ---
 
 ## Troubleshooting
 
-### Job stuck in pending (PD) state
+See **`references/troubleshooting.md`** for a full symptom → cause → fix reference covering:
+- Job submission errors (`QOS policy`, `Invalid GRES`, `node configuration not available`, `invalid account`)
+- PENDING reasons (`Priority`, `Dependency`, `PartitionTimeLimit`, `ReqNodeNotAvail`, `AssocGrpGRESMinutesLimit`, `JobHoldMaxRequeue`)
+- Job failures (`TIMEOUT`, `OUT_OF_MEMORY`, `NODE_FAIL`, `FAILED` with non-zero exit code)
+- Job shows `COMPLETED` but results are missing or wrong
 
-```bash
-squeue --me \
-  --Format="JobID,Name,StateCompact:6,TimeUsed,ReasonList,Dependency:32"
-```
-
-Common reasons:
-
-| Reason | Meaning |
-|---|---|
-| `Resources` | Waiting for free nodes — normal, will start automatically |
-| `Priority` | Other jobs have higher priority |
-| `Dependency` | Waiting for dependency condition |
-| `QOSMaxJobsPerUserLimit` | Reached concurrent job limit |
-| `QOSMaxGRESPerAccount` | Reached project GPU limit |
-| `InvalidAccount` | `--account` is wrong or inactive |
-| `InvalidQOS` | QoS is not valid for this partition |
-
-### `sinfo` time limits look wrong on Isambard-AI
-
-The partition time limits shown by `sinfo` on Isambard-AI do **not** reflect actual job time limits. Actual limits come from QoS (24h max). Use `sacctmgr show qos workq_qos` for the authoritative value.
-
-### Output file not created
-
-Ensure the output directory exists before submitting — Slurm will not create missing directories:
-
-```bash
-mkdir -p logs
-sbatch --output=logs/job_%j.out my_job.sh
-```
-
-### Module not found
-
-```bash
-module spider <name>   # search for module (checks all available)
-module avail           # list all modules
-```
+Read this file when a user is asking why their job won't start, is failing, or is behaving unexpectedly.
 
 ---
 
-## Further Reading
+## Quick Reference
 
-- Isambard Slurm guide:
-  https://docs.isambard.ac.uk/user-documentation/guides/slurm/
-- Job scheduling and partition limits:
-  https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
-- System specifications:
-  https://docs.isambard.ac.uk/specs/
-- Acceptable use policy:
-  https://docs.isambard.ac.uk/policies/acceptable_use/
-- Full Isambard documentation: https://docs.isambard.ac.uk
+| Goal | Command |
+|------|---------|
+| View your jobs | `squeue --me` |
+| Check job history + exit codes | `sacct` |
+| Submit batch job | `sbatch my_job.sh` |
+| Interactive command | `srun --nodes=1 --gpus=1 --time=00:05:00 <cmd>` |
+| Interactive shell | `srun --nodes=1 --gpus=1 --time=00:15:00 --pty /bin/bash --login` |
+| Reserve allocation | `salloc --nodes=1 --gpus=1 --time=00:10:00` |
+| Cancel job | `scancel <JOBID>` |
+| Cancel all my jobs | `scancel --me` |
+| Chain jobs | `sbatch --parsable` + `--dependency=afterok:<ID>` |
+| Limit array concurrency | `--array=1-100%4` |
+| Attach to running job | `srun --jobid=<ID> --overlap --pty /bin/bash -l` |
+| Check QOS limits | `sacctmgr show qos workq_qos` |
+| Check my accounts | `sacctmgr show user $(whoami) withassoc` |
+
+---
+
+## Related Resources
+
+- [Isambard job scheduling page](https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/)
+- [Isambard acceptable use policy](https://docs.isambard.ac.uk/policies/acceptable_use/)
+- [Isambard portal (allocation usage)](https://portal.isambard.ac.uk)
+- [Slurm sbatch man page](https://slurm.schedmd.com/sbatch.html)
+- [Slurm srun man page](https://slurm.schedmd.com/srun.html)
+- [Slurm QOS documentation](https://slurm.schedmd.com/qos.html)
