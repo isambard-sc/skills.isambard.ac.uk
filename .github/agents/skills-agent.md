@@ -12,7 +12,7 @@ A skill is a plain Markdown file that gives an AI agent the knowledge and rules 
 
 ## Folder and Naming Conventions
 
-Skills follow the [AgentSkills specification](https://agentskills.io/specification).
+Skills follow the [AgentSkills specification](https://agentskills.io/specification). Plugins are collections of related skills and are available to install through a plugin marketplace; both are defined [here](https://code.claude.com/docs/en/plugin-marketplaces).
 
 ```
 site/skills/
@@ -90,28 +90,56 @@ Keep `SKILL.md` under 500 lines. Move detailed reference material to `references
 
 ---
 
-## Updating `.claude-plugin/marketplace.json`
+## Adding a new plugin (group of skills)
 
-Every skill must have an entry in `.claude-plugin/marketplace.json` for Claude Code plugin marketplace support. The plugin entry format is:
+Plugins are collections of related skills. Each plugin must have its own entry in `./site/.claude-plugin/marketplace.json` and a corresponding folder in `./site/plugins/`. For example, an "isambard3" plugin would have:
+
+- An entry in `./site/.claude-plugin/marketplace.json` `plugins` array:
 
 ```json
 {
-  "name": "<skill-name>",
-  "source": "../skills/<skill-name>",
-  "description": "<One or two sentence description>",
-  "version": "<semver>",
-  "author": { "name": "Isambard SC" },
-  "homepage": "https://skills.isambard.ac.uk",
-  "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
-  "agents": ["./SKILL.md"]
+  "name": "isambard3",
+  "description": "AI agent skills for Isambard 3 HPC system",
+  "version": "1.0.0",
+  "source": "./plugins/isambard3"
 }
 ```
 
-When adding a new skill, append to the `"plugins"` array and keep the array sorted alphabetically by `"name"`.
+- An entry in `./site/marketplace.json`:
 
-## Updating `marketplace.json`
+```json
+{
+  "name": "isambard3",
+  "description": "AI agent skills for Isambard 3 HPC system",
+  "version": "1.0.0"
+}
+```
 
-Also add an entry to `site/marketplace.json` (used by other agent tools). The structure is:
+- A folder `./site/plugins/isambard3/` containing:
+  - `.claude-plugin/plugin.json` with plugin metadata
+  - `skills/` folder with one subfolder per skill, each containing a `SKILL.md`
+
+- The `./site/plugins/isambard3/.claude-plugin/plugin.json` file should have the following structure:
+
+```json
+{
+  "name": "isambard3",
+  "description": "AI agent skills for Isambard 3 HPC system",
+  "version": "1.0.0"
+}
+```
+
+## Adding a new skill
+
+When adding a new skill, create a new folder in `./site/plugins/<plugin-name>/skills/` with the skill name, add a `SKILL.md` file with the required frontmatter and content.
+
+The `./site/plugins/<plugin-name>/.claude-plugin/plugin.json` file is able to auto-discover skills in the `skills/` folder, so no changes are needed to that file when adding a new skill.
+
+Also update the `./site/marketplace.json` file to add an entry for the new skill, and `./site/index.html` to add a new skill card.
+
+## Updating `./site/marketplace.json`
+
+Also add an entry to `./site/marketplace.json` (used by other agent tools). The structure is:
 
 ```json
 {
@@ -125,12 +153,12 @@ Use the canonical `https://skills.isambard.ac.uk/...` URL — never the raw GitH
 
 ---
 
-## Updating `index.html`
+## Updating `./site/index.html`
 
-The main page at `site/index.html` lists all available skills with a short
+The main page at `./site/index.html` lists all available skills with a short
 description and a link to the skill file. When adding or updating a skill:
 
-1. Open `site/index.html`.
+1. Open `./site/index.html`.
 2. Locate the `<div class="skills-grid">` element inside the `<section id="skills">` section.
 3. Add a new `<div class="skill-card">` block following this template:
 
@@ -153,9 +181,9 @@ description and a link to the skill file. When adding or updating a skill:
 
 When creating a new skill, complete the following steps in order:
 
-- [ ] Create the directory `site/skills/<skill-name>/`
-- [ ] Create `site/skills/<skill-name>/SKILL.md` with YAML frontmatter and the required sections listed above
-- [ ] Add an entry to `site/.claude-plugin/marketplace.json` `plugins` array
+- [ ] Select the plugin folder to add the skill to (e.g. `isambard3`), or create a new plugin if needed
+- [ ] Create the directory `site/plugins/<plugin-name>/skills/<skill-name>/`
+- [ ] Create `site/plugins/<plugin-name>/skills/<skill-name>/SKILL.md` with YAML frontmatter and the required sections listed above
 - [ ] Add an entry to `site/marketplace.json` `skills` array
 - [ ] Add a skill card to `site/index.html`
 - [ ] Update `README.md` skills table
@@ -164,7 +192,7 @@ When creating a new skill, complete the following steps in order:
 
 ## Updating an Existing Skill
 
-- Edit `site/skills/<skill-name>/SKILL.md` directly.
+- Edit `site/plugins/<plugin-name>/skills/<skill-name>/SKILL.md` directly.
 - Increment `metadata.version` in the frontmatter for significant changes.
 - Update the `"description"` in both `marketplace.json` files if the summary changed.
 - Update the skill card description in `index.html` if the summary changed.
