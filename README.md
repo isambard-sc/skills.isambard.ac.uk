@@ -15,14 +15,14 @@ the environment from scratch every session.
 
 | Skill | Description | URL |
 |---|---|---|
-| [Slurm](site/skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/skills/slurm/SKILL.md` |
-| [Python](site/skills/python/SKILL.md) | Install and manage Python environments on Isambard using Conda (Miniforge), uv, or Cray Python | `https://skills.isambard.ac.uk/skills/python/SKILL.md` |
-| [Modules](site/skills/modules/SKILL.md) | Use the modules system, Cray Programming Environments, compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools on Isambard | `https://skills.isambard.ac.uk/skills/modules/SKILL.md` |
-| [Spack](site/skills/spack/SKILL.md) | Install, configure, and use Spack to build HPC software on Isambard-AI and Isambard 3, including the buildit config repository and targeting neoverse_v2 / aarch64 | `https://skills.isambard.ac.uk/skills/spack/SKILL.md` |
-| [Containers](site/skills/containers/SKILL.md) | Run containers on Isambard using Podman-HPC and Apptainer. Covers image management, GPU access, and multi-node MPI/NCCL workloads over Slingshot 11 | `https://skills.isambard.ac.uk/skills/containers/SKILL.md` |
-| [MPI](site/skills/mpi/SKILL.md) | Use MPI on Isambard with Cray MPICH or OpenMPI. Covers PMI types, srun --mpi flags, Slingshot 11 performance, and why mpirun/mpiexec must not be used | `https://skills.isambard.ac.uk/skills/mpi/SKILL.md` |
-| [NCCL](site/skills/nccl/SKILL.md) | Use NCCL for multi-node GPU communication on Isambard-AI over Slingshot 11. Covers the brics/nccl module, aws-ofi-nccl plugin, building from source, and NCCL in containers | `https://skills.isambard.ac.uk/skills/nccl/SKILL.md` |
-| [GPUs and CUDA](site/skills/cuda/SKILL.md) | Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers cudatoolkit/nvhpc modules, compiling with nvcc, and CUDA forward compatibility via NGC containers or NVIDIA HPC SDK | `https://skills.isambard.ac.uk/skills/cuda/SKILL.md` |
+| [Slurm](site/plugins/isambard/skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/skills/slurm/SKILL.md` |
+| [Python](site/plugins/isambard/skills/python/SKILL.md) | Install and manage Python environments on Isambard using Conda (Miniforge), uv, or Cray Python | `https://skills.isambard.ac.uk/skills/python/SKILL.md` |
+| [Modules](site/plugins/isambard/skills/modules/SKILL.md) | Use the modules system, Cray Programming Environments, compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools on Isambard | `https://skills.isambard.ac.uk/skills/modules/SKILL.md` |
+| [Spack](site/plugins/isambard/skills/spack/SKILL.md) | Install, configure, and use Spack to build HPC software on Isambard-AI and Isambard 3, including the buildit config repository and targeting neoverse_v2 / aarch64 | `https://skills.isambard.ac.uk/skills/spack/SKILL.md` |
+| [Containers](site/plugins/isambard/skills/containers/SKILL.md) | Run containers on Isambard using Podman-HPC and Apptainer. Covers image management, GPU access, and multi-node MPI/NCCL workloads over Slingshot 11 | `https://skills.isambard.ac.uk/skills/containers/SKILL.md` |
+| [MPI](site/plugins/isambard/skills/mpi/SKILL.md) | Use MPI on Isambard with Cray MPICH or OpenMPI. Covers PMI types, srun --mpi flags, Slingshot 11 performance, and why mpirun/mpiexec must not be used | `https://skills.isambard.ac.uk/skills/mpi/SKILL.md` |
+| [NCCL](site/plugins/isambard/skills/nccl/SKILL.md) | Use NCCL for multi-node GPU communication on Isambard-AI over Slingshot 11. Covers the brics/nccl module, aws-ofi-nccl plugin, building from source, and NCCL in containers | `https://skills.isambard.ac.uk/skills/nccl/SKILL.md` |
+| [GPUs and CUDA](site/plugins/isambard/skills/cuda/SKILL.md) | Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers cudatoolkit/nvhpc modules, compiling with nvcc, and CUDA forward compatibility via NGC containers or NVIDIA HPC SDK | `https://skills.isambard.ac.uk/skills/cuda/SKILL.md` |
 
 ---
 
@@ -36,10 +36,10 @@ Add the Isambard marketplace (all skills at once):
 /plugin marketplace add https://skills.isambard.ac.uk/.claude-plugin/marketplace.json
 ```
 
-Install a specific skill by name:
+Install Isambard plugin:
 
 ```
-/plugin install slurm@isambard-skills
+/plugin install isambard@isambard-skills
 ```
 
 Or add to your project's `.claude/settings.json` to enable automatically:
@@ -54,8 +54,38 @@ Or add to your project's `.claude/settings.json` to enable automatically:
       }
     }
   },
-  "enabledPlugins": { "slurm@isambard-skills": true }
+  "enabledPlugins": { "isambard@isambard-skills": true }
 }
+```
+
+Reload skills to find and activate skills provided by Isambard plugin:
+
+```
+/reload-skills
+```
+
+View skills provided by Isambard plugin:
+
+```
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Skills
+  9 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ⌕ Search skills…                                                                                                         │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+  ❯ 🔒 on         isambard:docs · plugin · ~100 tok · locked by plugin
+    🔒 on         isambard:containers · plugin · ~200 tok · locked by plugin
+    🔒 on         isambard:cuda · plugin · ~190 tok · locked by plugin
+    🔒 on         isambard:modules · plugin · ~180 tok · locked by plugin
+    🔒 on         isambard:mpi · plugin · ~170 tok · locked by plugin
+    🔒 on         isambard:nccl · plugin · ~210 tok · locked by plugin
+    🔒 on         isambard:python · plugin · ~150 tok · locked by plugin
+    🔒 on         isambard:slurm · plugin · ~190 tok · locked by plugin
+    🔒 on         isambard:spack · plugin · ~200 tok · locked by plugin
+
+  Plugin skills are managed via /plugin
+
 ```
 
 ### Other agent-based tools
@@ -68,7 +98,7 @@ raw Markdown content is served directly from this site.
 ## Repository Structure
 
 ```
-site/                      # All web-served content (GitHub Pages source)
+site/plugins/isambard/                      # All web-served content (GitHub Pages source)
   .claude-plugin/
     marketplace.json         # Claude Code plugin marketplace catalog
   skills/

@@ -18,8 +18,7 @@
         "name": "Isambard SC"
       },
       "homepage": "https://skills.isambard.ac.uk",
-      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk",
-      "agents": ["./SKILL.md"]
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk"
     }
   ]
 }
