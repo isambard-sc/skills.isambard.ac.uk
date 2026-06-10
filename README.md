@@ -67,6 +67,7 @@ Reload skills to find and activate skills provided by Isambard plugin:
 View skills provided by Isambard plugin:
 
 ```
+/skills
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Skills
   9 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
