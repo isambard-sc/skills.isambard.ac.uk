@@ -16,11 +16,7 @@
       "author": {
         "name": "Isambard SC"
       },
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/isambard-sc/skills.isambard.ac.uk.git",
-        "path": "site/plugins/isambard"
-      },
+      "source": "site/plugins/isambard",
       "homepage": "https://skills.isambard.ac.uk",
       "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk"
     }
