@@ -1,0 +1,24 @@
+{
+  "name": "isambard-skills",
+  "owner": {
+    "name": "Isambard SC",
+    "email": "support@isambard.ac.uk"
+  },
+  "metadata": {
+    "description": "AI agent skills for Isambard HPC systems",
+    "version": "1.0"
+  },
+  "plugins": [
+    {
+      "name": "isambard",
+      "description": "AI agent skills for Isambard HPC systems",
+      "version": "1.0",
+      "author": {
+        "name": "Isambard SC"
+      },
+      "source": "site/plugins/isambard",
+      "homepage": "https://skills.isambard.ac.uk",
+      "repository": "https://github.com/isambard-sc/skills.isambard.ac.uk"
+    }
+  ]
+}

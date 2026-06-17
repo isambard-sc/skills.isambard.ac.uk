@@ -33,7 +33,7 @@ the environment from scratch every session.
 Add the Isambard marketplace (all skills at once):
 
 ```
-/plugin marketplace add https://skills.isambard.ac.uk/.claude-plugin/marketplace.json
+/plugin marketplace add https://github.com/isambard-sc/skills.isambard.ac.uk
 ```
 
 Install Isambard plugin:
@@ -99,7 +99,9 @@ raw Markdown content is served directly from this site.
 ## Repository Structure
 
 ```
-site/plugins/isambard/                      # All web-served content (GitHub Pages source)
+.claude-plugin
+  marketplace.json           # Claude Code plugin marketplace catalog
+site/plugins/isambard/       # All web-served content (GitHub Pages source)
   .claude-plugin/
     marketplace.json         # Claude Code plugin marketplace catalog
   skills/
