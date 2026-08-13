@@ -30,13 +30,13 @@ the environment from scratch every session.
 
 ### Claude Code
 
-Add the Isambard marketplace (all skills at once):
+Add the Isambard marketplace:
 
 ```
 /plugin marketplace add https://github.com/isambard-sc/skills.isambard.ac.uk
 ```
 
-Install Isambard plugin:
+Install the `isambard` plugin from the marketplace:
 
 ```
 /plugin install isambard@isambard-skills
@@ -87,6 +87,145 @@ View skills provided by Isambard plugin:
 
   Plugin skills are managed via /plugin
 
+```
+
+### Codex
+
+Tested on Codex CLI `0.147.0`.
+
+Add the Isambard plugin marketplace:
+
+```isambard-session
+$ codex plugin marketplace add isambard-sc/skills.isambard.ac.uk
+Added marketplace `isambard-skills` from https://github.com/isambard-sc/skills.isambard.ac.uk.git.
+Installed marketplace root: .../marketplaces/isambard-skills
+```
+
+Install the `isambard` plugin from the marketplace:
+
+```isambard-session
+$ codex plugin add isambard@isambard-skills
+Added plugin `isambard` from marketplace `isambard-skills`.
+Installed plugin root: .../isambard-skills/isambard/1.0.0
+```
+
+### Cursor
+
+Tested on Cursor CLI `2026.08.04-aaa8809`.
+
+Add the Isambard plugin marketplace:
+
+```isambard-session
+$ agent plugin marketplace add https://github.com/isambard-sc/skills.isambard.ac.uk
+Fetching plugins from https://github.com/isambard-sc/skills.isambard.ac.uk...
+✓ Added marketplace isambard-skills (1 plugin)
+  isambard - AI agent skills for Isambard HPC systems
+Tip: use /plugins in interactive mode to install plugins from this marketplace.
+```
+
+Run the Cursor `agent` CLI tool:
+
+```isambard-session
+$ agent
+```
+
+Install the `isambard` plugin from the marketplace:
+
+```isambard-session
+> /plugin marketplace list
+ Marketplaces
+
+ Global
+    Cursor Plugin Marketplace • 223 plugins • 0 installed • Never indexed
+
+ User
+  → isambard-skills • 1 plugin • 0 installed • Last indexed 2026-08-11 14:14 UTC
+
+
+ Enter for details • Esc to close
+
+> [Press Enter]
+```
+
+```isambard-session
+ Marketplace details / isambard-skills
+
+ Scope: User
+ Plugins: 1
+ Installed: 1 (isambard)
+ Indexing: Last indexed 2026-08-11 14:14 UTC
+ Source: https://github.com/isambard-sc/skills.isambard.ac.uk
+
+  → Browse plugins
+    Remove marketplace
+
+ Enter to select • Esc to go back
+
+> [Press Enter]
+```
+
+```isambard-session
+ Plugins Installed  Marketplace  (←/→ or tab to cycle)
+
+ Install Plugins
+
+ ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+ │ ⌕ isambard-skills                                                                                                                        │
+ └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+ → isambard (isambard-skills) [installed]
+   AI agent skills for Isambard HPC systems
+
+
+ Enter for details • Esc to clear
+
+> [Press Enter]
+```
+
+```isambard-session
+ Plugins Installed  Marketplace  (←/→ or tab to cycle)
+
+ Install Plugins
+
+ ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+ │ ⌕ isambard-skills                                                                                                                        │
+ └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+ → isambard (isambard-skills)
+   AI agent skills for Isambard HPC systems
+
+
+ Enter for details • Esc to clear
+
+> [Press Enter]
+```
+
+```isambard-session
+ Plugin details / isambard
+
+ AI agent skills for Isambard HPC systems
+
+ Marketplace: isambard-skills
+
+ Skills: 9 (containers, cuda, brics-hpc-ai-code, modules, mpi, nccl, python, slurm, spack)
+
+  → Install for you (user scope)
+    Install for all collaborators on this repository (project scope)
+
+ Enter to select • Esc to go back
+
+> [Press Enter]
+```
+
+### Antigravity
+
+Tested on Antigravity CLI `1.1.12`.
+
+Install the `isambard` plugin from the Isambard Skills repository: 
+
+```isambard-session
+$ agy plugin install https://github.com/isambard-sc/skills.isambard.ac.uk/site
+$ agy plugin enable isambard
 ```
 
 ### Other agent-based tools
