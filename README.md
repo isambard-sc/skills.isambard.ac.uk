@@ -23,6 +23,8 @@ the environment from scratch every session.
 | [MPI](site/plugins/isambard/skills/mpi/SKILL.md) | Use MPI on Isambard with Cray MPICH or OpenMPI. Covers PMI types, srun --mpi flags, Slingshot 11 performance, and why mpirun/mpiexec must not be used | `https://skills.isambard.ac.uk/skills/mpi/SKILL.md` |
 | [NCCL](site/plugins/isambard/skills/nccl/SKILL.md) | Use NCCL for multi-node GPU communication on Isambard-AI over Slingshot 11. Covers the brics/nccl module, aws-ofi-nccl plugin, building from source, and NCCL in containers | `https://skills.isambard.ac.uk/skills/nccl/SKILL.md` |
 | [GPUs and CUDA](site/plugins/isambard/skills/cuda/SKILL.md) | Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers cudatoolkit/nvhpc modules, compiling with nvcc, and CUDA forward compatibility via NGC containers or NVIDIA HPC SDK | `https://skills.isambard.ac.uk/skills/cuda/SKILL.md` |
+| [Docs Navigation](site/plugins/isambard/skills/docs-navigation/SKILL.md) | Locate the correct page on docs.isambard.ac.uk for any Isambard question and answer from the live page instead of memory. Includes a topic-to-URL map and a stdlib Python page fetcher | `https://skills.isambard.ac.uk/plugins/isambard/skills/docs-navigation/SKILL.md` |
+| [Service Status](site/plugins/isambard/skills/service-status/SKILL.md) | Check the live operational status of Isambard facilities (overview, known issues, planned maintenance) and report recent platform changes from the docs site and isambard-sc GitHub | `https://skills.isambard.ac.uk/plugins/isambard/skills/service-status/SKILL.md` |
 
 ---
 
