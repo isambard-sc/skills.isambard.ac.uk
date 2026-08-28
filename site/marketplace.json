@@ -42,6 +42,11 @@
       "name": "GPUs and CUDA",
       "description": "Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers loading cudatoolkit/nvhpc modules, compiling with nvcc -arch=sm_90, and CUDA forward compatibility for newer CUDA versions via NGC containers, NVIDIA HPC SDK, or conda cuda-compat.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/cuda/SKILL.md"
+    },
+    {
+      "name": "Getting Support",
+      "description": "Get help with Isambard-AI and Isambard 3 through the BriCS helpdesk. Covers checking service status and known issues first, raising a support ticket at support.isambard.ac.uk, and what to include in a ticket.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/getting-support/SKILL.md"
     }
   ]
 }
