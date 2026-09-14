@@ -20,25 +20,26 @@ The table below maps docs.isambard.ac.uk pages to their corresponding skill name
 
 | docs.isambard.ac.uk page | Skill name | Skill file | Status |
 |---|---|---|---|
-| https://docs.isambard.ac.uk/user-documentation/guides/slurm/ | `slurm` | `skills/slurm/SKILL.md` | ✅ exists |
-| https://docs.isambard.ac.uk/user-documentation/guides/login/ | `login` | `skills/login/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/ | `file-transfer` | `skills/file-transfer/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/python/ | `python` | `skills/python/SKILL.md` | ✅ |
-| https://docs.isambard.ac.uk/user-documentation/guides/containers/ | `containers` | `skills/containers/SKILL.md` | ✅ |
-| https://docs.isambard.ac.uk/user-documentation/guides/modules/ | `modules` | `skills/modules/SKILL.md` | ✅ |
-| https://docs.isambard.ac.uk/user-documentation/guides/jupyter/ | `jupyter` | `skills/jupyter/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/vscode/ | `vscode` | `skills/vscode/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/guides/mpi/ | `mpi` | `skills/mpi/SKILL.md` | ✅ |
-| https://docs.isambard.ac.uk/user-documentation/guides/spack/ | `spack` | `skills/spack/SKILL.md` | ✅ |
-| https://docs.isambard.ac.uk/user-documentation/guides/nccl/ | `nccl` | `skills/nccl/SKILL.md` | ✅ |
-| https://docs.isambard.ac.uk/user-documentation/guides/accounting/ | `accounting` | `skills/accounting/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/guides/slurm/ | `slurm` | `site/plugins/isambard/skills/slurm/SKILL.md` | ✅ exists |
+| https://docs.isambard.ac.uk/user-documentation/guides/login/ | `login` | `site/plugins/isambard/skills/login/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/ | `file-transfer` | `site/plugins/isambard/skills/file-transfer/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/guides/python/ | `python` | `site/plugins/isambard/skills/python/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/containers/ | `containers` | `site/plugins/isambard/skills/containers/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/modules/ | `modules` | `site/plugins/isambard/skills/modules/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/jupyter/ | `jupyter` | `site/plugins/isambard/skills/jupyter/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/guides/vscode/ | `vscode` | `site/plugins/isambard/skills/vscode/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/guides/mpi/ | `mpi` | `site/plugins/isambard/skills/mpi/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/spack/ | `spack` | `site/plugins/isambard/skills/spack/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/nccl/ | `nccl` | `site/plugins/isambard/skills/nccl/SKILL.md` | ✅ |
+| https://docs.isambard.ac.uk/user-documentation/guides/accounting/ | `accounting` | `site/plugins/isambard/skills/accounting/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/getting_support/ | `getting-support` | `site/plugins/isambard/skills/getting-support/SKILL.md` | ✅ |
 
 ### Applications
 
 | docs.isambard.ac.uk page | Skill name | Skill file | Status |
 |---|---|---|---|
-| https://docs.isambard.ac.uk/user-documentation/applications/ML-packages/ | `ml-packages` | `skills/ml-packages/SKILL.md` | ❌ not yet created |
-| https://docs.isambard.ac.uk/user-documentation/applications/alphafold/ | `alphafold` | `skills/alphafold/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/applications/ML-packages/ | `ml-packages` | `site/plugins/isambard/skills/ml-packages/SKILL.md` | ❌ not yet created |
+| https://docs.isambard.ac.uk/user-documentation/applications/alphafold/ | `alphafold` | `site/plugins/isambard/skills/alphafold/SKILL.md` | ❌ not yet created |
 
 ### Information
 
@@ -101,7 +102,7 @@ Derive the skill name from the docs page slug. Rules:
 
 ### Step 6 — Create the SKILL.md file
 
-Create `skills/<skill-name>/SKILL.md` with:
+Create `site/plugins/<plugin-name>/skills/<skill-name>/SKILL.md` with:
 
 **Frontmatter:**
 
@@ -112,6 +113,7 @@ description: >
   <One to two sentences covering: what the skill does, what commands it
   covers, and when an agent should activate it. Include keywords a user
   would say when they need this skill.>
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI and/or Isambard 3 (Grace, MACS). Requires access to an
   Isambard login node.
@@ -140,15 +142,14 @@ metadata:
 - Include actual command output examples where the docs provide them
 - All code in fenced blocks with language hint (`bash`, `yaml`, etc.)
 - Wrap lines at 80 characters
-- Keep body under 500 lines; move reference detail to `skills/<skill-name>/references/` if needed
+- Keep body under 500 lines; move reference detail to `site/plugins/<plugin-name>/skills/<skill-name>/references/` if needed
 
 ### Step 7 — Register the skill
 
 Follow the checklist from `skills-agent.md` exactly:
 
-- [ ] Add entry to `.claude-plugin/marketplace.json` `plugins` array
-- [ ] Add entry to `marketplace.json` `skills` array
-- [ ] Add skill card to `index.html`
+- [ ] Add entry to `site/marketplace.json` `skills` array (keep sorted alphabetically by `"name"`)
+- [ ] Add skill card to `site/index.html` (keep in alphabetical order)
 - [ ] Update `README.md` skills table
 
 ### Step 8 — Update the Known Documentation Sources table
@@ -202,7 +203,7 @@ Do **not** update the skill for:
 
 ### Step 5 — Write the update
 
-Edit `skills/<skill-name>/SKILL.md`:
+Edit `site/plugins/<plugin-name>/skills/<skill-name>/SKILL.md`:
 
 - Apply the minimum diff needed — preserve existing structure where accurate, only change what is actually different
 - Increment `metadata.version` (e.g. `"1.0"` → `"1.1"`)
@@ -218,7 +219,7 @@ summary has changed materially.
 To check every skill in the repository at once:
 
 1. List all `SKILL.md` files:
-   `find skills/ -name SKILL.md`
+   `find site/plugins -name SKILL.md`
 
 2. For each file, read `metadata.source_url` and `metadata.supplementary_urls` from the frontmatter.
 

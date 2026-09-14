@@ -16,8 +16,12 @@ metadata:
   version: "1.0"
   source_url: https://docs.isambard.ac.uk/
   supplementary_urls:
-    - https://support.isambard.ac.uk
-    - https://status.isambard.ac.uk
+    - https://docs.isambard.ac.uk/user-documentation/guides/slurm/
+    - https://docs.isambard.ac.uk/user-documentation/guides/python/
+    - https://docs.isambard.ac.uk/user-documentation/guides/login/
+    - https://docs.isambard.ac.uk/user-documentation/information/system-storage/
+    - https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
+    - https://docs.isambard.ac.uk/policies/
 ---
 
 # BriCS HPC Responsible AI-Generated Code Skill

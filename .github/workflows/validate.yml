@@ -24,13 +24,20 @@ jobs:
         run: |
           set -euo pipefail
           fail=0
+          host="https://skills.isambard.ac.uk"
 
           check_url() {
             local url="$1"
-            local prefix="https://skills.isambard.ac.uk/"
             case "$url" in
-              "$prefix"*)
-                local rel="${url#"$prefix"}"
+              "$host")
+                # bare site root — served by site/index.html
+                if [ ! -f "site/index.html" ]; then
+                  echo "FAIL missing site/index.html (site root, from $url)"
+                  fail=1
+                fi
+                ;;
+              "$host"/*)
+                local rel="${url#"$host"/}"
                 local path="site/$rel"
                 if [ ! -f "$path" ]; then
                   echo "FAIL missing $path (from $url)"
@@ -44,13 +51,19 @@ jobs:
             esac
           }
 
+          # jq errors (malformed JSON, missing .skills) must fail the job —
+          # capture output first rather than looping over a process
+          # substitution, whose exit status a `while` loop can't see.
+          marketplace_urls=$(jq -e -r '([.url] + [.skills[].url]) | .[]' site/marketplace.json) \
+            || { echo "FAIL could not read .url / .skills[].url from site/marketplace.json"; exit 1; }
           while IFS= read -r url; do
             [ -n "$url" ] && check_url "$url"
-          done < <(jq -r '.skills[].url' site/marketplace.json)
+          done <<< "$marketplace_urls"
 
+          readme_urls=$(grep -oE 'https://skills\.isambard\.ac\.uk(/[^[:space:]`")]*)?' README.md | sort -u)
           while IFS= read -r url; do
             [ -n "$url" ] && check_url "$url"
-          done < <(grep -oE 'https://skills\.isambard\.ac\.uk/[^[:space:]`")]+' README.md | sort -u)
+          done <<< "$readme_urls"
 
           exit $fail
 

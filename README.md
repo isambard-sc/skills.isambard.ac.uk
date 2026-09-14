@@ -72,14 +72,15 @@ View skills provided by Isambard plugin:
 /skills
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Skills
-  9 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
+  10 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
 
   ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
   │ ⌕ Search skills…                                                                                                         │
   ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-  ❯ 🔒 on         isambard:docs · plugin · ~100 tok · locked by plugin
+  ❯ 🔒 on         isambard:brics-hpc-ai-code · plugin · ~100 tok · locked by plugin
     🔒 on         isambard:containers · plugin · ~200 tok · locked by plugin
     🔒 on         isambard:cuda · plugin · ~190 tok · locked by plugin
+    🔒 on         isambard:getting-support · plugin · ~110 tok · locked by plugin
     🔒 on         isambard:modules · plugin · ~180 tok · locked by plugin
     🔒 on         isambard:mpi · plugin · ~170 tok · locked by plugin
     🔒 on         isambard:nccl · plugin · ~210 tok · locked by plugin
@@ -209,7 +210,7 @@ Install the `isambard` plugin from the marketplace:
 
  Marketplace: isambard-skills
 
- Skills: 9 (containers, cuda, brics-hpc-ai-code, modules, mpi, nccl, python, slurm, spack)
+ Skills: 10 (containers, cuda, brics-hpc-ai-code, getting-support, modules, mpi, nccl, python, slurm, spack)
 
   → Install for you (user scope)
     Install for all collaborators on this repository (project scope)
