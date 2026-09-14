@@ -83,3 +83,9 @@ jobs:
 
       - name: Check SKILL.md frontmatter schema
         run: python3 .github/workflows/scripts/check_skill_frontmatter.py
+
+      - name: Check every skill is indexed in marketplace.json, index.html, and README
+        run: python3 .github/workflows/scripts/check_skill_indexes.py
+
+      - name: Check README example transcripts match the skills on disk
+        run: python3 .github/workflows/scripts/check_readme_examples.py

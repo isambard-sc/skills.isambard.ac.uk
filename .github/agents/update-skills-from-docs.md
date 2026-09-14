@@ -151,6 +151,7 @@ Follow the checklist from `skills-agent.md` exactly:
 - [ ] Add entry to `site/marketplace.json` `skills` array (keep sorted alphabetically by `"name"`)
 - [ ] Add skill card to `site/index.html` (keep in alphabetical order)
 - [ ] Update `README.md` skills table
+- [ ] Update the skill count and name lists in `README.md`'s example CLI transcripts (the `/skills` output and the Cursor `Skills: N (...)` line) — `validate.yml` checks these against the skills on disk and will fail the build if they're stale
 
 ### Step 8 — Update the Known Documentation Sources table
 

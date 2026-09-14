@@ -174,6 +174,7 @@ When creating a new skill, complete the following steps in order:
 - [ ] Add an entry to `site/marketplace.json` `skills` array
 - [ ] Add a skill card to `site/index.html`
 - [ ] Update `README.md` skills table
+- [ ] Update the skill count and name lists in `README.md`'s example CLI transcripts (the `/skills` output and the Cursor `Skills: N (...)` line) — `validate.yml` checks these against the skills on disk and will fail the build if they're stale
 
 ---
 
