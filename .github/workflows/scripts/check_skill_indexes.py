@@ -3,26 +3,13 @@
 site/marketplace.json, site/index.html, and README.md. This is the
 regression this repo keeps hitting: a skill gets created but one of the
 three public indexes is never updated, so it's invisible there even
-though it's live on the site. Exits non-zero and prints one line per
-missing entry.
+though it's live on the site.
 """
 
-import glob
 import json
-import os
 import sys
 
-SKILL_GLOB = "site/plugins/*/skills/*/"
-
-
-def discover_skills():
-    skills = []
-    for d in sorted(glob.glob(SKILL_GLOB)):
-        parts = d.rstrip("/").split(os.sep)
-        # site/plugins/<plugin>/skills/<name>
-        plugin, name = parts[-3], parts[-1]
-        skills.append((plugin, name))
-    return skills
+from skills_lib import discover_skills, report_and_exit
 
 
 def main():
@@ -41,7 +28,8 @@ def main():
         readme = f.read()
 
     errors = []
-    for plugin, name in skills:
+    for skill in skills:
+        plugin, name = skill["plugin"], skill["name"]
         url = f"https://skills.isambard.ac.uk/plugins/{plugin}/skills/{name}/SKILL.md"
         rel_href = f"plugins/{plugin}/skills/{name}/SKILL.md"
         rel_readme_path = f"site/plugins/{plugin}/skills/{name}/SKILL.md"
@@ -53,12 +41,10 @@ def main():
         if rel_readme_path not in readme and url not in readme:
             errors.append(f"{name}: missing from README.md skills table (expected link to {rel_readme_path})")
 
-    if errors:
-        for e in errors:
-            print(f"FAIL {e}")
-        sys.exit(1)
-
-    print(f"OK — all {len(skills)} skills are indexed in marketplace.json, index.html, and README.md")
+    report_and_exit(
+        errors,
+        f"OK — all {len(skills)} skills are indexed in marketplace.json, index.html, and README.md",
+    )
 
 
 if __name__ == "__main__":

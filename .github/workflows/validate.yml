@@ -67,21 +67,7 @@ jobs:
 
           exit $fail
 
-      - name: Check skill directory name matches frontmatter name
-        run: |
-          set -euo pipefail
-          fail=0
-          for d in site/plugins/*/skills/*/; do
-            dir=$(basename "$d")
-            name=$(awk '/^name:[[:space:]]/{print $2; exit}' "$d/SKILL.md")
-            if [ "$dir" != "$name" ]; then
-              echo "MISMATCH dir=$dir name=$name"
-              fail=1
-            fi
-          done
-          exit $fail
-
-      - name: Check SKILL.md frontmatter schema
+      - name: Check SKILL.md directory names and frontmatter schema
         run: python3 .github/workflows/scripts/check_skill_frontmatter.py
 
       - name: Check every skill is indexed in marketplace.json, index.html, and README

@@ -3,23 +3,13 @@
 output, a Cursor plugin-details listing) that hardcode the skill count
 and skill names. These have gone stale before (a skill was added without
 updating them) and will again unless something checks them. Compares
-both transcripts against the actual skill directories on disk. Exits
-non-zero and prints a diagnostic on any mismatch.
+both transcripts against the actual skill directories on disk.
 """
 
-import glob
-import os
 import re
 import sys
 
-SKILL_GLOB = "site/plugins/*/skills/*/"
-
-
-def discover_skill_names():
-    names = set()
-    for d in glob.glob(SKILL_GLOB):
-        names.add(os.path.basename(d.rstrip("/")))
-    return names
+from skills_lib import discover_skills, report_and_exit
 
 
 def check_claude_code_transcript(readme, actual_names):
@@ -67,7 +57,7 @@ def check_cursor_transcript(readme, actual_names):
 
 
 def main():
-    actual_names = discover_skill_names()
+    actual_names = {s["name"] for s in discover_skills()}
     if not actual_names:
         print("No skill directories found under site/plugins/*/skills/*/")
         sys.exit(1)
@@ -77,12 +67,7 @@ def main():
 
     errors = check_claude_code_transcript(readme, actual_names) + check_cursor_transcript(readme, actual_names)
 
-    if errors:
-        for e in errors:
-            print(f"FAIL {e}")
-        sys.exit(1)
-
-    print("OK — README.md example transcripts match the skills on disk")
+    report_and_exit(errors, "OK — README.md example transcripts match the skills on disk")
 
 
 if __name__ == "__main__":

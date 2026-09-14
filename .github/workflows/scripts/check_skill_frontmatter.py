@@ -1,45 +1,32 @@
 #!/usr/bin/env python3
-"""Validate SKILL.md frontmatter against the schema documented in
-.github/agents/skills-agent.md. Exits non-zero and prints one line per
-violation if any required field is missing or empty.
+"""Validate every SKILL.md against the rules documented in
+.github/agents/skills-agent.md: its directory name must match the
+frontmatter `name`, and the required frontmatter fields must be present
+and non-empty.
 """
 
-import glob
+import os
 import sys
 
-import yaml
+from skills_lib import discover_skills, load_frontmatter, report_and_exit
 
 REQUIRED_TOP_LEVEL = ["name", "description", "license"]
 REQUIRED_METADATA = ["author", "version", "source_url"]
 
 
-def load_frontmatter(path):
-    with open(path, encoding="utf-8") as f:
-        text = f.read()
-
-    if not text.startswith("---\n"):
-        return None, "does not start with '---' frontmatter delimiter"
-
-    parts = text.split("---\n", 2)
-    if len(parts) < 3:
-        return None, "missing closing '---' frontmatter delimiter"
-
-    try:
-        data = yaml.safe_load(parts[1])
-    except yaml.YAMLError as e:
-        return None, f"invalid YAML: {e}"
-
-    if not isinstance(data, dict):
-        return None, "frontmatter did not parse to a mapping"
-
-    return data, None
-
-
-def check(path):
-    errors = []
+def check(skill):
+    path = os.path.join(skill["dir"], "SKILL.md")
     data, err = load_frontmatter(path)
     if err:
         return [f"{path}: {err}"]
+
+    errors = []
+
+    if data.get("name") != skill["name"]:
+        errors.append(
+            f"{path}: directory name '{skill['name']}' does not match "
+            f"frontmatter name '{data.get('name')}'"
+        )
 
     for key in REQUIRED_TOP_LEVEL:
         if not data.get(key):
@@ -59,21 +46,20 @@ def check(path):
 
 
 def main():
-    paths = sorted(glob.glob("site/plugins/*/skills/*/SKILL.md"))
-    if not paths:
-        print("No SKILL.md files found under site/plugins/*/skills/*/")
+    skills = discover_skills()
+    if not skills:
+        print("No skill directories found under site/plugins/*/skills/*/")
         sys.exit(1)
 
-    all_errors = []
-    for path in paths:
-        all_errors.extend(check(path))
+    errors = []
+    for skill in skills:
+        errors.extend(check(skill))
 
-    if all_errors:
-        for e in all_errors:
-            print(f"FAIL {e}")
-        sys.exit(1)
-
-    print(f"OK — {len(paths)} SKILL.md files conform to the required schema")
+    report_and_exit(
+        errors,
+        f"OK — {len(skills)} SKILL.md files match their directory name "
+        "and conform to the required schema",
+    )
 
 
 if __name__ == "__main__":
