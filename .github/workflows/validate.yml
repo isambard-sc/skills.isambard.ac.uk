@@ -1,0 +1,72 @@
+name: Validate skills content
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Check URLs resolve to files in the working tree
+        run: |
+          set -euo pipefail
+          fail=0
+
+          check_url() {
+            local url="$1"
+            local prefix="https://skills.isambard.ac.uk/"
+            case "$url" in
+              "$prefix"*)
+                local rel="${url#"$prefix"}"
+                local path="site/$rel"
+                if [ ! -f "$path" ]; then
+                  echo "FAIL missing $path (from $url)"
+                  fail=1
+                fi
+                ;;
+              *)
+                echo "FAIL unrecognized host $url"
+                fail=1
+                ;;
+            esac
+          }
+
+          while IFS= read -r url; do
+            [ -n "$url" ] && check_url "$url"
+          done < <(jq -r '.skills[].url' site/marketplace.json)
+
+          while IFS= read -r url; do
+            [ -n "$url" ] && check_url "$url"
+          done < <(grep -oE 'https://skills\.isambard\.ac\.uk/[^[:space:]`")]+' README.md | sort -u)
+
+          exit $fail
+
+      - name: Check skill directory name matches frontmatter name
+        run: |
+          set -euo pipefail
+          fail=0
+          for d in site/plugins/*/skills/*/; do
+            dir=$(basename "$d")
+            name=$(awk '/^name:[[:space:]]/{print $2; exit}' "$d/SKILL.md")
+            if [ "$dir" != "$name" ]; then
+              echo "MISMATCH dir=$dir name=$name"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Check SKILL.md frontmatter schema
+        run: python3 .github/workflows/scripts/check_skill_frontmatter.py

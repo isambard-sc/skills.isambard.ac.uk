@@ -8,6 +8,7 @@ description: >
   Also trigger for questions about Cray Python, build isolation, pyproject.toml on Arm, or
   finding aarch64-compatible packages — even if the user doesn't say "Isambard" explicitly
   but is clearly working on an HPC or Arm Linux environment.
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI and Isambard 3. Requires access to an Isambard login node and Python
   environment tools such as Miniforge, pip, or uv.

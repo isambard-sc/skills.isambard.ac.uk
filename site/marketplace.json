@@ -47,6 +47,11 @@
       "name": "Getting Support",
       "description": "Get help with Isambard-AI and Isambard 3 through the BriCS helpdesk. Covers checking service status and known issues first, raising a support ticket at support.isambard.ac.uk, and what to include in a ticket.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/getting-support/SKILL.md"
+    },
+    {
+      "name": "BriCS Responsible AI Code",
+      "description": "Guidance for writing, reviewing, and running AI-generated code responsibly on BriCS shared HPC resources (Isambard-AI and Isambard 3), including Slurm job scripts, storage awareness, and BriCS policy compliance.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md"
     }
   ]
 }

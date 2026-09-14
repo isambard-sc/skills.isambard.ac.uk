@@ -13,9 +13,11 @@ compatibility: >
   Grace; x86_64 on Isambard 3 MACS. Requires Slurm, SSH/Clifton access.
 metadata:
   author: Bristol Centre for Supercomputing (BriCS)
-  docs: https://docs.isambard.ac.uk/
-  support: https://support.isambard.ac.uk
-  status: https://status.isambard.ac.uk
+  version: "1.0"
+  source_url: https://docs.isambard.ac.uk/
+  supplementary_urls:
+    - https://support.isambard.ac.uk
+    - https://status.isambard.ac.uk
 ---
 
 # BriCS HPC Responsible AI-Generated Code Skill
