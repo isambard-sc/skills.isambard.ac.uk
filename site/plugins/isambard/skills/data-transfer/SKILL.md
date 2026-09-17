@@ -22,10 +22,11 @@ compatibility: >
   users need WSL.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/
   supplementary_urls:
     - https://docs.isambard.ac.uk/user-documentation/tutorials/data-mover/
+    - https://docs.isambard.ac.uk/user-documentation/information/system-storage/
 ---
 
 # Data Transfer on Isambard
@@ -41,8 +42,20 @@ BriCS staff do not copy or move data on behalf of users, and bespoke transfers
 cannot be arranged by exception. Every transfer described here is one the
 user runs themselves.
 
+> **No storage on Isambard is backed up.** All storage on BriCS facilities —
+> `$HOME`, `$PROJECTDIR`, `$SCRATCHDIR`, and the data mover's S3 staging area
+> alike — is working storage only. It is not backed up and is not intended
+> for long-term or archival storage of data. Users are responsible for
+> regularly backing up important data to another location throughout the
+> project, and for copying off any data that should remain accessible before
+> the project end date — data cannot be recovered once it is lost.
+
 ## Critical Rules
 
+- ⚠️ **No storage is backed up.** Never let a user assume any Isambard
+  storage area is durable or recoverable. Proactively raise data
+  egress/backup planning for a whole-project timeline, not just at the end —
+  see the warning above.
 - ⚠️ **The data mover is early access.** Only suggest it to a user who has
   confirmed they have been granted access. Its endpoints, configuration, and
   behaviour may change without notice, and it is under active development —
@@ -337,7 +350,7 @@ suggestions via a service desk ticket titled with a **`DATAMOVER`** prefix.
 - [File Transfer guide](https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/)
 - [Data mover tutorial (early access)](https://docs.isambard.ac.uk/user-documentation/tutorials/data-mover/)
 - [Login guide (SSH setup, clifton)](https://docs.isambard.ac.uk/user-documentation/guides/login/)
-- [System storage](https://docs.isambard.ac.uk/user-documentation/information/system-storage/)
+- [System storage (backup policy)](https://docs.isambard.ac.uk/user-documentation/information/system-storage/)
 - [Job scheduling](https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/)
 - [Accounting guide](https://docs.isambard.ac.uk/user-documentation/guides/accounting/)
 - [Isambard service desk](https://support.isambard.ac.uk/)
