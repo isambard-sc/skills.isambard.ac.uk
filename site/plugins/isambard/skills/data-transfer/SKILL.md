@@ -68,8 +68,8 @@ user runs themselves.
 - Never treat data mover S3 staging storage as persistent storage or a
   backup. Data not modified for 30 days is automatically deleted, and it is
   separate from `$HOME`/`$PROJECTDIR`.
-- Always verify `rclone --version` is `>= v1.61.0` before configuring it for
-  the data mover — older versions are incompatible with the service.
+- Always verify `rclone version` reports `>= v1.61.0` before configuring it
+  for the data mover — older versions are incompatible with the service.
 - Always use a dry run before deleting from a shared data mover bucket
   (`rclone delete --dry-run` or `aws s3 rm --dryrun`) — every member of a
   project shares full read/write/delete access to that project's bucket.
@@ -78,8 +78,10 @@ user runs themselves.
   Slurm-based transfers are unavailable), leaving only slow login-node
   transfers during the 30-day grace period — or a job run from a still-active
   project that pulls the data across.
-- Never use `mpirun`/`mpiexec`, and never assume a graphical SFTP client is
-  officially supported — none is currently documented.
+- No specific graphical file-transfer client is documented as officially
+  supported. If a user wants a GUI, point them to VS Code or Jupyter
+  notebooks as the documented way to browse/edit remote files without a
+  separate transfer step.
 
 ---
 
@@ -94,11 +96,12 @@ The data mover service is a newer, early-access alternative. It provides
 token-authenticated access to on-premise S3 object storage that acts as a
 staging area, reachable over the internet and internally across BriCS
 clusters. It exists to support highly parallel, large-scale transfers over a
-network path that is separate from SSH traffic, and to make it easier to move
-data laterally between different BriCS clusters (e.g. Isambard-AI Phase 2 and
-Isambard 3), which the SSH-based workflow cannot do directly. Only recommend
-it once a user has confirmed they have early access, and always caveat it as
-early access / under active development.
+network path that is separate from SSH traffic, and to move data laterally
+between different BriCS clusters (e.g. Isambard-AI Phase 2 and Isambard 3)
+without staging the transfer via the user's own external location, which the
+documented SSH-based workflow otherwise requires for inter-facility copies.
+Only recommend it once a user has confirmed they have early access, and
+always caveat it as early access / under active development.
 
 ---
 
