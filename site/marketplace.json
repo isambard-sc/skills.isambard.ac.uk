@@ -14,6 +14,11 @@
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/containers/SKILL.md"
     },
     {
+      "name": "Data Transfer",
+      "description": "Transfer data to, from, and between BriCS Isambard facilities. Covers the standard scp/rsync-over-SSH workflow via clifton, submitting large transfers as Slurm jobs, and the early-access data mover S3 staging service (rclone, AWS CLI, and Netham).",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/data-transfer/SKILL.md"
+    },
+    {
       "name": "Getting Support",
       "description": "Get help with Isambard-AI and Isambard 3 through the BriCS helpdesk. Covers checking service status and known issues first, raising a support ticket at support.isambard.ac.uk, and what to include in a ticket.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/getting-support/SKILL.md"

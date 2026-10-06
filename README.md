@@ -25,6 +25,7 @@ the environment from scratch every session.
 | [GPUs and CUDA](site/plugins/isambard/skills/cuda/SKILL.md) | Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers cudatoolkit/nvhpc modules, compiling with nvcc, and CUDA forward compatibility via NGC containers or NVIDIA HPC SDK | `https://skills.isambard.ac.uk/plugins/isambard/skills/cuda/SKILL.md` |
 | [Getting Support](site/plugins/isambard/skills/getting-support/SKILL.md) | Get help with Isambard-AI and Isambard 3 through the BriCS helpdesk. Covers checking service status and known issues first, raising a support ticket, and what to include in a ticket | `https://skills.isambard.ac.uk/plugins/isambard/skills/getting-support/SKILL.md` |
 | [BriCS Responsible AI Code](site/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md) | Guidance for writing, reviewing, and running AI-generated code responsibly on BriCS shared HPC resources, including Slurm job scripts, storage awareness, and BriCS policy compliance | `https://skills.isambard.ac.uk/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md` |
+| [Data Transfer](site/plugins/isambard/skills/data-transfer/SKILL.md) | Transfer data to, from, and between BriCS Isambard facilities using scp/rsync over SSH, and the early-access data mover S3 staging service | `https://skills.isambard.ac.uk/plugins/isambard/skills/data-transfer/SKILL.md` |
 
 ---
 
@@ -72,7 +73,7 @@ View skills provided by Isambard plugin:
 /skills
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Skills
-  10 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
+  11 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
 
   ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
   │ ⌕ Search skills…                                                                                                         │
@@ -80,6 +81,7 @@ View skills provided by Isambard plugin:
   ❯ 🔒 on         isambard:brics-hpc-ai-code · plugin · ~100 tok · locked by plugin
     🔒 on         isambard:containers · plugin · ~200 tok · locked by plugin
     🔒 on         isambard:cuda · plugin · ~190 tok · locked by plugin
+    🔒 on         isambard:data-transfer · plugin · ~230 tok · locked by plugin
     🔒 on         isambard:getting-support · plugin · ~110 tok · locked by plugin
     🔒 on         isambard:modules · plugin · ~180 tok · locked by plugin
     🔒 on         isambard:mpi · plugin · ~170 tok · locked by plugin
@@ -210,7 +212,7 @@ Install the `isambard` plugin from the marketplace:
 
  Marketplace: isambard-skills
 
- Skills: 10 (containers, cuda, brics-hpc-ai-code, getting-support, modules, mpi, nccl, python, slurm, spack)
+ Skills: 11 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, modules, mpi, nccl, python, slurm, spack)
 
   → Install for you (user scope)
     Install for all collaborators on this repository (project scope)
