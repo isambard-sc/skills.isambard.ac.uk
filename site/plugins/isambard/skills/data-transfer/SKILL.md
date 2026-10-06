@@ -255,14 +255,17 @@ area, not persistent storage.
    uv tool install git+https://github.com/bristol-supercomputing/netham-early-access.git@0.1.0
    ```
 
-3. **Configure Netham** — create `netham.toml`:
+3. **Configure Netham** — create a dedicated folder and `netham.toml` inside it:
 
-   ```toml
+   ```bash
+   mkdir -v -p $HOME/netham
+   cat > $HOME/netham/netham.toml <<EOF
    issuer_url = "https://keycloak.isambard.ac.uk/realms/isambard"
    client_id = "netham"
    role_arn = "arn:vast::default:role/PROJECTID.datamover"
    sts_endpoint_url = "https://lb.staging.datamover.isambard.ac.uk"
    assumed_role_duration_minutes = 1440
+   EOF
    ```
 
    `PROJECTID` is the project's ID/shortcode; all members use the same
