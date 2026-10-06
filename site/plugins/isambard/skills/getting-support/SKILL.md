@@ -8,6 +8,7 @@ description: >
   asks how to contact support, report a bug, request help, or check for
   an outage, or before telling a user to "raise a ticket" or "contact
   support".
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI and Isambard 3 (Grace, MACS). No special access required —
   the helpdesk and status pages are reachable from any browser.

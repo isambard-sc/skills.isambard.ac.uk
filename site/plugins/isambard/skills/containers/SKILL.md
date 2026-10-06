@@ -10,6 +10,7 @@ description: >
   or getting full Slingshot 11 interconnect bandwidth from containerised workloads.
   Also trigger for questions about aarch64-compatible container images, --fakeroot builds,
   the /host/adapt.sh entrypoint, or any container-related workflow on an HPE Cray system.
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI and Isambard 3. Requires access to an Isambard login node and the
   Podman-HPC or Apptainer runtime.

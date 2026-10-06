@@ -12,6 +12,7 @@ description: >
   performance, or getting full interconnect bandwidth for GPU collective operations —
   even if the user doesn't explicitly say "NCCL".
   Note: NCCL is only supported on Isambard-AI Phase 1 and Phase 2 — not Isambard 3.
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI only. Requires access to an Isambard-AI login node, GPU compute
   resources, and the brics/nccl module.

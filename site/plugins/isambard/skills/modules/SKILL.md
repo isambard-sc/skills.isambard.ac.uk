@@ -10,6 +10,7 @@ description: >
   Also trigger for questions about linking MPI or scientific libraries on Isambard, or
   troubleshooting compiler and build issues on the Cray HPE system — even if the user
   doesn't explicitly say "modules".
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI and Isambard 3. Requires access to an Isambard login node and the
   Cray Programming Environment module system.
