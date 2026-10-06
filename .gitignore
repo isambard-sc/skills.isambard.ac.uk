@@ -17,3 +17,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .vscode/
+
+# Python
+__pycache__/
+*.pyc

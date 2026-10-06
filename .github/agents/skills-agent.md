@@ -14,29 +14,14 @@ A skill is a plain Markdown file that gives an AI agent the knowledge and rules 
 
 Skills follow the [AgentSkills specification](https://agentskills.io/specification). Plugins are collections of related skills and are available to install through a plugin marketplace; both are defined [here](https://code.claude.com/docs/en/plugin-marketplaces).
 
-```
-site/skills/
-  <skill-name>/
-    SKILL.md           # Required — primary skill file with YAML frontmatter
-    references/        # Optional — supplementary reference files
-    scripts/           # Optional — helper scripts
-    assets/            # Optional — static resources
-```
-
 Rules:
 - The skill name must be lowercase, using hyphens instead of spaces (e.g. `slurm`, `python-venv`, `mpi-profiling`).
-- Each skill lives in its own subdirectory under `site/skills/`.
-- The primary skill file **must be named `SKILL.md`** (uppercase) and placed directly inside `site/skills/<skill-name>/`.
+- Each skill lives in its own subdirectory under `site/plugins/<plugin-name>/skills/`.
+- The primary skill file **must be named `SKILL.md`** (uppercase) and placed directly inside `site/plugins/<plugin-name>/skills/<skill-name>/`.
 - The `SKILL.md` file must start with YAML frontmatter (see below).
 - Supplementary files may be added in `references/`, `scripts/`, or `assets/` subdirectories within the skill directory.
 
-Examples:
-
-| Skill topic | Directory | Primary file |
-|---|---|---|
-| Slurm job management | `site/skills/slurm/` | `site/skills/slurm/SKILL.md` |
-| Python virtual environments | `site/skills/python-venv/` | `site/skills/python-venv/SKILL.md` |
-| MPI profiling | `site/skills/mpi-profiling/` | `site/skills/mpi-profiling/SKILL.md` |
+See "Adding a new skill" below for the full directory layout and the exact steps to register a new skill.
 
 ---
 
@@ -52,6 +37,7 @@ name: <skill-name>
 description: >
   <One to two sentences: what the skill does and when to use it.
   Be specific — include keywords agents use to identify relevant tasks.>
+license: <content license or usage terms for this skill>
 compatibility: >
   <Environment requirements — intended system, required tools, network
   access needs, etc.>
@@ -66,6 +52,7 @@ metadata:
 
 - `name`: must match the parent directory name exactly (lowercase, hyphens, 1–64 characters)
 - `description`: required, max 1024 characters, should describe what the skill does AND when to use it
+- `license`: required. The content license or usage terms this skill is published under. For skills derived from `docs.isambard.ac.uk` Markdown/image content, use `CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).` For skills that describe BriCS policy/AUP compliance, use a proprietary notice pointing to the relevant policy page instead.
 - `compatibility`: optional but recommended for Isambard-specific skills
 - `metadata.version`: increment when making significant changes
 - `metadata.source_url`: the primary docs.isambard.ac.uk URL this skill was derived from; used by the update agent to detect stale content
@@ -145,7 +132,7 @@ Also add an entry to `./site/marketplace.json` (used by other agent tools). The 
 {
   "name": "<Human-readable skill name>",
   "description": "<One or two sentence description>",
-  "url": "https://skills.isambard.ac.uk/skills/<skill-name>/SKILL.md"
+  "url": "https://skills.isambard.ac.uk/plugins/<plugin-name>/skills/<skill-name>/SKILL.md"
 }
 ```
 
@@ -168,7 +155,7 @@ description and a link to the skill file. When adding or updating a skill:
   <p>
     <Short description of what the skill covers — one to two sentences.>
   </p>
-  <a href="skills/<skill-name>/SKILL.md">View skill file &rarr;</a>
+  <a href="plugins/<plugin-name>/skills/<skill-name>/SKILL.md">View skill file &rarr;</a>
 </div>
 ```
 
@@ -187,6 +174,7 @@ When creating a new skill, complete the following steps in order:
 - [ ] Add an entry to `site/marketplace.json` `skills` array
 - [ ] Add a skill card to `site/index.html`
 - [ ] Update `README.md` skills table
+- [ ] Update the skill count and name lists in `README.md`'s example CLI transcripts (the `/skills` output and the Cursor `Skills: N (...)` line) — `validate.yml` checks these against the skills on disk and will fail the build if they're stale
 
 ---
 

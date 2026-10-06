@@ -1,0 +1,77 @@
+name: Validate skills content
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Check URLs resolve to files in the working tree
+        run: |
+          set -euo pipefail
+          fail=0
+          host="https://skills.isambard.ac.uk"
+
+          check_url() {
+            local url="$1"
+            case "$url" in
+              "$host")
+                # bare site root — served by site/index.html
+                if [ ! -f "site/index.html" ]; then
+                  echo "FAIL missing site/index.html (site root, from $url)"
+                  fail=1
+                fi
+                ;;
+              "$host"/*)
+                local rel="${url#"$host"/}"
+                local path="site/$rel"
+                if [ ! -f "$path" ]; then
+                  echo "FAIL missing $path (from $url)"
+                  fail=1
+                fi
+                ;;
+              *)
+                echo "FAIL unrecognized host $url"
+                fail=1
+                ;;
+            esac
+          }
+
+          # jq errors (malformed JSON, missing .skills) must fail the job —
+          # capture output first rather than looping over a process
+          # substitution, whose exit status a `while` loop can't see.
+          marketplace_urls=$(jq -e -r '([.url] + [.skills[].url]) | .[]' site/marketplace.json) \
+            || { echo "FAIL could not read .url / .skills[].url from site/marketplace.json"; exit 1; }
+          while IFS= read -r url; do
+            [ -n "$url" ] && check_url "$url"
+          done <<< "$marketplace_urls"
+
+          readme_urls=$(grep -oE 'https://skills\.isambard\.ac\.uk(/[^[:space:]`")]*)?' README.md | sort -u)
+          while IFS= read -r url; do
+            [ -n "$url" ] && check_url "$url"
+          done <<< "$readme_urls"
+
+          exit $fail
+
+      - name: Check SKILL.md directory names and frontmatter schema
+        run: python3 .github/workflows/scripts/check_skill_frontmatter.py
+
+      - name: Check every skill is indexed in marketplace.json, index.html, and README
+        run: python3 .github/workflows/scripts/check_skill_indexes.py
+
+      - name: Check README example transcripts match the skills on disk
+        run: python3 .github/workflows/scripts/check_readme_examples.py

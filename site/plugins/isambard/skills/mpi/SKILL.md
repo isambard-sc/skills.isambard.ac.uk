@@ -9,6 +9,7 @@ description: >
   performance, or why mpirun and mpiexec should not be used on Isambard.
   Also trigger for questions about linking MPI libraries, compiler wrappers with MPI
   (mpicc, mpicxx, mpif90), or any multi-node communication setup on an HPE Cray system.
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI and Isambard 3. Requires access to an Isambard login node and the
   Cray MPI environment.

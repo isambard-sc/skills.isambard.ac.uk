@@ -15,14 +15,16 @@ the environment from scratch every session.
 
 | Skill | Description | URL |
 |---|---|---|
-| [Slurm](site/plugins/isambard/skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/skills/slurm/SKILL.md` |
-| [Python](site/plugins/isambard/skills/python/SKILL.md) | Install and manage Python environments on Isambard using Conda (Miniforge), uv, or Cray Python | `https://skills.isambard.ac.uk/skills/python/SKILL.md` |
-| [Modules](site/plugins/isambard/skills/modules/SKILL.md) | Use the modules system, Cray Programming Environments, compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools on Isambard | `https://skills.isambard.ac.uk/skills/modules/SKILL.md` |
-| [Spack](site/plugins/isambard/skills/spack/SKILL.md) | Install, configure, and use Spack to build HPC software on Isambard-AI and Isambard 3, including the buildit config repository and targeting neoverse_v2 / aarch64 | `https://skills.isambard.ac.uk/skills/spack/SKILL.md` |
-| [Containers](site/plugins/isambard/skills/containers/SKILL.md) | Run containers on Isambard using Podman-HPC and Apptainer. Covers image management, GPU access, and multi-node MPI/NCCL workloads over Slingshot 11 | `https://skills.isambard.ac.uk/skills/containers/SKILL.md` |
-| [MPI](site/plugins/isambard/skills/mpi/SKILL.md) | Use MPI on Isambard with Cray MPICH or OpenMPI. Covers PMI types, srun --mpi flags, Slingshot 11 performance, and why mpirun/mpiexec must not be used | `https://skills.isambard.ac.uk/skills/mpi/SKILL.md` |
-| [NCCL](site/plugins/isambard/skills/nccl/SKILL.md) | Use NCCL for multi-node GPU communication on Isambard-AI over Slingshot 11. Covers the brics/nccl module, aws-ofi-nccl plugin, building from source, and NCCL in containers | `https://skills.isambard.ac.uk/skills/nccl/SKILL.md` |
-| [GPUs and CUDA](site/plugins/isambard/skills/cuda/SKILL.md) | Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers cudatoolkit/nvhpc modules, compiling with nvcc, and CUDA forward compatibility via NGC containers or NVIDIA HPC SDK | `https://skills.isambard.ac.uk/skills/cuda/SKILL.md` |
+| [Slurm](site/plugins/isambard/skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/plugins/isambard/skills/slurm/SKILL.md` |
+| [Python](site/plugins/isambard/skills/python/SKILL.md) | Install and manage Python environments on Isambard using Conda (Miniforge), uv, or Cray Python | `https://skills.isambard.ac.uk/plugins/isambard/skills/python/SKILL.md` |
+| [Modules](site/plugins/isambard/skills/modules/SKILL.md) | Use the modules system, Cray Programming Environments, compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools on Isambard | `https://skills.isambard.ac.uk/plugins/isambard/skills/modules/SKILL.md` |
+| [Spack](site/plugins/isambard/skills/spack/SKILL.md) | Install, configure, and use Spack to build HPC software on Isambard-AI and Isambard 3, including the buildit config repository and targeting neoverse_v2 / aarch64 | `https://skills.isambard.ac.uk/plugins/isambard/skills/spack/SKILL.md` |
+| [Containers](site/plugins/isambard/skills/containers/SKILL.md) | Run containers on Isambard using Podman-HPC and Apptainer. Covers image management, GPU access, and multi-node MPI/NCCL workloads over Slingshot 11 | `https://skills.isambard.ac.uk/plugins/isambard/skills/containers/SKILL.md` |
+| [MPI](site/plugins/isambard/skills/mpi/SKILL.md) | Use MPI on Isambard with Cray MPICH or OpenMPI. Covers PMI types, srun --mpi flags, Slingshot 11 performance, and why mpirun/mpiexec must not be used | `https://skills.isambard.ac.uk/plugins/isambard/skills/mpi/SKILL.md` |
+| [NCCL](site/plugins/isambard/skills/nccl/SKILL.md) | Use NCCL for multi-node GPU communication on Isambard-AI over Slingshot 11. Covers the brics/nccl module, aws-ofi-nccl plugin, building from source, and NCCL in containers | `https://skills.isambard.ac.uk/plugins/isambard/skills/nccl/SKILL.md` |
+| [GPUs and CUDA](site/plugins/isambard/skills/cuda/SKILL.md) | Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers cudatoolkit/nvhpc modules, compiling with nvcc, and CUDA forward compatibility via NGC containers or NVIDIA HPC SDK | `https://skills.isambard.ac.uk/plugins/isambard/skills/cuda/SKILL.md` |
+| [Getting Support](site/plugins/isambard/skills/getting-support/SKILL.md) | Get help with Isambard-AI and Isambard 3 through the BriCS helpdesk. Covers checking service status and known issues first, raising a support ticket, and what to include in a ticket | `https://skills.isambard.ac.uk/plugins/isambard/skills/getting-support/SKILL.md` |
+| [BriCS Responsible AI Code](site/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md) | Guidance for writing, reviewing, and running AI-generated code responsibly on BriCS shared HPC resources, including Slurm job scripts, storage awareness, and BriCS policy compliance | `https://skills.isambard.ac.uk/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md` |
 | [Data Transfer](site/plugins/isambard/skills/data-transfer/SKILL.md) | Transfer data to, from, and between BriCS Isambard facilities using scp/rsync over SSH, and the early-access data mover S3 staging service | `https://skills.isambard.ac.uk/plugins/isambard/skills/data-transfer/SKILL.md` |
 
 ---
@@ -71,14 +73,16 @@ View skills provided by Isambard plugin:
 /skills
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Skills
-  9 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
+  11 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
 
   ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
   │ ⌕ Search skills…                                                                                                         │
   ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-  ❯ 🔒 on         isambard:docs · plugin · ~100 tok · locked by plugin
+  ❯ 🔒 on         isambard:brics-hpc-ai-code · plugin · ~100 tok · locked by plugin
     🔒 on         isambard:containers · plugin · ~200 tok · locked by plugin
     🔒 on         isambard:cuda · plugin · ~190 tok · locked by plugin
+    🔒 on         isambard:data-transfer · plugin · ~230 tok · locked by plugin
+    🔒 on         isambard:getting-support · plugin · ~110 tok · locked by plugin
     🔒 on         isambard:modules · plugin · ~180 tok · locked by plugin
     🔒 on         isambard:mpi · plugin · ~170 tok · locked by plugin
     🔒 on         isambard:nccl · plugin · ~210 tok · locked by plugin
@@ -208,7 +212,7 @@ Install the `isambard` plugin from the marketplace:
 
  Marketplace: isambard-skills
 
- Skills: 9 (containers, cuda, brics-hpc-ai-code, modules, mpi, nccl, python, slurm, spack)
+ Skills: 11 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, modules, mpi, nccl, python, slurm, spack)
 
   → Install for you (user scope)
     Install for all collaborators on this repository (project scope)
@@ -239,22 +243,29 @@ raw Markdown content is served directly from this site.
 ## Repository Structure
 
 ```
-.claude-plugin
-  marketplace.json           # Claude Code plugin marketplace catalog
-site/plugins/isambard/       # All web-served content (GitHub Pages source)
+.claude-plugin/
+  marketplace.json           # Claude Code plugin marketplace catalog (points at ./site/plugins/isambard)
+site/                        # All web-served content (GitHub Pages source)
   .claude-plugin/
-    marketplace.json         # Claude Code plugin marketplace catalog
-  skills/
-    slurm/
-      SKILL.md               # Slurm skill file (AgentSkills spec format)
-    docs/
-      SKILL.md               # User documentation skill file (AgentSkills spec format)
+    marketplace.json         # Claude Code plugin marketplace catalog (served publicly)
+  plugins/
+    isambard/
+      .claude-plugin/
+        plugin.json          # Plugin metadata (auto-discovers skills/)
+      skills/
+        slurm/
+          SKILL.md           # Slurm skill file (AgentSkills spec format)
+        brics-hpc-ai-code/
+          SKILL.md           # Responsible AI code / BriCS policy skill file (AgentSkills spec format)
   index.html                 # Public site landing page
   marketplace.json           # Simple skills index for other agent tools
   CNAME                      # Custom domain configuration
 .github/
   agents/
     skills-agent.md          # Instructions for AI agents on creating skills
+  workflows/
+    static.yml                # Deploys ./site to GitHub Pages
+    validate.yml               # CI checks: URL resolution, name/dir match, frontmatter schema
 .vscode/
   settings.json              # Word-wrap settings for Markdown/.chatagent files
 README.md                    # This file
