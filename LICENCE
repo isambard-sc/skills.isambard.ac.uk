@@ -1,0 +1,72 @@
+LICENCE
+=======
+
+Copyright (c) Bristol Centre for Supercomputing (BriCS).
+
+This repository contains material under more than one licence. The licence
+that applies to each skill is stated in the `license` field of the YAML
+frontmatter of that skill's `SKILL.md` file, under
+`site/plugins/isambard/skills/<skill-name>/`. That declaration takes
+precedence over this file. The terms below summarise the position.
+
+
+1. Documentation-derived skills: CC BY-SA 4.0
+---------------------------------------------
+
+Skills whose `license` field reads "CC-BY-SA-4.0" contain Markdown and image
+content derived from https://docs.isambard.ac.uk/ and are licensed under the
+Creative Commons Attribution-ShareAlike 4.0 International licence
+(CC BY-SA 4.0):
+
+    https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+Attribution: "Markdown/image content derived from https://docs.isambard.ac.uk/,
+(c) Bristol Centre for Supercomputing (BriCS)."
+
+If you adapt or redistribute this content you must give appropriate credit,
+indicate any changes made, and distribute your contributions under the same
+licence.
+
+At the time of writing this applies to the following skills:
+
+    containers, cuda, data-transfer, getting-support, modules, mpi, nccl,
+    python, slurm, spack
+
+
+2. Policy skill: proprietary
+----------------------------
+
+The skill `brics-hpc-ai-code` describes BriCS policy and acceptable-use
+requirements. It is NOT licensed under CC BY-SA 4.0 and is not open licensed.
+It is proprietary to BriCS, and its terms are those published at:
+
+    https://docs.isambard.ac.uk/policies/
+
+No right to copy, modify or redistribute this skill is granted except as
+those terms allow or as BriCS otherwise permits in writing. Using the skill
+with the Isambard services does not alter the policies it describes; the
+published BriCS policies remain authoritative.
+
+
+3. All other files
+------------------
+
+Files not covered by section 1 or 2 (for example workflow scripts, agent
+definitions and site or plugin configuration) carry no separate licence
+declaration. No licence is granted for them by this file, and all rights are
+reserved by BriCS except as the law permits.
+
+
+4. Adding or changing a skill
+-----------------------------
+
+Every skill must declare its licence in its `SKILL.md` frontmatter (this is
+checked by `.github/workflows/scripts/check_skill_frontmatter.py`). When a
+skill is added, or its licence changes, update the lists in sections 1 and 2.
+
+
+5. No warranty
+--------------
+
+Content is provided "as is", without warranty of any kind. Always check the
+current documentation at https://docs.isambard.ac.uk/ before relying on it.
