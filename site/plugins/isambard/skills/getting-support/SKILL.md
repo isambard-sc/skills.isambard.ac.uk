@@ -107,6 +107,73 @@ existing ticket.
 - Once the issue is resolved, close the ticket using the **State**
   dropdown menu.
 
+## Suspected Node or Filesystem Fault
+
+A node whose shared system paths have gone bad does **not** report that. It
+reports whatever the application noticed first, which is usually misleading:
+
+| Symptom | Where you'll see it |
+|---|---|
+| `Bus error (core dumped)`, exit code **135** | any binary, often with no output at all |
+| `Segmentation fault` from a normally reliable tool | `sbatch`, `squeue` |
+| `Getting requirements to build wheel ... exit code: -7` | `pip` (that is SIGBUS in a subprocess) |
+| `[Errno 5] Input/output error: '/usr/bin/<tool>'` | compiler invoked by a build |
+| `/bin/bash: /usr/bin/<tool>: Input/output error` | running the tool directly |
+
+These all have one cause: the executable's pages cannot be read.
+
+### Check before debugging the application
+
+```bash
+# Readable, or faulty? Reads the whole file rather than just stat-ing it.
+for f in /usr/bin/sbatch /usr/bin/squeue /usr/bin/srun; do
+  printf "%-24s " "$f"
+  cat "$f" > /dev/null 2>&1 && echo readable || echo "I/O ERROR"
+done
+```
+
+If this prints `I/O ERROR`, the problem is the node, not your code, your
+environment, or your Python packages. Stop debugging the application.
+
+### Two traps when diagnosing this
+
+**Partial function is not health.** A tool already resident in the page cache
+keeps working while its neighbours fail. We saw `squeue` run normally while
+`sbatch` segfaulted — both live in `/usr/bin`, but only one had been read
+recently. Verify with an explicit read; do not conclude "Slurm is fine" because
+one command responded.
+
+**`cat` cannot tell "unreadable" from "absent".** Both print an error. Use
+`stat` to distinguish them:
+
+```bash
+stat -c '%n %s bytes' /etc/slurm/slurm.conf
+#   "No such file or directory" -> the file isn't there (which for slurm.conf
+#   is NORMAL: Isambard runs configless Slurm, with config served by the
+#   controller). Confirm the controller is reachable with: scontrol ping
+#   "Input/output error"      -> genuine fault
+```
+
+Misreading an absent file as a faulty one sends a ticket chasing the wrong thing.
+
+### What to do
+
+1. Run the readability check above and record exactly which paths fail. That
+   list is the most useful thing you can put in a ticket.
+2. Note whether it affects **login nodes, compute nodes, or both** — a fault on
+   compute nodes is far more disruptive and suggests the shared image rather
+   than one machine.
+3. Check https://status.isambard.ac.uk and Known Issues before raising.
+4. Raise a ticket at https://support.isambard.ac.uk. This is a platform fault,
+   squarely in scope for BriCS support, unlike user-software problems.
+5. Meanwhile, a different login node may be healthy — you cannot request one,
+   but reconnecting reassigns you. If only *some* tools are affected, a working
+   alternative may get you moving (we submitted jobs with `srun` while `sbatch`
+   was unreadable).
+
+A reboot cleared it in our case, so report it rather than working around it
+indefinitely — it will keep affecting whoever lands on that node.
+
 ## Troubleshooting
 
 | Situation | What to do |
@@ -117,6 +184,8 @@ existing ticket.
 | User reports something that looks systemic (many users affected) | Check https://status.isambard.ac.uk first — it may already be tracked |
 | User wants to know if others are affected | Point them to Known Issues and Service Status rather than speculating |
 | User wants help installing or debugging their own third-party software | BriCS support cannot help with installation or use of user software — point them to relevant guides/tutorials first; only raise a ticket if the problem looks like a platform issue |
+| A command dies with "Bus error", `Segmentation fault`, exit 135, or pip's `exit code: -7` | Check whether the executable is readable (see *Suspected Node or Filesystem Fault*) before debugging the application |
+| A tool works intermittently, or only some subcommands work | It may be page-cached rather than healthy — verify with an explicit read, not by running it again |
 
 ## Further Reading
 
