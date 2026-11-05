@@ -16,8 +16,9 @@ compatibility: >
   Cray Programming Environment module system.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/modules/
+  docs_commit: e994565
 ---
 
 # Modules and Compilers on Isambard
@@ -41,17 +42,33 @@ Both Isambard-AI and Isambard 3 are HPE/Cray systems and use the **Cray Programm
 
 ## BriCS-Supplied Modules
 
-BriCS provides the following utility modules (available on AIP1, AIP2, and Isambard 3 unless noted):
+BriCS provides the following utility modules. Check the availability columns
+before suggesting one — several are not on Isambard 3:
 
-| Module | Description |
-|--------|-------------|
-| `brics/default` | Default user environment (loaded automatically) |
-| `brics/userenv` | Sets `$LOCALDIR`, `$SCRATCHDIR`, and `$TMPDIR` — see the [storage docs](https://docs.isambard.ac.uk/user-documentation/information/system-storage/) |
-| `brics/emacs` | Emacs text editor |
-| `brics/nano` | nano text editor |
-| `brics/tmux` | tmux terminal multiplexer — reload the module when restarting a terminal; sessions persist |
-| `brics/nccl` | **Required for multi-node GPU workflows.** Provides NCCL (built against `libfabric`) and the NCCL AWS-OFI plugin for Slingshot high-speed network support |
-| `brics/apptainer-multi-node` | Support for multi-node Apptainer jobs — see the [Apptainer multi-node docs](https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer-multi-node/) |
+| Module | Description | AIP1 | AIP2 | Isambard 3 |
+|--------|-------------|------|------|------------|
+| `brics/default` | Default user environment (loaded by default) | ✓ | ✓ | ✓ |
+| `brics/userenv` | Sets `$LOCALDIR`, `$SCRATCHDIR`, and `$TMPDIR` (loaded by default) — see the [storage docs](https://docs.isambard.ac.uk/user-documentation/information/system-storage/) | ✓ | ✓ | ✓ |
+| `brics/emacs` | Emacs text editor | ✓ | ✓ | ✓ |
+| `brics/nano` | nano text editor | ✓ | ✓ | — |
+| `brics/tmux` | tmux terminal multiplexer — reload the module when restarting a terminal; sessions persist | ✓ | ✓ | ✓ |
+| `brics/nccl` | **Required for multi-node GPU workflows.** Provides NCCL (built against `libfabric`) and the NCCL AWS-OFI plugin for Slingshot high-speed network support | ✓ | ✓ | — |
+| `brics/apptainer-multi-node` | Support for multi-node Apptainer jobs — see the [Apptainer multi-node docs](https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer-multi-node/) | ✓ | ✓ | — |
+
+---
+
+## Arm Performance Libraries (Isambard 3)
+
+Arm Performance Libraries (Arm PL) are available on Isambard 3 at `/opt/arm/`.
+They provide `libamath`: an optimised subset of standard `math.h` functions, in
+scalar (compatible with `libm` naming) and vectorised implementations. Use them
+from C/C++ with:
+
+```c
+#include <amath.h>
+```
+
+See the [Arm PL math functions documentation](https://developer.arm.com/documentation/101004/2410/General-information/Arm-Performance-Libraries-math-functions).
 
 ---
 
@@ -118,6 +135,16 @@ cc -mcpu=neoverse-v2 -O3 mycode.c -o mycode
 ```
 
 For further tuning guidance see the [NVIDIA Grace Performance Tuning Guide](https://docs.nvidia.com/grace-perf-tuning-guide/index.html).
+
+### Non-GNU compilers and the C++ standard
+
+Non-GNU compilers (e.g. NVIDIA) can depend on the default system GCC, which may
+not support the C++ standard you request (e.g. `--std=c++23`). Use
+`--gcc-toolchain` to select a newer GCC:
+
+```bash
+nvc++ --std=c++23 --gcc-toolchain=/usr/bin/gcc-13 mycode.cpp -o mycode
+```
 
 ---
 
