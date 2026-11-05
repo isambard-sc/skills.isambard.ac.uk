@@ -47,6 +47,7 @@ metadata:
   source_url: https://docs.isambard.ac.uk/<path-to-source-page>/
   supplementary_urls:            # optional — list additional docs pages
     - https://docs.isambard.ac.uk/<path-to-supplementary-page>/
+  docs_commit: <short SHA>       # optional — docs commit the skill was last checked against
 ---
 ```
 
@@ -57,6 +58,7 @@ metadata:
 - `metadata.version`: increment when making significant changes
 - `metadata.source_url`: the primary docs.isambard.ac.uk URL this skill was derived from; used by the update agent to detect stale content
 - `metadata.supplementary_urls`: optional list of additional docs.isambard.ac.uk pages that contributed content to this skill
+- `metadata.docs_commit`: optional short SHA of the `isambard-sc/docs.isambard.ac.uk` commit the skill content was last checked against. The weekly drift check (`.github/workflows/docs-drift.yml`) diffs the source pages from this commit; without it, it falls back to the date of the skill's last commit, which unrelated edits (renames, typo fixes) reset
 
 ### Markdown body sections
 
@@ -182,6 +184,7 @@ When creating a new skill, complete the following steps in order:
 
 - Edit `site/plugins/<plugin-name>/skills/<skill-name>/SKILL.md` directly.
 - Increment `metadata.version` in the frontmatter for significant changes.
+- Set `metadata.docs_commit` to the docs commit you checked the skill against (`git -C <docs-repo> rev-parse --short HEAD`).
 - Update the `"description"` in both `marketplace.json` files if the summary changed.
 - Update the skill card description in `index.html` if the summary changed.
 - Do **not** rename or move skill files once published — existing integrations may already reference the URL.
