@@ -208,6 +208,7 @@ Edit `site/plugins/<plugin-name>/skills/<skill-name>/SKILL.md`:
 
 - Apply the minimum diff needed — preserve existing structure where accurate, only change what is actually different
 - Increment `metadata.version` (e.g. `"1.0"` → `"1.1"`)
+- Set `metadata.docs_commit` to the docs commit you compared against, even if nothing else changed, so the drift check stops flagging the skill
 - Do **not** rename or move the file
 
 Also update descriptions in both `marketplace.json` files if the skill
@@ -217,7 +218,17 @@ summary has changed materially.
 
 ## Checking All Skills for Staleness
 
-To check every skill in the repository at once:
+`.github/workflows/docs-drift.yml` runs `check_docs_drift.py` weekly and keeps a
+`docs-drift` issue listing skills whose source pages changed since they were
+last synced. To run it locally against a docs checkout:
+
+```bash
+python3 .github/workflows/scripts/check_docs_drift.py \
+  --docs-repo ../docs.isambard.ac.uk --show-subjects
+```
+
+It only sees pages listed in `source_url`/`supplementary_urls`, so also check
+for new docs pages relevant to the skill. To check every skill by hand:
 
 1. List all `SKILL.md` files:
    `find site/plugins -name SKILL.md`
