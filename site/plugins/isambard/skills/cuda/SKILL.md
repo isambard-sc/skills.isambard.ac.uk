@@ -9,15 +9,21 @@ description: >
   HPC SDK on Isambard, NGC container images for GPU workloads, nvidia-smi on compute nodes,
   or diagnosing CUDA version mismatches. Also trigger for general GPU programming setup
   questions on Isambard, even if the user doesn't say "CUDA" explicitly.
-  Note: GPUs are only on Isambard-AI (Phase 1 and Phase 2) — not Isambard 3.
+  Note: covers the GH200 GPUs on Isambard-AI (Phase 1 and Phase 2). Isambard 3 Grace
+  has no GPUs; the x86 GPU partitions on Isambard 3 MACS are not covered.
 license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI only. Requires access to an Isambard-AI login node, GPU compute
   resources, and CUDA toolkit or container runtime support.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/gpus_and_cuda/
+  supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer/
+    - https://docs.isambard.ac.uk/user-documentation/guides/modules/
+    - https://docs.isambard.ac.uk/specs/
+  docs_commit: e994565
 ---
 
 # GPUs and CUDA on Isambard
@@ -27,7 +33,10 @@ Isambard-AI compute nodes are equipped with **NVIDIA GH200 120GB Grace Hopper** 
 workloads — frameworks like PyTorch depend on it, and every library and tool links against
 a specific CUDA toolkit version.
 
-> **GPU systems only:** Isambard-AI Phase 1 and Phase 2. Isambard 3 has no GPUs.
+> **Scope:** Isambard-AI Phase 1 and Phase 2 (GH200, aarch64). Isambard 3 Grace has no
+> GPUs. Isambard 3 MACS has x86 GPU partitions (`ampere`: 4× A100 SXM4, `hopper`:
+> 4× H100 PCIe, `instinct`: 4× AMD MI100) — this guide does not cover them; see the
+> [specs page](https://docs.isambard.ac.uk/specs/).
 
 ---
 
