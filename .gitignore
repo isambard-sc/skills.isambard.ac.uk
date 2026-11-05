@@ -21,3 +21,5 @@ Temporary Items
 # Python
 __pycache__/
 *.pyc
+# skillscope run reports
+.skillscope/
