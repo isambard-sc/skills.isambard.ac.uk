@@ -6,6 +6,7 @@ description: >
   and Isambard 3. Use this skill whenever generating, adapting, or debugging
   code intended to run on BriCS facilities, writing Slurm job scripts, managing
   storage, installing software, or ensuring compliance with BriCS policies.
+  Also use whenever an AI coding agent is being set up or used with Isambard.
 license: Proprietary. See https://docs.isambard.ac.uk/policies/ for terms.
 compatibility: >
   Designed for use with BriCS facilities (Isambard-AI Phase 1/2, Isambard 3
@@ -13,21 +14,47 @@ compatibility: >
   Grace; x86_64 on Isambard 3 MACS. Requires Slurm, SSH/Clifton access.
 metadata:
   author: Bristol Centre for Supercomputing (BriCS)
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/
   supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/guides/using_ai_agents/
+    - https://docs.isambard.ac.uk/user-documentation/faqs/
+    - https://docs.isambard.ac.uk/user-documentation/guides/slurm-advanced/
     - https://docs.isambard.ac.uk/user-documentation/guides/slurm/
     - https://docs.isambard.ac.uk/user-documentation/guides/python/
     - https://docs.isambard.ac.uk/user-documentation/guides/login/
     - https://docs.isambard.ac.uk/user-documentation/information/system-storage/
     - https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
     - https://docs.isambard.ac.uk/policies/
+  docs_commit: e994565
 ---
 
 # BriCS HPC Responsible AI-Generated Code Skill
 
 This skill guides agents in producing correct, safe, and policy-compliant code
 for the Bristol Centre for Supercomputing (BriCS) HPC facilities.
+
+---
+
+## ⚠️ Critical Rules — AI Agents and Isambard
+
+- **Never run an AI agent directly on an Isambard login node.** Login nodes have
+  strict limits on CPU time and network connections, and agents open extra
+  connections and long-lived background processes. This is Unacceptable Use
+  under the Acceptable Use Policy. Keep the agent on the user's local machine.
+- **Never hold a persistent connection to Isambard or execute commands without
+  the user's review.** Recommend commands; the user copies them into their own
+  terminal, checks them against the documentation, and runs them.
+- **Never ask for, accept, or store the user's Isambard password or SSH private
+  key.**
+- **Never bypass access controls, authentication, or policy restrictions** —
+  including the 12-hour SSH certificate lifetime (e.g. via persistent
+  `tmux`/`screen` sessions). Doing so violates the Access Terms. Do not use
+  automation to recover from access or policy issues.
+- **Remind the user they are responsible for what is run.** Flag any suggested
+  command that may conflict with the Acceptable Use Policy.
+- If unsure whether an agent workflow is permitted, tell the user to ask the
+  helpdesk at https://support.isambard.ac.uk before proceeding.
 
 ---
 
@@ -51,6 +78,8 @@ Always follow these rules when generating or suggesting code for BriCS systems.
 | Task | Correct approach |
 |---|---|
 | Run a short test command | `srun --time=00:05:00 [--gpus=1] <cmd>` |
+| Short interactive work (Isambard-AI Phase 2) | `srun --gpus=1 --reservation=interactive --pty bash -i` (never add `--partition`; billed at 1.5×) |
+| Large data transfer (e.g. between projects) | Submit as a job, not on the login node |
 | Run a batch workload | Write a script; submit with `sbatch` |
 | Install Python packages | Conda (Miniforge) or `uv`; never `pip install --user` in $HOME |
 | Share data with project members | Write to `$PROJECTDIR` |
@@ -83,7 +112,11 @@ python3 my_script.py
 - You MUST specify `--gpus` (or `--gpus-per-*`). Jobs without GPU directives will fail.
 - The default partition is `workq`. Do not specify a partition unless you have a reason.
 - Maximum walltime is **24 hours**. For longer jobs, use `--dependency=afterok:<JOBID>`.
-- Project GPU limit: **32 GPUs** across all running jobs (`32gpu_qos`).
+- Isambard-AI Phase 1 project GPU limit: **32 GPUs** across all running jobs
+  (`32gpu_qos`).
+- Isambard-AI Phase 2 per-user limits (`workq_qos`): **256** running jobs,
+  **512** pending + running jobs, max array size **1000**. Submissions over a
+  limit are rejected immediately.
 
 ### Isambard 3 (CPU — Grace)
 
@@ -124,10 +157,20 @@ All storage is **working storage — not backed up**. Data is deleted at project
 | Variable | Path | Purpose | Quota (Isambard-AI) | Retention |
 |---|---|---|---|---|
 | `$HOME` | `/home/<PROJECT>/<USER>.<PROJECT>` | Config files, scripts, job outputs | 100 GiB | Project end |
-| `$SCRATCHDIR` | `/scratch/<PROJECT>/<USER>.<PROJECT>` | Intermediate job data, containers | 5 TiB | 60 days (i3) / Project end (iAI) |
+| `$SCRATCHDIR` (alias `$SCRATCH`) | `/scratch/<PROJECT>/<USER>.<PROJECT>` | Intermediate job data, containers | 5 TiB | 60 days (i3) / Project end (iAI) |
 | `$PROJECTDIR` | `/projects/<PROJECT>` | Shared datasets, shared environments | 200 TiB | Project end |
 | `$PROJECTDIR_PUBLIC` | `/projects/public/<PROJECT>` | Data readable by all users | 200 TiB | Project end |
 | `$LOCALDIR` | `/local/user/<UID>` | Fast RAM-backed in-job scratch | 48 GiB (compute) | End of job/session |
+
+File-count (inode) limits on Isambard-AI Phase 1 and 2: `$SCRATCHDIR`
+1,000,000 files, `$PROJECTDIR` 50,000,000 files. Avoid creating very large
+numbers of small files.
+
+On Isambard-AI Phase 2, `$HOME` is on NFS and `lfs quota` does not work for
+it — check usage with `du -xsh $HOME`.
+
+After a project ends there is a 30-day grace period to copy data off; after
+that it may be permanently deleted.
 
 **Critical reminders:**
 - **Never use `/tmp` directly.** `/tmp` is node-local, may have very limited space, and is not reliably available or cleaned up across the cluster. Always reference storage locations through their environment variables (`$SCRATCHDIR`, `$LOCALDIR`, etc.) and use `set -eu` at the top of job scripts to catch unset variables early:
@@ -145,7 +188,8 @@ mkdir -p "${WORKDIR}"
 rm -rf "${WORKDIR}"
 ```
 
-- `$HOME` is for scripts and configs — **not large datasets**.
+- `$HOME` is for scripts and configs — **not large datasets**. A full `$HOME`
+  (or exceeded quota) can block SSH login; recovery needs a helpdesk ticket.
 - `$LOCALDIR` on compute nodes is a **tmpfs RAM disk** — very fast but limited.
 - Never assume `$LOCALDIR` data survives between jobs.
 - Backup important results off-system before the project end date.
@@ -161,8 +205,16 @@ Login nodes are **shared** and must not be used for compute-intensive or long-ru
 | Editing files | Running model training |
 | Compiling small programs | Running data preprocessing pipelines |
 | Submitting/monitoring jobs | Running benchmarks or tests |
-| File transfer and compression | Long `python` / `bash` loops |
-| Building containers | Using `watch` with `squeue -i` repeatedly |
+| Small file transfers and compression | Long `python` / `bash` loops |
+| Building containers | Large data transfers (e.g. project to project) — submit as a job |
+| | Running AI agents |
+| | Using `watch` with `squeue -i` repeatedly |
+
+On Isambard-AI each login session is limited by cgroups to 1 CPU core (100%),
+4 GiB memory and 500 tasks. Symptoms of hitting a limit include
+`fork: Resource temporarily unavailable`, `BlockingIOError: [Errno 11]`,
+`RuntimeError: can't start new thread`, `Error: spawn EAGAIN`, or processes
+being `Killed`. Login nodes have no GPUs. Move such work to a compute node.
 
 > Using `squeue -i` or `watch squeue` excessively disrupts **all users** and is a breach of the Acceptable Use Policy. Use `squeue --me` once to check, or set a reasonable interval.
 
@@ -186,7 +238,7 @@ source ~/miniforge3/bin/activate
 # Create and use isolated environments
 conda create -n myenv python=3.11
 conda activate myenv
-conda install 
+conda install PACKAGE
 ```
 
 **Gotchas:**
@@ -218,7 +270,9 @@ module load cray-python   # Load Cray Python (pre-installed)
 ## Connecting to BriCS (Clifton + SSH)
 
 ```bash
-# Install Clifton (Linux)
+# Install Clifton (Linux x86_64; use clifton-linux-musl-aarch64 on Arm,
+# clifton-macos-aarch64 / clifton-macos-x86_64 on macOS,
+# or `winget install clifton` on Windows)
 curl -L https://github.com/isambard-sc/clifton/releases/latest/download/clifton-linux-musl-x86_64 -o clifton
 chmod u+x clifton && mv clifton ~/.local/bin/
 
@@ -228,15 +282,17 @@ clifton auth
 # Write SSH config (only needed when added to a new project)
 clifton ssh-config write
 
-# Connect
-ssh .aip2.isambard    # Isambard-AI Phase 2
-ssh .3.isambard       # Isambard 3
+# Connect (replace PROJECT with your project short name)
+ssh PROJECT.aip2.isambard    # Isambard-AI Phase 2
+ssh PROJECT.3.isambard       # Isambard 3
+ssh PROJECT.macs3.isambard   # Isambard 3 MACS
 ```
 
 **Gotchas:**
 - SSH certificates are valid for **12 hours only** — run `clifton auth` each day.
 - Login nodes are assigned randomly; you cannot request a specific login node.
 - Do NOT leave persistent `tmux`/`screen` sessions on login nodes — they violate security policy and may be terminated without warning.
+- Bash on login nodes terminates a session after **24 hours** with no input.
 
 ---
 
@@ -245,7 +301,7 @@ ssh .3.isambard       # Isambard 3
 ```bash
 squeue --me                        # View your running/pending jobs
 sacct                              # View current and completed jobs
-scancel                     # Cancel a job
+scancel JOBID                      # Cancel a job
 salloc --gpus=1 --time=00:30:00    # Reserve a node interactively (always set --time)
 ```
 
@@ -279,6 +335,8 @@ Before submitting any AI-generated code or job script to BriCS:
 |---|---|---|
 | No `--gpus` on Isambard-AI | Job fails | Always include `--gpus=1` (or more) |
 | Running compute on login node | Account suspension | Use `sbatch`/`srun` |
+| Running an AI agent on a login node | AUP violation | Run the agent locally; the user runs reviewed commands |
+| Adding `--partition` with `--reservation=interactive` | Job cancelled; AUP violation | Use `--reservation=interactive` alone |
 | `pip install --user` across archs | Package conflicts | Use Conda env or venv |
 | `conda init` in `.bashrc` | Shell startup failures | Use `source ~/miniforge3/bin/activate` |
 | Leaving data in `$SCRATCHDIR` for >60 days (Isambard 3) | Data deleted | Move to `$PROJECTDIR` or back up |
@@ -299,6 +357,8 @@ Before submitting any AI-generated code or job script to BriCS:
 - Job scheduling & limits: https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
 - Python guide: https://docs.isambard.ac.uk/user-documentation/guides/python/
 - Login guide: https://docs.isambard.ac.uk/user-documentation/guides/login/
+- Using AI agents with Isambard: https://docs.isambard.ac.uk/user-documentation/guides/using_ai_agents/
+- FAQs: https://docs.isambard.ac.uk/user-documentation/faqs/
 - Policies: https://docs.isambard.ac.uk/policies/
 - Support: https://support.isambard.ac.uk
 - Service status: https://status.isambard.ac.uk
