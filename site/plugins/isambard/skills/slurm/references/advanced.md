@@ -138,6 +138,43 @@ scancel <JOBID>    # release when done — always do this
 
 ---
 
+## `interactive` Reservation (Isambard-AI Phase 2)
+
+A dedicated pool of Phase 2 nodes for short-lived interactive work (debugging,
+development, exploratory analysis) with shorter queue times than `workq`.
+
+```bash
+srun --gpus=1 --reservation=interactive --pty bash -i
+```
+
+| Limit | Value |
+|-------|-------|
+| Maximum job size | 4 nodes (16 GPUs) |
+| Maximum walltime | 8 hours |
+| Default walltime (no `--time`) | 30 minutes |
+| Maximum running jobs per user | 1 |
+| Maximum queued jobs per user | 1 |
+
+The reservation uses the hidden `interactive` partition and `interactive_qos`. Jobs do
+not appear in plain `squeue --me`; list them with:
+
+```bash
+squeue --me --partition=interactive   # or: squeue --me --all
+```
+
+`--partition` here affects `squeue` only.
+
+> **Never add `--partition` to a command that sets `--reservation=interactive`.** Slurm
+> selects the partition and applies `interactive_qos` from the reservation alone.
+> Overriding it is Unacceptable Use under the Acceptable Use Policy; such jobs may be
+> cancelled without warning, and repeated misuse is subject to the AUP penalties.
+
+- Short-lived work only. Long-running or high-throughput jobs are not permitted;
+  usage is monitored.
+- Billed at a 50% premium: one node-hour on the reservation is charged as 1.5 NHR.
+
+---
+
 ## Scheduler Flexibility
 
 The scheduler assigns jobs to gaps in the resource schedule. More flexibility = earlier start.
@@ -246,6 +283,8 @@ Control concurrency and step size:
 Large arrays with generous `--time` can exhaust a project's reserved credit even when the
 overall allocation is not spent. Prefer concurrent `srun` steps for many short tasks.
 
+On Isambard-AI Phase 2 the maximum array size is **1000** tasks.
+
 ---
 
 ## QOS and Resource Limits
@@ -256,6 +295,11 @@ sacctmgr show user $(whoami) withassoc   # your accounts, QOS, and limits
 ```
 
 `MaxTRESPA` limits simultaneous resource usage (GPUs, nodes) per project.
+
+Per-system partitions, QoS names and user/project limits are summarised in SKILL.md
+under *Partitions and limits*. On Isambard-AI Phase 2, a submission that would exceed a
+per-user limit (256 running, 512 pending + running jobs) is rejected at submit time
+rather than queued.
 
 Slurm reserves credits based on **requested** resources × **requested** walltime when a job
 is queued or running. Only actual consumption is charged after completion, but the
