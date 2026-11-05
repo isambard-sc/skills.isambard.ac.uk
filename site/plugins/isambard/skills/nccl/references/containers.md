@@ -24,6 +24,9 @@ Use this when your container (e.g. an NGC PyTorch image) bundles a **newer CUDA 
 than the host provides. In that case you must build NCCL and `aws-ofi-nccl` against the
 container's CUDA inside the container, then bind-mount the built libraries at runtime.
 
+If the image already includes an NCCL build compatible with its CUDA runtime, you only
+need to build a compatible `aws-ofi-nccl` plugin.
+
 The built libraries live on the **host filesystem** (mounted into the container) — they
 are not baked into the image.
 
