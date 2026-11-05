@@ -17,8 +17,11 @@ compatibility: >
   Spack installation or clone.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/spack/
+  supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/guides/spack/setup/
+  docs_commit: e994565
 ---
 
 # Spack on Isambard
@@ -40,8 +43,9 @@ architecture and interconnect.
 - Install and run Spack only from a supported Spack clone and the BriCS `buildit` config.
 - Set `SPACK_DISABLE_LOCAL_CONFIG=true` to avoid conflicts with local `~/.spack` settings.
 - Always source `spack/share/spack/setup-env.sh` before using `spack`.
-- Always activate a Spack environment before running `spack install`, `spack add`, or
-  `spack env create`.
+- Always create (`spack env create --dir myenv`) and activate
+  (`spack env activate ./myenv`) a Spack environment before running
+  `spack add` or `spack install`.
 - Match the Spack version to the `buildit` config branch.
 
 ---
@@ -157,9 +161,16 @@ Verify compilers were found:
 
 ```bash
 spack compiler list
-# Expect: cce, gcc (multiple versions), nvhpc on aarch64 systems
-# MACS also shows: aocc (x86_64)
 ```
+
+Expected external compilers (`[e]`) per system:
+
+| System | Compilers |
+|--------|-----------|
+| Isambard-AI Phase 1 | `cce@19.0.0`, `cce@18.0.0`, `gcc@14.2.0`, `gcc@13.3.1`, `gcc@12.3.0`, `nvhpc@24.11` |
+| Isambard-AI Phase 2 | `cce@19.0.0`, `cce@18.0.0`, `gcc@14.3.0`, `gcc@13.3.1`, `gcc@12.3.0`, `nvhpc@24.11` |
+| Isambard 3 Grace | `acfl@24.10.1`, `cce@18.0.0`, `gcc@13.2.1`, `gcc@12.3.0`, `nvhpc@24.3` |
+| Isambard 3 MACS (x86_64) | `aocc@4.2.0`, `cce@17.0.1`, `gcc@13.2.1`, `gcc@12.3.0`, `nvhpc@24.5` |
 
 ---
 
@@ -258,5 +269,6 @@ spack env deactivate
 - [Spack environments tutorial](https://spack-tutorial.readthedocs.io/en/latest/tutorial_environments.html)
 - [Spack FAQ](https://spack.readthedocs.io/en/latest/frequently_asked_questions.html)
 - [buildit repository](https://github.com/isambard-sc/buildit)
+- [Isambard Spack setup guide](https://docs.isambard.ac.uk/user-documentation/guides/spack/setup/)
 - [Isambard MPI guide](https://docs.isambard.ac.uk/user-documentation/guides/mpi/)
 - [Isambard modules guide](https://docs.isambard.ac.uk/user-documentation/guides/modules/)
