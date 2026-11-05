@@ -14,12 +14,14 @@ compatibility: >
   the helpdesk and status pages are reachable from any browser.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/getting_support/
   supplementary_urls:
     - https://docs.isambard.ac.uk/service-status/
     - https://docs.isambard.ac.uk/service-status/known_issues/
     - https://docs.isambard.ac.uk/user-documentation/faqs/
+    - https://docs.isambard.ac.uk/user-documentation/guides/slurm-troubleshooting/
+  docs_commit: e994565
 ---
 
 # Getting Support on Isambard — Agent Skill
@@ -47,10 +49,13 @@ https://docs.isambard.ac.uk/user-documentation/faqs/
 - Submit **one ticket per issue** — do not bundle unrelated problems into
   a single ticket.
 - Raising a helpdesk ticket requires membership of an active project.
-- **Never submit an AI-generated ticket unreviewed.** Draft the ticket
-  content for the user to check, don't submit it on their behalf without
-  review — speculative diagnoses or assumptions in a ticket slow down
-  resolution rather than helping.
+- **Never write or submit the ticket for the user.** BriCS asks users not
+  to submit AI-generated tickets: they tend to be long and contain
+  speculative diagnoses and unchecked assumptions, which slow down
+  resolution. Help the user gather the facts (exact commands, error output,
+  job IDs, timestamps) and tell them to write the ticket themselves, in
+  their own words. If you investigated the problem with them, have them
+  summarise the outcome in their own words rather than pasting your output.
 
 ## Overview
 
@@ -81,18 +86,30 @@ raise a ticket — wait for the status page to be updated instead.
    institution and authenticate with institutional credentials.
 2. Click the **green plus (+) icon** in the bottom section of the sidebar
    to open a new ticket.
-3. Enter a clear, specific title and fill in the description with:
-   - Your **project name** (as shown on the BriCS portal)
-   - The **facility** involved (Isambard-AI Phase 1/2, Isambard 3 Grace/MACS)
-   - Your **UNIX username**, if applicable
-   - What you were trying to do, and the exact command(s) run
+3. Enter a clear, specific title and, in the user's own words, describe:
+   - What they were trying to do
+   - What they expected to happen
+   - What actually happened
+
+   Alongside the description include:
+   - The **project name** (as shown on the BriCS portal)
+   - The **facility or service** involved (e.g. Isambard-AI, Isambard 3,
+     BriCS portal, BriCS helpdesk)
+   - The **UNIX username** for the project, if relevant (form
+     `USER.PROJECT`, e.g. `grace.cobol`)
+   - The exact command(s) run
    - Full diagnostic information — paste the actual error output, including
      tracebacks or stack traces, rather than describing it generically
    - When the issue occurred
 4. Attach supporting material if helpful — a screenshot, or a `.txt` file
    of the terminal session (job ID, `sacct`/`squeue` output, error logs).
 5. Leave **State** set to "new" and click **Create**. A member of the
-   Isambard team will respond during normal working hours.
+   Isambard team will respond during normal working hours. The University
+   of Bristol closure days (usually next to public holidays) are not
+   working days.
+
+GW4 users wanting access to Isambard 3 should check with their own
+university support desk for site-specific processes.
 
 Open one ticket per distinct issue — do not add unrelated problems to an
 existing ticket.
@@ -101,7 +118,10 @@ existing ticket.
 
 - Optionally opt in to **email notifications** for ticket updates — this
   option is available when creating a ticket or posting a reply on
-  https://support.isambard.ac.uk.
+  https://support.isambard.ac.uk. Replying to a notification email does
+  **not** update the ticket; reply through the helpdesk.
+- After a ticket is closed it can still be replied to for **48 hours**;
+  after that, open a new ticket.
 - The ticket interface is a web chat — add further information, logs, or
   context to an open ticket at any time through this interface.
 - Once the issue is resolved, close the ticket using the **State**
@@ -114,6 +134,8 @@ existing ticket.
 | User asks for a support email address | There isn't one — direct them to https://support.isambard.ac.uk |
 | User can't submit a ticket | Confirm they are a member of an active project; helpdesk access requires this |
 | User has multiple unrelated issues | Open a separate ticket for each one |
+| User asks the agent to write or submit the ticket | Decline; help them collect commands, errors and job IDs, then have them write it in their own words |
+| Slurm job is PENDING with reason `None` | Not a fault — the job is queued and no support request is needed |
 | User reports something that looks systemic (many users affected) | Check https://status.isambard.ac.uk first — it may already be tracked |
 | User wants to know if others are affected | Point them to Known Issues and Service Status rather than speculating |
 | User wants help installing or debugging their own third-party software | BriCS support cannot help with installation or use of user software — point them to relevant guides/tutorials first; only raise a ticket if the problem looks like a platform issue |
