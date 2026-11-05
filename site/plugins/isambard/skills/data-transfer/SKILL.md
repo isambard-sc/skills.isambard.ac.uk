@@ -22,11 +22,15 @@ compatibility: >
   users need WSL.
 metadata:
   author: isambard-sc
-  version: "1.1"
+  version: "1.2"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/
   supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/local/
+    - https://docs.isambard.ac.uk/user-documentation/guides/file_transfer/between-projects/
     - https://docs.isambard.ac.uk/user-documentation/tutorials/data-mover/
     - https://docs.isambard.ac.uk/user-documentation/information/system-storage/
+    - https://docs.isambard.ac.uk/user-documentation/faqs/
+  docs_commit: e994565
 ---
 
 # Data Transfer on Isambard
@@ -61,10 +65,14 @@ user runs themselves.
   behaviour may change without notice, and it is under active development —
   do not present it as a stable, general-availability service.
 - Never run a large transfer directly on a login node. Login node sessions
-  are resource-limited (on Isambard-AI, the equivalent of one CPU core and
-  4 GiB of memory); a large `scp`/`rsync`/`rclone` copy started there is
-  likely to be killed by the out-of-memory killer. Submit it as a Slurm job
+  are resource-limited (on Isambard-AI, the equivalent of one CPU core,
+  4 GiB of memory, and 500 tasks); a large `scp`/`rsync`/`rclone` copy
+  started there is likely to be killed by the out-of-memory killer. Submit it as a Slurm job
   instead.
+- ⚠️ Never put private or sensitive data in project public shared storage
+  (`$PROJECTDIR_PUBLIC`, `/projects/public/PROJECT`) — every user on the
+  facility can read it, even if it is only there briefly. Use
+  `scp`/`rsync` via `clifton` for such data instead.
 - Never treat data mover S3 staging storage as persistent storage or a
   backup. Data not modified for 30 days is automatically deleted, and it is
   separate from `$HOME`/`$PROJECTDIR`.
@@ -153,9 +161,29 @@ concerns, and the PI is legally responsible for any breach.
 
 Two options:
 
-1. **Project public shared storage** — `cp -r` a directory into
-   `/projects/public/PROJECT`, which is writeable by project members and
-   readable by all users of the facility.
+1. **Project public shared storage** (`$PROJECTDIR_PUBLIC`, i.e.
+   `/projects/public/PROJECT`) — writeable by project members and
+   **readable by all users of the facility**, so never use it for private or
+   sensitive data. Not recommended for very large data, as it needs a
+   working copy. Use `rsync` with the options below — **not** `cp`, `mv`, or
+   `rsync -a`, which may keep the original owner, group, or permissions:
+
+   ```bash
+   # 1. In the SOURCE project: copy into public storage, readable by others
+   rsync -rlpth --chmod=o=rX --info=progress2 \
+       "$PROJECTDIR/data/" "$PROJECTDIR_PUBLIC/data/"
+   echo "$PROJECTDIR_PUBLIC"    # path needed in step 2
+
+   # 2. In the DESTINATION project: copy into $PROJECTDIR with normal perms
+   rsync -rlth --chmod=ugo=rwX --info=progress2 \
+       /projects/public/my_project/data/ "$PROJECTDIR/data/"
+
+   # 3. In the SOURCE project, once both copies succeeded: remove public copy
+   rm -rf "${PROJECTDIR_PUBLIC:?}/data/"
+   ```
+
+   Symlinks are copied as-is, so absolute links into the source project
+   will break; custom permissions must be reapplied in the destination.
 2. **`scp`/`rsync` via `clifton`** — install and authenticate `clifton` in
    the source project account, run `clifton ssh-config write`, then comment
    out the `ProxyJump` directive for the relevant `Host` in
@@ -189,6 +217,8 @@ rsync --archive --verbose --partial --human-readable dir PROJECT2.FACILITY.isamb
 sbatch project-transfer.sh
 ```
 
+- Set `--time` generously enough for the whole copy, but the maximum job
+  run time is 24 hours.
 - `rsync --partial` keeps partially transferred files, so re-running the
   same job resumes rather than restarting if it is interrupted or runs out
   of time.
@@ -229,7 +259,18 @@ area, not persistent storage.
 
 ### Setup
 
-1. **Install an S3 client** — `rclone` (>= v1.61.0) or AWS CLI.
+1. **Install an S3 client** — `rclone` (>= v1.61.0) or AWS CLI. BriCS
+   provides install scripts for BriCS clusters or a local Linux/Mac machine:
+
+   ```bash
+   curl -fsSLO https://docs.isambard.ac.uk/user-documentation/tutorials/data-mover/install-rclone.sh
+   bash install-rclone.sh
+   # or, for AWS CLI:
+   curl -fsSLO https://docs.isambard.ac.uk/user-documentation/tutorials/data-mover/install-awscli.sh
+   bash install-awscli.sh
+   ```
+
+   Then configure `rclone` with the data mover as a remote:
 
    ```bash
    rclone config create datamover-s3 s3 provider=Other env_auth=true \
@@ -255,6 +296,11 @@ area, not persistent storage.
    uv tool install git+https://github.com/bristol-supercomputing/netham-early-access.git@0.1.0
    ```
 
+   Netham needs Python >= 3.11 (Isambard-AI Phase 2 has `python3.11`
+   pre-installed). With the pip install, run
+   `source netham-venv/bin/activate` before each use. Verify with
+   `netham --help`.
+
 3. **Configure Netham** — create a dedicated folder and `netham.toml` inside it:
 
    ```bash
@@ -271,7 +317,8 @@ area, not persistent storage.
    `PROJECTID` is the project's ID/shortcode; all members use the same
    `role_arn`. Credentials last at most 24 hours (1440 minutes) — reduce
    `assumed_role_duration_minutes`, or pass
-   `netham auth --assumed-role-duration`, for a shorter lifetime.
+   `netham auth --assumed-role-duration`, for a shorter lifetime. `netham`
+   errors if `assumed_role_duration_minutes` exceeds 1440.
 
 4. **Authenticate and load credentials:**
 
@@ -281,6 +328,7 @@ area, not persistent storage.
    source creds_env.sh
    ```
 
+   `--config` can be omitted if `netham.toml` is in the current directory.
    `creds_env.sh` sets the standard `AWS_ACCESS_KEY_ID`,
    `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, and `AWS_ENDPOINT_URL_S3`
    environment variables, which both `rclone` and AWS CLI read
