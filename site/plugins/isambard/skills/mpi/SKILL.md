@@ -15,8 +15,12 @@ compatibility: >
   Cray MPI environment.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/mpi/
+  supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/guides/python-advanced/
+    - https://docs.isambard.ac.uk/user-documentation/guides/modules/
+  docs_commit: e994565
 ---
 
 # MPI on Isambard
@@ -31,12 +35,19 @@ MPI application → libfabric → Slingshot 11 NIC → network
 
 > **Never use `mpirun` or `mpiexec`.** Always launch MPI applications with `srun` so
 > you can supply the correct `--mpi` flag for the PMI type. Using `mpirun`/`mpiexec`
-> bypasses Slurm's process management and will not work correctly.
+> bypasses Slurm's process management and will not work correctly. The only
+> documented exception is conda-forge OpenMPI, an unsupported configuration — see
+> [Option 3: OpenMPI from conda-forge](#option-3-openmpi-from-conda-forge-unsupported).
 
 ## Critical Rules
 
 - Always start MPI jobs with `srun` on Isambard.
-- Never use `mpirun` or `mpiexec` on Isambard.
+- Never use `mpirun` or `mpiexec` on Isambard. Exception: conda-forge OpenMPI cannot
+  be launched with `srun` and must use its own `mpirun` — this is not a supported
+  configuration; steer users to the MPICH options first.
+- Never use a plain conda-forge `mpich` or `openmpi` install for multi-node jobs —
+  each rank forms its own single-rank MPI world and the job silently fails to
+  communicate.
 - Always choose the `--mpi` value that matches the MPI implementation in use.
 - Load MPI through a Cray `PrgEnv` or a Conda/MPI build that is explicitly configured
   for Slingshot 11.
@@ -69,10 +80,10 @@ mpicc -show
 
 The `-lmpi_gnu_*` or `-lmpi_cray` library is the Cray MPICH build tuned for Slingshot.
 
-> **aarch64 known issues:** Cray MPICH support for aarch64 was recently added and some
-> environment variable workarounds may be needed. Check the
+> **aarch64 known issues:** Cray MPICH support for aarch64 was recently added. If you
+> hit MPICH problems, check the
 > [Known Issues page](https://docs.isambard.ac.uk/service-status/known_issues/) for
-> current advice before running.
+> any current advice on environment variables.
 
 ---
 
@@ -117,38 +128,176 @@ srun --mpi=pmix ./mpi_app
 
 ## Installing a Different MPI Version
 
-The system Cray MPICH is recommended for performance. If you need a different version
-(e.g. for software that requires OpenMPI), you have two options.
+The system Cray MPICH is recommended for performance. You may build your own MPI from
+source, or use conda (set up Miniforge first — see the
+[Python/Conda guide](https://docs.isambard.ac.uk/user-documentation/guides/python/)).
 
-### Option 1: Conda (easiest)
+> **A plain conda MPI install will not run across multiple nodes.** Installing `mpich`
+> or `openmpi` directly from conda-forge (e.g.
+> `conda install --channel conda-forge mpich`) brings a self-contained MPI runtime that
+> does not know about Slurm or Slingshot. Launched with `srun` across nodes, every
+> process starts its own single-rank MPI world. Use one of the approaches below.
 
-See the [Python/Conda guide](https://docs.isambard.ac.uk/user-documentation/guides/python/)
-to set up Miniforge first, then:
+Recommend these conda approaches in this order (`mpi4py` is used as the example; the
+same ideas apply to any conda-installed MPI application):
 
-```bash
-# MPICH via conda-forge
-conda install -c conda-forge mpich
+1. **MPICH external build** (recommended) — simplest correct option, good performance.
+2. **`mpi4py` built from source against Cray MPICH** — best performance; use for
+   production MPI workloads.
+3. **OpenMPI from conda-forge** — only if the application requires OpenMPI; not a
+   supported configuration on Isambard.
 
-# OpenMPI via conda-forge
-conda install -c conda-forge openmpi
+### Test program
+
+Use this `mpi_hello.py` to confirm every rank joins one MPI world spanning all nodes:
+
+```python
+#!/usr/bin/env python3
+"""Check that mpi4py forms a single MPI world spanning every rank and node."""
+
+from collections import Counter
+import socket
+import sys
+
+from mpi4py import MPI
+
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
+host = socket.gethostname()
+
+total = comm.allreduce(1, op=MPI.SUM)
+hosts = comm.gather(host, root=0)
+
+if rank != 0:
+    sys.exit(0)
+
+ranks_per_host = Counter(hosts)
+print(f"MPI library: {MPI.Get_library_version().splitlines()[0]}")
+print(f"world size: {size}")
+print(f"allreduce sum: {total} (expected {size})")
+print(f"nodes in world: {len(ranks_per_host)}")
+for name, count in sorted(ranks_per_host.items()):
+    print(f"  {name}: {count} ranks")
+
+if size > 1 and total == size:
+    print("RESULT: PASS - one MPI world spans every rank")
+    sys.exit(0)
+
+print("RESULT: FAIL - ranks did not join a single MPI world")
+sys.exit(1)
 ```
 
-> **Note:** Conda-installed MPI will not use the Slingshot 11 interconnect and will have
-> lower multi-node performance than Cray MPICH. Use only when necessary for software
-> compatibility.
+A working multi-node launch prints `RESULT: PASS`. A broken setup makes every process
+report `world size: 1` and `RESULT: FAIL`.
 
-### Option 2: Build OpenMPI from source
+### Option 1: MPICH external build (recommended)
 
-For maximum control or when Slingshot integration is needed with OpenMPI:
+conda-forge publishes *external* MPICH builds that contain no MPI runtime and bind to
+the system MPICH at run time. Cray MPICH is MPICH ABI-compatible, so the environment
+uses Cray MPICH and the Slingshot interconnect while `mpi4py` comes from conda.
+
+```bash
+conda create --name mpi4py-mpich \
+    --channel conda-forge/label/mpi-external \
+    --channel conda-forge \
+    mpi4py "mpich=*=external_*"
+```
+
+Job script:
+
+```bash
+#!/usr/bin/env bash
+#SBATCH --job-name=mpi4py-mpich
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:01:00
+#SBATCH --output=mpi4py-mpich-%j.out
+
+set -euo pipefail
+
+module reset
+module load PrgEnv-gnu
+
+# adjust this line to where your conda is located
+source ~/miniforge3/bin/activate
+conda activate mpi4py-mpich
+
+# Load the vendor Cray MPICH runtime in place of the conda placeholder
+export LD_LIBRARY_PATH="${MPICH_DIR}/lib-abi-mpich:${LD_LIBRARY_PATH:-}"
+
+srun --ntasks 8 --ntasks-per-node 4 --cpus-per-task 1 --cpu-bind cores \
+    python mpi_hello.py
+```
+
+This uses Slingshot correctly but is not as well optimised as an MPI built for the
+system. For production workloads where MPI performance matters, use Option 2.
+
+### Option 2: Build `mpi4py` from source against Cray MPICH
+
+Build with the Cray compiler wrapper `cc`, which links Cray MPICH, libfabric, and the
+Slingshot libraries directly:
+
+```bash
+module reset
+module load PrgEnv-gnu
+
+conda create --name mpi4py-source python pip
+conda activate mpi4py-source
+
+MPICC="cc -shared" python -m pip install \
+    --force-reinstall --no-cache-dir --no-binary mpi4py mpi4py
+```
+
+Submit with the same job script as Option 1 (activating `mpi4py-source`), but **omit
+the `LD_LIBRARY_PATH` line** — the build is already linked against the Cray libraries.
+Keep `module reset` and `module load PrgEnv-gnu` in the job script.
+
+For CUDA-aware `mpi4py` on Isambard-AI, additional CUDA modules and build flags are
+needed.
+
+### Option 3: OpenMPI from conda-forge (unsupported)
+
+> **Not a supported configuration on Isambard.** Running conda OpenMPI with `srun`
+> does not work correctly, the launcher flags are complex and error-prone, and testing
+> could not confirm it uses the Slingshot interconnect. Use only if the application
+> specifically requires OpenMPI and a source build is not possible.
+
+```bash
+conda create --name mpi4py-openmpi --channel conda-forge mpi4py openmpi
+```
+
+This is the one case where `mpirun` is used: launch with OpenMPI's own `mpirun`,
+telling it to use Slurm for resource allocation and process launch. Do **not** load
+the Cray programming environment:
+
+```bash
+#!/usr/bin/env bash
+#SBATCH --job-name=mpi4py-openmpi
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:01:00
+#SBATCH --output=mpi4py-openmpi-%j.out
+
+set -euo pipefail
+
+module reset
+
+# adjust this line to where your conda is located
+source ~/miniforge3/bin/activate
+conda activate mpi4py-openmpi
+
+mpirun --prtemca ras slurm --prtemca plm slurm \
+    --np 8 --map-by ppr:4:node:PE=1 --bind-to core \
+    python mpi_hello.py
+```
+
+### Building OpenMPI from source
 
 - [OpenMPI v5 build instructions](https://docs.open-mpi.org/en/v5.0.x/installing-open-mpi/quickstart.html#building-from-source)
 - [Legacy OpenMPI (≤4.x) build instructions](https://www-lb.open-mpi.org/faq/?category=building#easy-build)
-
-### mpi4py
-
-For Python MPI, see the [Python guide](https://docs.isambard.ac.uk/user-documentation/guides/python/)
-— specifically the section on building `mpi4py` from source against the Cray MPI stack
-using `module load PrgEnv-gnu` and `pip install --no-binary mpi4py mpi4py`.
 
 ---
 
@@ -162,9 +311,9 @@ using `module load PrgEnv-gnu` and `pip install --no-binary mpi4py mpi4py`.
 | Run an MPI job (OpenMPI ≤4) | `srun --mpi=pmi2 ./mpi_app` |
 | Run an MPI job (OpenMPI ≥5) | `srun --mpi=pmix ./mpi_app` |
 | List available PMI types | `srun --mpi=list` |
-| Install OpenMPI via conda | `conda install -c conda-forge openmpi` |
-| Install MPICH via conda | `conda install -c conda-forge mpich` |
-| Install mpi4py (source, Slingshot-aware) | `module load PrgEnv-gnu` + `pip install --no-binary mpi4py mpi4py` |
+| Conda MPI (recommended) | `conda create ... --channel conda-forge/label/mpi-external ... mpi4py "mpich=*=external_*"` + `LD_LIBRARY_PATH=${MPICH_DIR}/lib-abi-mpich:...` |
+| mpi4py from source (best performance) | `module load PrgEnv-gnu` + `MPICC="cc -shared" python -m pip install --force-reinstall --no-cache-dir --no-binary mpi4py mpi4py` |
+| Conda OpenMPI (unsupported) | `mpirun --prtemca ras slurm --prtemca plm slurm ...` (not `srun`) |
 | MPI in containers (Podman-HPC) | `--openmpi-pmi2` flag + `srun --mpi=pmi2` |
 | MPI in containers (Apptainer) | `module load brics/apptainer-multi-node` + `source /host/adapt.sh` |
 
@@ -172,7 +321,8 @@ using `module load PrgEnv-gnu` and `pip install --no-binary mpi4py mpi4py`.
 
 ## Related Resources
 
-- [Isambard Known Issues](https://docs.isambard.ac.uk/service-status/known_issues/) — check for current Cray MPICH aarch64 workarounds
+- [Isambard Known Issues](https://docs.isambard.ac.uk/service-status/known_issues/)
+- [Isambard Advanced Python guide](https://docs.isambard.ac.uk/user-documentation/guides/python-advanced/) — conda and `mpi4py`
 - [Isambard Modules and Compilers guide](https://docs.isambard.ac.uk/user-documentation/guides/modules/)
 - [Isambard NCCL guide](https://docs.isambard.ac.uk/user-documentation/guides/nccl/)
 - [Isambard Containers guide](https://docs.isambard.ac.uk/user-documentation/guides/containers/)
