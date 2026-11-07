@@ -233,6 +233,65 @@ $ agy plugin install https://github.com/isambard-sc/skills.isambard.ac.uk/site
 $ agy plugin enable isambard
 ```
 
+### OpenCode
+
+Tested on OpenCode CLI `2.2.6` (V2) and `1.19.5` (V1).
+
+OpenCode has no plugin marketplace. It loads skills from directories or
+[HTTP catalogs](https://opencode.ai/docs/skills/) listed under `skills` in
+`opencode.json`. Add this repository's skills catalog to
+`~/.config/opencode/opencode.json` or your project's `opencode.json`:
+
+For OpenCode 2:
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": ["https://skills.isambard.ac.uk/plugins/isambard/skills/"]
+}
+```
+
+For OpenCode 1, use the nested form:
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": {
+    "urls": ["https://skills.isambard.ac.uk/plugins/isambard/skills/"]
+  }
+}
+```
+
+Skills are downloaded from the catalog automatically on startup and
+advertised to the model by ID (the IDs are the names in the skills table
+above). Verify with:
+
+```isambard-session
+$ opencode run "List every skill ID available to you. Then call the skill tool with id 'slurm' and report the names of the files in its references/ directory."
+Available skill IDs:
+
+1. `brics-hpc-ai-code`
+2. `containers`
+3. `cuda`
+4. `data-transfer`
+5. `getting-support`
+6. `modules`
+7. `mpi`
+8. `nccl`
+9. `opencode`
+10. `python`
+11. `report`
+12. `slurm`
+13. `spack`
+
+`slurm` skill `references/` directory files:
+- `advanced.md`
+- `troubleshooting.md`
+```
+
+(`opencode` and `report` are OpenCode built-in skills; the eleven other
+IDs come from the catalog. OpenCode 1 lists them comma-separated.)
+
 ### Other agent-based tools
 
 Paste the skill URL into the tool's context or skill configuration. The
@@ -253,6 +312,7 @@ site/                        # All web-served content (GitHub Pages source)
       .claude-plugin/
         plugin.json          # Plugin metadata (auto-discovers skills/)
       skills/
+        index.json           # OpenCode HTTP skills catalog (generated, checked in)
         slurm/
           SKILL.md           # Slurm skill file (AgentSkills spec format)
         brics-hpc-ai-code/

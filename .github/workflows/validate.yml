@@ -38,8 +38,9 @@ jobs:
                 ;;
               "$host"/*)
                 local rel="${url#"$host"/}"
+                rel="${rel%/}"
                 local path="site/$rel"
-                if [ ! -f "$path" ]; then
+                if [ ! -e "$path" ]; then
                   echo "FAIL missing $path (from $url)"
                   fail=1
                 fi
@@ -65,12 +66,23 @@ jobs:
             [ -n "$url" ] && check_url "$url"
           done <<< "$readme_urls"
 
+          # OpenCode catalog: verify the catalog's per-skill file URLs all
+          # resolve in the working tree. The base URL
+          # https://skills.isambard.ac.uk/plugins/isambard/skills/ joined with
+          # <skill-name>/<file> matches the skill directories already served.
+          while IFS= read -r url; do
+            [ -n "$url" ] && check_url "$url"
+          done <<< "$(jq -r '.skills[] | .name as $name | .files[] | "https://skills.isambard.ac.uk/plugins/isambard/skills/\($name)/\(.)"' site/plugins/isambard/skills/index.json)"
+
           exit $fail
+
+      - name: Check OpenCode catalog is fresh (matches skills on disk)
+        run: python3 .github/workflows/scripts/generate_opencode_catalog.py --check
 
       - name: Check SKILL.md directory names and frontmatter schema
         run: python3 .github/workflows/scripts/check_skill_frontmatter.py
 
-      - name: Check every skill is indexed in marketplace.json, index.html, and README
+      - name: Check every skill is indexed in marketplace.json, index.html, README, and OpenCode catalog
         run: python3 .github/workflows/scripts/check_skill_indexes.py
 
       - name: Check README example transcripts match the skills on disk

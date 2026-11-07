@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Every skill directory under site/plugins/*/skills/*/ must be listed in
-site/marketplace.json, site/index.html, and README.md. This is the
-regression this repo keeps hitting: a skill gets created but one of the
-three public indexes is never updated, so it's invisible there even
-though it's live on the site.
+site/marketplace.json, site/index.html, README.md, and the OpenCode
+catalog at site/plugins/isambard/skills/index.json. This is the regression
+this repo keeps hitting: a skill gets created but one of the public
+indexes is never updated, so it's invisible there even though it's live
+on the site.
 """
 
 import json
@@ -27,6 +28,9 @@ def main():
     with open("README.md", encoding="utf-8") as f:
         readme = f.read()
 
+    with open("site/plugins/isambard/skills/index.json", encoding="utf-8") as f:
+        catalog_names = {s["name"] for s in json.load(f)["skills"]}
+
     errors = []
     for skill in skills:
         plugin, name = skill["plugin"], skill["name"]
@@ -40,10 +44,12 @@ def main():
             errors.append(f"{name}: no skill card in site/index.html (expected href {rel_href})")
         if rel_readme_path not in readme and url not in readme:
             errors.append(f"{name}: missing from README.md skills table (expected link to {rel_readme_path})")
+        if name not in catalog_names:
+            errors.append(f"{name}: missing from site/plugins/isambard/skills/index.json (OpenCode catalog)")
 
     report_and_exit(
         errors,
-        f"OK — all {len(skills)} skills are indexed in marketplace.json, index.html, and README.md",
+        f"OK — all {len(skills)} skills are indexed in marketplace.json, index.html, README.md, and the OpenCode catalog",
     )
 
 
