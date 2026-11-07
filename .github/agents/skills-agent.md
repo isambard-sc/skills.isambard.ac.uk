@@ -124,6 +124,8 @@ The `./site/plugins/<plugin-name>/.claude-plugin/plugin.json` file is able to au
 
 Also update the `./site/marketplace.json` file to add an entry for the new skill, and `./site/index.html` to add a new skill card.
 
+Also regenerate the OpenCode skills catalog with `python3 .github/workflows/scripts/generate_opencode_catalog.py` and commit the result.
+
 ## Updating `./site/marketplace.json`
 
 Also add an entry to `./site/marketplace.json` (used by other agent tools). The structure is:
@@ -174,6 +176,7 @@ When creating a new skill, complete the following steps in order:
 - [ ] Add an entry to `site/marketplace.json` `skills` array
 - [ ] Add a skill card to `site/index.html`
 - [ ] Update `README.md` skills table
+- [ ] Regenerate the OpenCode skills catalog with `python3 .github/workflows/scripts/generate_opencode_catalog.py` — `validate.yml` checks it against the skills on disk and will fail the build if it's stale
 - [ ] Update the skill count and name lists in `README.md`'s example CLI transcripts (the `/skills` output and the Cursor `Skills: N (...)` line) — `validate.yml` checks these against the skills on disk and will fail the build if they're stale
 
 ---
@@ -184,6 +187,7 @@ When creating a new skill, complete the following steps in order:
 - Increment `metadata.version` in the frontmatter for significant changes.
 - Update the `"description"` in both `marketplace.json` files if the summary changed.
 - Update the skill card description in `index.html` if the summary changed.
+- Regenerate the OpenCode skills catalog with `python3 .github/workflows/scripts/generate_opencode_catalog.py` and commit the result whenever any file inside the skill directory changes — OpenCode clients use the catalog's content hash to refresh their caches.
 - Do **not** rename or move skill files once published — existing integrations may already reference the URL.
 
 ---

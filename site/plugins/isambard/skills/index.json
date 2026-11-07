@@ -1,0 +1,87 @@
+{
+  "skills": [
+    {
+      "name": "brics-hpc-ai-code",
+      "version": "f689ea799b2e",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "containers",
+      "version": "cdfcb2299213",
+      "files": [
+        "SKILL.md",
+        "references/apptainer.md",
+        "references/podman-hpc.md"
+      ]
+    },
+    {
+      "name": "cuda",
+      "version": "857211f82a72",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "data-transfer",
+      "version": "c87e319ffb73",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "getting-support",
+      "version": "311c79a5d5da",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "modules",
+      "version": "64ff907b8ebc",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "mpi",
+      "version": "feb8e2b705bc",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "nccl",
+      "version": "22fca31adccb",
+      "files": [
+        "SKILL.md",
+        "references/build.md",
+        "references/containers.md"
+      ]
+    },
+    {
+      "name": "python",
+      "version": "0abc3594bc71",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "slurm",
+      "version": "47def229c0d0",
+      "files": [
+        "SKILL.md",
+        "references/advanced.md",
+        "references/troubleshooting.md"
+      ]
+    },
+    {
+      "name": "spack",
+      "version": "c5a4451768e0",
+      "files": [
+        "SKILL.md"
+      ]
+    }
+  ]
+}
