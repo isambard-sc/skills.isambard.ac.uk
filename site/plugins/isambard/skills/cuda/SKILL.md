@@ -23,7 +23,6 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer/
     - https://docs.isambard.ac.uk/user-documentation/guides/modules/
     - https://docs.isambard.ac.uk/specs/
-  docs_commit: e994565
 ---
 
 # GPUs and CUDA on Isambard
