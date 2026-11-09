@@ -21,7 +21,6 @@ metadata:
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/spack/
   supplementary_urls:
     - https://docs.isambard.ac.uk/user-documentation/guides/spack/setup/
-  docs_commit: e994565
 ---
 
 # Spack on Isambard
