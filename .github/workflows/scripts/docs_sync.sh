@@ -16,6 +16,9 @@
 # Usage, from anywhere in a skills.isambard.ac.uk checkout:
 #   .github/workflows/scripts/docs_sync.sh            # full run
 #   .github/workflows/scripts/docs_sync.sh --dry-run  # snapshot report only
+#   .github/workflows/scripts/docs_sync.sh --no-push  # stop before pushing and
+#       keep the worktree and branch for inspection
+#   .github/workflows/scripts/docs_sync.sh --skill slurm  # one skill's pages only
 #
 # DOCS_SYNC_BASE=origin/<branch> runs against another branch (for testing);
 # the PR still targets main.
@@ -26,7 +29,17 @@
 set -euo pipefail
 
 dry_run=false
-[ "${1:-}" = "--dry-run" ] && dry_run=true
+no_push=false
+skill_args=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --dry-run) dry_run=true ;;
+    --no-push) no_push=true ;;
+    --skill) skill_args=(--skill "$2"); shift ;;
+    *) echo "unknown option: $1" >&2; exit 2 ;;
+  esac
+  shift
+done
 
 repo=$(git -C "$(dirname "$0")" rev-parse --show-toplevel)
 date=$(date +%Y-%m-%d)
@@ -34,7 +47,9 @@ branch="docs-sync/$date"
 tmp=$(mktemp -d)
 work="$tmp/skills"
 
+keep=false
 cleanup() {
+  $keep && return
   git -C "$repo" worktree remove --force "$work" 2>/dev/null || true
   git -C "$repo" branch -D "$branch" >/dev/null 2>&1 || true
   rm -rf "$tmp"
@@ -56,7 +71,7 @@ fi
 git -C "$repo" worktree add --quiet -b "$branch" "$work" "$base"
 cd "$work"
 
-$py .github/workflows/scripts/snapshot_docs.py --report "$tmp/report.md"
+$py .github/workflows/scripts/snapshot_docs.py --report "$tmp/report.md" ${skill_args[@]+"${skill_args[@]}"}
 
 if [ -z "$(git status --porcelain -- snapshots)" ]; then
   echo "No docs changes; nothing to do."
@@ -157,6 +172,17 @@ done
   echo
   echo "🤖 Generated with [Claude Code](https://claude.com/claude-code)"
 } > "$tmp/body.md"
+
+if $no_push; then
+  keep=true
+  echo "Stopped before pushing (--no-push). Inspect the result in:"
+  echo "  worktree:    $work"
+  echo "  PR body:     $tmp/body.md"
+  echo "  commits:     git -C '$work' log --stat $base..HEAD"
+  echo "Clean up with:"
+  echo "  git -C '$repo' worktree remove --force '$work' && git -C '$repo' branch -D '$branch'"
+  exit 0
+fi
 
 git push --quiet --set-upstream origin "$branch"
 gh pr create --draft --base main --head "$branch" \
