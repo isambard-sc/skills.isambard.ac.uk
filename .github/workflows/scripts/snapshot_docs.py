@@ -20,7 +20,7 @@ the skills citing each. Always exits 0: a docs change is a prompt to review,
 not a failure.
 
 Usage (from the repo root):
-  python3 .github/workflows/scripts/snapshot_docs.py [--report report.md]
+  python3 .github/workflows/scripts/snapshot_docs.py [--report report.md] [--skill NAME]
 """
 
 import argparse
@@ -159,10 +159,12 @@ class ArticleText(HTMLParser):
         return re.sub(r"\n{3,}", "\n\n", "".join(parts)).strip() + "\n"
 
 
-def cited_pages():
+def cited_pages(only=None):
     """Map each cited docs URL (without fragment) to the skills citing it."""
     pages = {}
     for skill in discover_skills():
+        if only and skill["name"] != only:
+            continue
         data, err = load_frontmatter(os.path.join(skill["dir"], "SKILL.md"))
         if err:
             continue
@@ -198,9 +200,12 @@ def fetch_text(url):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--report", help="also write the Markdown report to this file")
+    ap.add_argument("--skill", help="only refresh the pages this skill cites (and remove nothing)")
     args = ap.parse_args()
 
-    pages = cited_pages()
+    pages = cited_pages(args.skill)
+    if args.skill and not pages:
+        sys.exit(f"no docs pages cited by a skill named {args.skill!r}")
     changes = {"changed": [], "new": [], "removed": [], "error": []}
 
     for url in sorted(pages):
@@ -221,7 +226,7 @@ def main():
             changes["new" if old is None else "changed"].append((url, path, None))
 
     wanted = {snapshot_path(u) for u in pages}
-    for root, _, files in os.walk(SNAPSHOT_DIR):
+    for root, _, files in os.walk(SNAPSHOT_DIR) if not args.skill else ():
         for name in files:
             path = os.path.join(root, name)
             if path not in wanted:
