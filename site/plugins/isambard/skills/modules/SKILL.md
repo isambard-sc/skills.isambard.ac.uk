@@ -18,7 +18,6 @@ metadata:
   author: isambard-sc
   version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/modules/
-  docs_commit: e994565
 ---
 
 # Modules and Compilers on Isambard
