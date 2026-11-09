@@ -30,7 +30,6 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/tutorials/data-mover/
     - https://docs.isambard.ac.uk/user-documentation/information/system-storage/
     - https://docs.isambard.ac.uk/user-documentation/faqs/
-  docs_commit: e994565
 ---
 
 # Data Transfer on Isambard
