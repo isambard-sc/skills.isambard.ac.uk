@@ -119,18 +119,20 @@ Only edit files: do not run git. Edits are allowed under site/ and to
 README.md only.
 
 Finish with a Markdown summary for the pull request description and nothing
-else: for each changed page, what changed in the docs, and for each affected
-skill, what you changed or why no change was needed.
+else, using ### or lower headings: for each changed page, what changed in the
+docs, and for each affected skill, what you changed or why no change was
+needed.
 EOF
 )
 
 # The snapshots come from web pages, so limit what a prompt injected there
 # could do. Reads stay inside the worktree (its summary goes into a public PR),
-# edits stay under site/ and the README (Edit rules cover Write too), and the validators are allowed only as
-# exact commands: a wildcard would let it write a script and run it. It gets
-# no git at all: the diff is in the prompt, and this script does the commits
-# (git commit -F/--template or git diff --output would let it read or write
-# arbitrary files). Anything not listed is denied in -p mode.
+# edits stay under site/ and the README (Edit rules cover Write too), and the
+# validators are allowed only as exact commands: a wildcard would let it write
+# a script and run it. It gets no git at all: the diff is in the prompt, and
+# this script does the commits (git commit -F/--template or git diff --output
+# would let it read or write arbitrary files). Anything not listed is denied in
+# -p mode.
 allowed=(
   "Read(./**)" "Glob" "Grep"
   "Edit(./site/**)" "Edit(./README.md)"
