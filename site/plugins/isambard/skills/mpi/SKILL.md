@@ -20,7 +20,6 @@ metadata:
   supplementary_urls:
     - https://docs.isambard.ac.uk/user-documentation/guides/python-advanced/
     - https://docs.isambard.ac.uk/user-documentation/guides/modules/
-  docs_commit: e994565
 ---
 
 # MPI on Isambard
