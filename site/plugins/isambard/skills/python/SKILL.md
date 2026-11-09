@@ -20,7 +20,6 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/guides/python-advanced/
     - https://docs.isambard.ac.uk/user-documentation/guides/python-troubleshooting/
     - https://docs.isambard.ac.uk/user-documentation/guides/mpi/
-  docs_commit: e994565
 ---
 
 # Python on Isambard AI
