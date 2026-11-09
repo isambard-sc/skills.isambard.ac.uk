@@ -23,7 +23,6 @@ metadata:
   supplementary_urls:
     - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer-multi-node/
     - https://docs.isambard.ac.uk/user-documentation/guides/modules/
-  docs_commit: e994565
 ---
 
 # NCCL on Isambard
