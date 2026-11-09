@@ -26,7 +26,6 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/guides/containers/podman-hpc-multi-node/
     - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer-multi-node/
     - https://docs.isambard.ac.uk/service-status/known_issues/
-  docs_commit: e994565
 ---
 
 # Containers on Isambard
