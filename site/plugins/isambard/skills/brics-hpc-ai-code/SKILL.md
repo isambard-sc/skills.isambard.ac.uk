@@ -26,7 +26,6 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/information/system-storage/
     - https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
     - https://docs.isambard.ac.uk/policies/
-  docs_commit: e994565
 ---
 
 # BriCS HPC Responsible AI-Generated Code Skill
