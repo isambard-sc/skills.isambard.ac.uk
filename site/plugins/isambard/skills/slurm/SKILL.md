@@ -25,7 +25,6 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/guides/slurm-troubleshooting/
     - https://docs.isambard.ac.uk/user-documentation/guides/slurm-examples/
     - https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
-  docs_commit: e994565
 ---
 
 # Slurm on Isambard
