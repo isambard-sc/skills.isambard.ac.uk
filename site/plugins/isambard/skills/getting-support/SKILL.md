@@ -21,7 +21,6 @@ metadata:
     - https://docs.isambard.ac.uk/service-status/known_issues/
     - https://docs.isambard.ac.uk/user-documentation/faqs/
     - https://docs.isambard.ac.uk/user-documentation/guides/slurm-troubleshooting/
-  docs_commit: e994565
 ---
 
 # Getting Support on Isambard — Agent Skill
