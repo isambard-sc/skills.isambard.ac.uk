@@ -57,7 +57,7 @@ metadata:
 - `metadata.version`: increment when making significant changes
 - `metadata.source_url`: the primary docs.isambard.ac.uk URL this skill was derived from; used by the update agent to detect stale content
 - `metadata.supplementary_urls`: optional list of additional docs.isambard.ac.uk pages that contributed content to this skill
-- Every page in `source_url` and `supplementary_urls` has a text snapshot under `snapshots/` (see "Checking All Skills for Staleness" in `update-skills-from-docs.md`). When you add or change these URLs, run `python3 .github/workflows/scripts/snapshot_docs.py` and commit the new snapshots with the skill
+- The docs sync (see "Checking All Skills for Staleness" in `update-skills-from-docs.md`) watches exactly the pages in `source_url` and `supplementary_urls`, so list every page the skill's content comes from
 
 ### Markdown body sections
 
@@ -183,7 +183,6 @@ When creating a new skill, complete the following steps in order:
 
 - Edit `site/plugins/<plugin-name>/skills/<skill-name>/SKILL.md` directly.
 - Increment `metadata.version` in the frontmatter for significant changes.
-- If you checked the skill against the current docs, refresh and commit `snapshots/` in the same PR (`python3 .github/workflows/scripts/snapshot_docs.py`).
 - Update the `"description"` in both `marketplace.json` files if the summary changed.
 - Update the skill card description in `index.html` if the summary changed.
 - Do **not** rename or move skill files once published — existing integrations may already reference the URL.

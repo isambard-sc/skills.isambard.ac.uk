@@ -175,7 +175,7 @@ Read the `SKILL.md` file for the skill. Note:
 
 Fetch the URL in `metadata.source_url`. If the page is long, fetch in chunks to get the full content.
 
-If you are working from a snapshot refresh (see "Checking All Skills for Staleness"), the snapshot diff already shows what changed: read it with `git diff -- snapshots/` (or `git show` on the refresh commit) instead, and read the full snapshot under `snapshots/` for context.
+If you are working from a docs sync (see "Checking All Skills for Staleness"), you are given the diff of the changed pages' source, which shows exactly what changed. Use it as the record of changes, and fetch the published pages for their full current text.
 
 Also fetch every URL listed in `metadata.supplementary_urls`. These are additional docs pages whose content was incorporated into the skill and which may independently have changed.
 
@@ -210,7 +210,6 @@ Edit `site/plugins/<plugin-name>/skills/<skill-name>/SKILL.md`:
 
 - Apply the minimum diff needed — preserve existing structure where accurate, only change what is actually different
 - Increment `metadata.version` (e.g. `"1.0"` → `"1.1"`)
-- Commit the refreshed `snapshots/` with the update, even if the skill itself needed no change, so the same docs change isn't flagged again
 - Do **not** rename or move the file
 
 Also update descriptions in both `marketplace.json` files if the skill
@@ -220,23 +219,26 @@ summary has changed materially.
 
 ## Checking All Skills for Staleness
 
-`snapshots/` holds the main text of every docs page a skill cites, as it was
-when the skills were last checked. `snapshot_docs.py` refreshes them from the
-public site and reports which pages changed and which skills cite them; the
-git diff of `snapshots/` is then exactly what changed in the docs:
+The docs repo (private) is the single source of truth, and this repo keeps
+no copy of it. `.github/docs-sync-commit` records the docs commit the skills
+were last synced with. `docs_changes.py` diffs a clone of the docs repo from
+that commit to the latest, keeps only the pages skills cite (including files
+they include with `--8<--`), and reports which skills cite each changed page:
 
 ```bash
-python3 .github/workflows/scripts/snapshot_docs.py
-git diff -- snapshots/
+python3 .github/workflows/scripts/docs_changes.py \
+    --docs-repo ../docs.isambard.ac.uk --from "$(cat .github/docs-sync-commit)" --to origin/main
 ```
 
-`docs_sync.sh` in the same directory runs the whole check weekly: it refreshes
-the snapshots in a temporary worktree, and if anything changed, runs Claude Code
-headless to apply Workflow B to the affected skills and opens a draft PR for
-review. Run it with `--dry-run` to see the snapshot report only.
+`docs_sync.sh` in the same directory runs the whole sync: if any cited page
+changed, it runs Claude Code headless to apply Workflow B to the affected
+skills, records the new docs commit and opens a draft PR for review. Run it
+with `--dry-run` to see the report only. It runs locally for now; later a docs
+merge will trigger it from CI.
 
-Snapshots only cover pages listed in `source_url`/`supplementary_urls`, so also
-check for new docs pages relevant to a skill. To check every skill by hand:
+The sync only watches pages listed in `source_url`/`supplementary_urls`, so
+also check for new docs pages relevant to a skill. To check every skill by
+hand:
 
 1. List all `SKILL.md` files:
    `find site/plugins -name SKILL.md`
