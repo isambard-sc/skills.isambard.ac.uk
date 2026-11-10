@@ -5,7 +5,9 @@
 #  1. Diffs the docs repo from the last synced docs commit (recorded in
 #     .github/docs-sync-commit, or --from) to the docs repo's origin/main
 #     (or --to), keeping only the pages skills cite (docs_changes.py).
-#  2. If no cited page changed, stops there.
+#  2. If no cited page changed, or an earlier sync PR is still open, stops
+#     there. Changes accumulate until that PR is merged or closed, and the next
+#     run covers them all.
 #  3. Otherwise runs Claude Code headless, in a temporary worktree of
 #     origin/main, to apply Workflow B of .github/agents/update-skills-from-docs.md
 #     to the affected skills. Claude only edits files; this script commits them,
@@ -64,7 +66,18 @@ else
   py="uv run --quiet --no-project --with pyyaml python"
 fi
 
+docs=$(cd "$docs" && pwd)
 base=${DOCS_SYNC_BASE:-origin/main}
+
+if ! $dry_run && ! $no_push; then
+  open_prs=$(cd "$repo" && gh pr list --state open --json headRefName \
+    --jq '.[].headRefName | select(startswith("docs-sync/"))')
+  if [ -n "$open_prs" ]; then
+    echo "A docs sync PR is still open ($open_prs); merge or close it first."
+    exit 0
+  fi
+fi
+
 git -C "$repo" fetch --quiet origin
 git -C "$docs" fetch --quiet origin
 to=$(git -C "$docs" rev-parse --verify "${to:-origin/main}^{commit}")
@@ -75,10 +88,14 @@ branch="docs-sync/${to:0:12}"
 tmp=$(mktemp -d)
 work="$tmp/skills"
 keep=false
+created=false
 cleanup() {
   $keep && return
-  git -C "$repo" worktree remove --force "$work" 2>/dev/null || true
-  git -C "$repo" branch -D "$branch" >/dev/null 2>&1 || true
+  # Only remove the branch if this run created it.
+  if $created; then
+    git -C "$repo" worktree remove --force "$work" 2>/dev/null || true
+    git -C "$repo" branch -D "$branch" >/dev/null 2>&1 || true
+  fi
   rm -rf "$tmp"
 }
 trap cleanup EXIT
@@ -88,6 +105,7 @@ if git -C "$repo" ls-remote --exit-code --heads origin "$branch" >/dev/null; the
   exit 0
 fi
 git -C "$repo" worktree add --quiet -b "$branch" "$work" "$base"
+created=true
 # With --no-push, keep the worktree even if a later step fails, for debugging.
 $no_push && keep=true
 cd "$work"

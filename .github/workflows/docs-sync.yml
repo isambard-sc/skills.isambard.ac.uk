@@ -1,0 +1,96 @@
+name: Sync skills with docs
+
+# Runs .github/workflows/scripts/docs_sync.sh once a day, so a flurry of docs
+# merges becomes at most one PR. The script only looks at pages skills cite
+# (never service-status), does nothing if none changed, and skips while an
+# earlier sync PR is still open.
+#
+# What it needs, and what it does without it:
+#   secrets.DOCS_DEPLOY_KEY   private half of a read-only deploy key on the
+#                             docs repo. Without it the workflow does nothing.
+#   secrets.ANTHROPIC_API_KEY model access for Claude Code (swap for Bedrock
+#                             or our inference service once that's decided), and
+#   vars.DOCS_SYNC_APP_CLIENT_ID + secrets.DOCS_SYNC_APP_PRIVATE_KEY
+#                             a GitHub App that can push branches and open PRs
+#                             here (PRs opened with GITHUB_TOKEN don't run CI).
+#                             Without these two, it only posts the report of
+#                             changed pages to the run summary.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1-5" # weekdays, 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-sync
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      HAS_DOCS_KEY: ${{ secrets.DOCS_DEPLOY_KEY != '' }}
+      FULL_RUN: ${{ secrets.ANTHROPIC_API_KEY != '' && vars.DOCS_SYNC_APP_CLIENT_ID != '' && secrets.DOCS_SYNC_APP_PRIVATE_KEY != '' }}
+    steps:
+      - name: Note missing deploy key
+        if: env.HAS_DOCS_KEY != 'true'
+        run: echo "::notice::DOCS_DEPLOY_KEY is not set, so there is nothing to do."
+
+      - name: Create GitHub App token
+        id: app-token
+        if: env.HAS_DOCS_KEY == 'true' && env.FULL_RUN == 'true'
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.DOCS_SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DOCS_SYNC_APP_PRIVATE_KEY }}
+
+      - name: Checkout skills
+        if: env.HAS_DOCS_KEY == 'true'
+        uses: actions/checkout@v4
+        with:
+          path: skills
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token || github.token }}
+
+      - name: Checkout docs
+        if: env.HAS_DOCS_KEY == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: isambard-sc/docs.isambard.ac.uk
+          path: docs
+          fetch-depth: 0
+          ssh-key: ${{ secrets.DOCS_DEPLOY_KEY }}
+
+      - name: Set up Python
+        if: env.HAS_DOCS_KEY == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        if: env.HAS_DOCS_KEY == 'true'
+        run: pip install pyyaml
+
+      - name: Report changed pages
+        if: env.HAS_DOCS_KEY == 'true' && env.FULL_RUN != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: skills/.github/workflows/scripts/docs_sync.sh --docs-repo docs --dry-run >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install Claude Code
+        if: env.HAS_DOCS_KEY == 'true' && env.FULL_RUN == 'true'
+        run: npm install --global @anthropic-ai/claude-code
+
+      - name: Sync and open a draft PR
+        if: env.HAS_DOCS_KEY == 'true' && env.FULL_RUN == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          user_id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          git config --global user.name "${APP_SLUG}[bot]"
+          git config --global user.email "${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+          skills/.github/workflows/scripts/docs_sync.sh --docs-repo docs | tee -a "$GITHUB_STEP_SUMMARY"
