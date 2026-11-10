@@ -131,7 +131,8 @@ README.md only.
 
 The docs repo is private and this pull request is public, so describe changes
 as they appear on the published pages, and don't copy anything that isn't
-published (such as HTML comments) into the skills or your summary.
+published into the skills or your summary. (HTML comments have already been
+removed from the diff.)
 
 Finish with a Markdown summary for the pull request description and nothing
 else, using ### or lower headings: for each changed page, what changed in the
