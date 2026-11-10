@@ -70,8 +70,10 @@ docs=$(cd "$docs" && pwd)
 base=${DOCS_SYNC_BASE:-origin/main}
 
 if ! $dry_run && ! $no_push; then
-  open_prs=$(cd "$repo" && gh pr list --state open --json headRefName \
-    --jq '.[].headRefName | select(startswith("docs-sync/"))')
+  # Only branches in this repo (which needs write access) count, so a fork PR
+  # named docs-sync/* can't block the sync.
+  open_prs=$(cd "$repo" && gh pr list --state open --json headRefName,isCrossRepository \
+    --jq '.[] | select(.isCrossRepository | not) | .headRefName | select(startswith("docs-sync/"))')
   if [ -n "$open_prs" ]; then
     echo "A docs sync PR is still open ($open_prs); merge or close it first."
     exit 0
