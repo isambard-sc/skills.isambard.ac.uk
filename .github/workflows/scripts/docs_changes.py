@@ -8,12 +8,14 @@ pymdownx.snippets `--8<--` includes, so example scripts count as part of the
 page), then diffs those files between --from and --to.
 
 It writes a Markdown report (changed pages, the skills citing each, and cited
-URLs that no longer map to a page) to stdout, and with --diff, the git diff of
-the changed pages to a file. The diff file is empty when no cited page changed.
+URLs that no longer map to a page) to stdout, and with --diff, a unified diff
+of the changed pages to a file. The diff file is empty when no cited page
+changed.
 
 The docs repo is private while this repo and its pull requests are public, so
 the report contains docs paths and commit hashes only, never commit subjects
-or authors.
+or authors, and the diff is built from the files with HTML comments (which the
+published site doesn't show) removed.
 
 Usage (from the repo root):
   python3 .github/workflows/scripts/docs_changes.py \\
@@ -21,6 +23,7 @@ Usage (from the repo root):
 """
 
 import argparse
+import difflib
 import os
 import re
 import subprocess
@@ -35,6 +38,7 @@ DOCS_SITE = "https://docs.isambard.ac.uk"
 VOLATILE_PREFIXES = ("service-status/",)
 
 SNIPPET_RE = re.compile(r'^\s*--8<--\s+"([^"]+)"', re.MULTILINE)
+COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
 
 
 def git(repo, *args):
@@ -54,6 +58,13 @@ def url_to_page(url, repo, rev):
     rel = url[len(DOCS_SITE):].split("#")[0].strip("/")
     candidates = [f"docs/{rel}.md", f"docs/{rel}/index.md"] if rel else ["docs/index.md"]
     return next((c for c in candidates if exists(repo, rev, c)), None)
+
+
+def published_text(repo, rev, path):
+    """The file at rev without HTML comments, or "" if it doesn't exist."""
+    if not exists(repo, rev, path):
+        return ""
+    return COMMENT_RE.sub("", git(repo, "show", f"{rev}:{path}"))
 
 
 def with_snippets(page, repo, rev):
@@ -139,9 +150,11 @@ def main():
     sys.stdout.write("\n".join(lines))
 
     if args.diff:
-        diff = git(repo, "diff", "--no-color", "--no-ext-diff", base, head, "--", *changed) if changed else ""
         with open(args.diff, "w", encoding="utf-8") as f:
-            f.write(diff)
+            for path in changed:
+                old = published_text(repo, base, path).splitlines(keepends=True)
+                new = published_text(repo, head, path).splitlines(keepends=True)
+                f.writelines(difflib.unified_diff(old, new, f"a/{path}", f"b/{path}"))
 
 
 if __name__ == "__main__":
