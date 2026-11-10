@@ -233,8 +233,9 @@ python3 .github/workflows/scripts/docs_changes.py \
 `docs_sync.sh` in the same directory runs the whole sync: if any cited page
 changed, it runs Claude Code headless to apply Workflow B to the affected
 skills, records the new docs commit and opens a draft PR for review. Run it
-with `--dry-run` to see the report only. It runs locally for now; later a docs
-merge will trigger it from CI.
+with `--dry-run` to see the report only. It skips while an earlier sync PR is
+still open. Run it locally, or let the `docs-sync.yml` workflow run it every
+weekday once its secrets are set (see the comments in that file).
 
 The sync only watches pages listed in `source_url`/`supplementary_urls`, so
 also check for new docs pages relevant to a skill. To check every skill by
