@@ -15,9 +15,9 @@ compatibility: >
 metadata:
   author: Bristol Centre for Supercomputing (BriCS)
   version: "1.1"
-  source_url: https://docs.isambard.ac.uk/
+  source_url: https://docs.isambard.ac.uk/user-documentation/guides/using_ai_agents/
   supplementary_urls:
-    - https://docs.isambard.ac.uk/user-documentation/guides/using_ai_agents/
+    - https://docs.isambard.ac.uk/policies/acceptable_use/
     - https://docs.isambard.ac.uk/user-documentation/faqs/
     - https://docs.isambard.ac.uk/user-documentation/guides/slurm-advanced/
     - https://docs.isambard.ac.uk/user-documentation/guides/slurm/
@@ -25,7 +25,6 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/guides/login/
     - https://docs.isambard.ac.uk/user-documentation/information/system-storage/
     - https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/
-    - https://docs.isambard.ac.uk/policies/
 ---
 
 # BriCS HPC Responsible AI-Generated Code Skill
