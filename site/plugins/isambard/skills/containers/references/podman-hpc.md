@@ -12,6 +12,12 @@ It exposes all standard Podman subcommands plus HPC-specific ones.
 | `podman-hpc images` | List images; `R/O = true` means migrated to `$SCRATCH` (usable on compute nodes) |
 | `podman-hpc rmsqi` | Remove a squashed image |
 | `podman-hpc infohpc` | Dump HPC configuration info |
+| `podman-hpc shared-run` | Launch a single container and exec many threads in it |
+
+Global options: `--additional-stores TEXT` (other storage locations) and
+`--squash-dir TEXT` (alternate squash directory location).
+
+`podman-hpc migrate` is not the same as `podman system migrate`.
 
 > **Always use `podman-hpc`, not `podman` directly.** The wrapper is required to run
 > migrated/squashed images on compute nodes.

@@ -13,11 +13,18 @@ description: >
 license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Isambard-AI and Isambard 3. Requires access to an Isambard login node and the
-  Podman-HPC or Apptainer runtime.
+  Podman-HPC or Apptainer runtime. Multi-node container setup (the
+  brics/apptainer-multi-node module and podman-hpc --openmpi-pmi2) is
+  documented for Isambard-AI only.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/containers/
+  supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/guides/containers/podman-hpc/
+    - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer/
+    - https://docs.isambard.ac.uk/user-documentation/guides/containers/podman-hpc-multi-node/
+    - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer-multi-node/
 ---
 
 # Containers on Isambard
@@ -29,7 +36,8 @@ Two container engines are available on Isambard-AI and Isambard 3:
 | **Podman-HPC** | `podman-hpc` | OCI/Docker-style workflows; building custom images on-system |
 | **Apptainer** | `apptainer` (AIP2) / `singularity` (Isambard 3) | SIF-based HPC workflows; rootless builds from definition files |
 
-Both engines support single-node and multi-node operation. Multi-node jobs require extra setup to use the **Slingshot 11** high-speed interconnect — skip this at the cost of severely degraded bandwidth.
+Both engines support single-node and multi-node operation (multi-node setup is
+documented for Isambard-AI). Multi-node jobs require extra setup to use the **Slingshot 11** high-speed interconnect — skip this at the cost of severely degraded bandwidth.
 
 > **aarch64 images only.** Isambard uses Arm64 (`aarch64`). Only images built for this architecture
 > will run. When browsing registries like [NGC](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch/tags),
@@ -37,13 +45,19 @@ Both engines support single-node and multi-node operation. Multi-node jobs requi
 
 ## Critical Rules
 
-- Only use container images built for `linux/arm64` on Isambard.
-- Never run x86 or `amd64` images on Isambard compute nodes.
+- Only use container images built for `linux/arm64` on Isambard-AI and Isambard 3
+  Grace.
+- Never run x86 or `amd64` images on Isambard-AI or Isambard 3 Grace compute nodes.
+  (Isambard 3 MACS nodes are x86-64.)
 - Multi-node container jobs must use the host MPI/NCCL libraries and `/host/adapt.sh`.
 - Use `--nv` for GPU containers in Apptainer and `--device=nvidia.com/gpu=all` or
   `--gpu` for Podman-HPC.
 - Do not rely on non-shared local image stores on compute nodes; use shared filesystem paths
   or container migration tools.
+- Before choosing a PyTorch NGC tag for a multi-node container
+  (`brics/apptainer-multi-node` or `--openmpi-pmi2`), check the live
+  [Known Issues page](https://docs.isambard.ac.uk/service-status/known_issues/)
+  for tags that work with the system GLIBC — see [Known Issues](#known-issues).
 
 ---
 
@@ -69,6 +83,7 @@ Choose **Apptainer** if you:
 - Already use Singularity/Apptainer workflows
 - Need to build custom images from definition files with root-like privileges (`--fakeroot`)
 - Are on Isambard 3 (where `singularity` is the installed command)
+- Are running containerised NCCL/GPU workloads (the NCCL guide recommends Apptainer)
 
 ---
 
@@ -108,9 +123,24 @@ Read this file when helping with any Apptainer/Singularity task.
 | GPU access | `--device=nvidia.com/gpu=all` or `--gpu` | `--nv` |
 | Build from file | `podman-hpc build . --tag <name>` | `apptainer build img.sif def.def` |
 | Rootless/fakeroot build | N/A | `apptainer build --fakeroot img.sif def.def` |
+| Root inside container (e.g. `apt`/`dnf` installs) | `--user=root` | `--fakeroot` |
 | Make available on compute nodes | `podman-hpc migrate <image>` | Images (`.sif`) are files on shared FS already |
 | Multi-node setup | `--openmpi-pmi2` flag | `module load brics/apptainer-multi-node` + `source /host/adapt.sh` |
 | Slurm MPI interface | `--mpi=pmi2` | standard `srun` |
+
+---
+
+## Known Issues
+
+Known issues change as they are fixed, so this skill doesn't copy them. Fetch the
+[Known Issues page](https://docs.isambard.ac.uk/service-status/known_issues/)
+and apply its current advice, particularly when:
+
+- choosing a PyTorch NGC image for a multi-node job with
+  `brics/apptainer-multi-node` or `--openmpi-pmi2` (GLIBC compatibility with the
+  host);
+- Apptainer misbehaves inside a Slurm job (environment variables inherited from
+  the submission host).
 
 ---
 
