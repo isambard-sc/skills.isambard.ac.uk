@@ -25,7 +25,6 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer/
     - https://docs.isambard.ac.uk/user-documentation/guides/containers/podman-hpc-multi-node/
     - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer-multi-node/
-    - https://docs.isambard.ac.uk/service-status/known_issues/
 ---
 
 # Containers on Isambard
@@ -55,9 +54,10 @@ documented for Isambard-AI). Multi-node jobs require extra setup to use the **Sl
   `--gpu` for Podman-HPC.
 - Do not rely on non-shared local image stores on compute nodes; use shared filesystem paths
   or container migration tools.
-- For multi-node PyTorch NGC containers (`brics/apptainer-multi-node` or
-  `--openmpi-pmi2`), use a tag known to work with the system GLIBC — see
-  [Known Issues](#known-issues).
+- Before choosing a PyTorch NGC tag for a multi-node container
+  (`brics/apptainer-multi-node` or `--openmpi-pmi2`), check the live
+  [Known Issues page](https://docs.isambard.ac.uk/service-status/known_issues/)
+  for tags that work with the system GLIBC — see [Known Issues](#known-issues).
 
 ---
 
@@ -132,28 +132,15 @@ Read this file when helping with any Apptainer/Singularity task.
 
 ## Known Issues
 
-**Multi-node PyTorch NGC containers: GLIBC mismatch (Isambard-AI Phase 2).** With
-`brics/apptainer-multi-node` (Apptainer) or `--openmpi-pmi2` (Podman-HPC), the system
-GLIBC is incompatible with some PyTorch NGC images. Use one of these known-good tags:
+Known issues change as they are fixed, so this skill doesn't copy them. Fetch the
+[Known Issues page](https://docs.isambard.ac.uk/service-status/known_issues/)
+and apply its current advice, particularly when:
 
-- `nvcr.io/nvidia/pytorch:24.12-py3`
-- `nvcr.io/nvidia/pytorch:25.01-py3`
-- `nvcr.io/nvidia/pytorch:25.02-py3`
-- `nvcr.io/nvidia/pytorch:25.03-py3`
-- `nvcr.io/nvidia/pytorch:25.04-py3`
-- `nvcr.io/nvidia/pytorch:25.05-py3`
-
-**Apptainer fails under Slurm due to inherited environment variables.** Slurm passes
-the submission host's environment into jobs, including `DBUS_SESSION_BUS_ADDRESS` and
-`XDG_RUNTIME_DIR`, which can cause unexpected Apptainer issues. If Apptainer
-misbehaves in a job, unset them:
-
-```bash
-unset DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR
-```
-
-Check the [Known Issues page](https://docs.isambard.ac.uk/service-status/known_issues/)
-for the current list.
+- choosing a PyTorch NGC image for a multi-node job with
+  `brics/apptainer-multi-node` or `--openmpi-pmi2` (GLIBC compatibility with the
+  host);
+- Apptainer misbehaves inside a Slurm job (environment variables inherited from
+  the submission host).
 
 ---
 
