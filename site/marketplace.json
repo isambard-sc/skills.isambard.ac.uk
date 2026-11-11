@@ -29,6 +29,11 @@
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/cuda/SKILL.md"
     },
     {
+      "name": "Logging In",
+      "description": "Log in to Isambard-AI and Isambard 3 over SSH with Clifton. Covers first-time portal setup, the permanent UNIX short name, clifton auth and ssh-config, the 12-hour SSH certificate, login node rules and resource limits, and common login errors.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/login/SKILL.md"
+    },
+    {
       "name": "Modules",
       "description": "Use the modules system, Cray Programming Environments (PrgEnv-gnu, PrgEnv-cray), compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools (gprof, Cray perftools, Nsight) on Isambard.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/modules/SKILL.md"

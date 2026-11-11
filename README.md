@@ -15,6 +15,7 @@ the environment from scratch every session.
 
 | Skill | Description | URL |
 |---|---|---|
+| [Logging In](site/plugins/isambard/skills/login/SKILL.md) | Log in to Isambard-AI and Isambard 3 over SSH with Clifton. Covers first-time portal setup, the UNIX short name, SSH certificates, login node rules and limits, and common login errors | `https://skills.isambard.ac.uk/plugins/isambard/skills/login/SKILL.md` |
 | [Slurm](site/plugins/isambard/skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/plugins/isambard/skills/slurm/SKILL.md` |
 | [Python](site/plugins/isambard/skills/python/SKILL.md) | Install and manage Python environments on Isambard using Conda (Miniforge), uv, or Cray Python | `https://skills.isambard.ac.uk/plugins/isambard/skills/python/SKILL.md` |
 | [Modules](site/plugins/isambard/skills/modules/SKILL.md) | Use the modules system, Cray Programming Environments, compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools on Isambard | `https://skills.isambard.ac.uk/plugins/isambard/skills/modules/SKILL.md` |
@@ -73,7 +74,7 @@ View skills provided by Isambard plugin:
 /skills
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Skills
-  11 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
+  12 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
 
   ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
   │ ⌕ Search skills…                                                                                                         │
@@ -83,6 +84,7 @@ View skills provided by Isambard plugin:
     🔒 on         isambard:cuda · plugin · ~190 tok · locked by plugin
     🔒 on         isambard:data-transfer · plugin · ~230 tok · locked by plugin
     🔒 on         isambard:getting-support · plugin · ~110 tok · locked by plugin
+    🔒 on         isambard:login · plugin · ~230 tok · locked by plugin
     🔒 on         isambard:modules · plugin · ~180 tok · locked by plugin
     🔒 on         isambard:mpi · plugin · ~170 tok · locked by plugin
     🔒 on         isambard:nccl · plugin · ~210 tok · locked by plugin
@@ -212,7 +214,7 @@ Install the `isambard` plugin from the marketplace:
 
  Marketplace: isambard-skills
 
- Skills: 11 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, modules, mpi, nccl, python, slurm, spack)
+ Skills: 12 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, login, modules, mpi, nccl, python, slurm, spack)
 
   → Install for you (user scope)
     Install for all collaborators on this repository (project scope)
