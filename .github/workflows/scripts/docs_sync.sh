@@ -87,7 +87,10 @@ from=${from:-$(git -C "$repo" show "$base:.github/docs-sync-commit")}
 date=$(date +%Y-%m-%d)
 branch="docs-sync/${to:0:12}"
 
-tmp=$(mktemp -d)
+# Resolve symlinks (macOS's /var is /private/var): Claude Code matches its
+# ./site/** rule against the real path, so an agent writing absolute /var/...
+# paths would otherwise have every edit refused.
+tmp=$(cd "$(mktemp -d)" && pwd -P)
 work="$tmp/skills"
 keep=false
 created=false
