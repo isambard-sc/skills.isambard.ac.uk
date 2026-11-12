@@ -1,12 +1,14 @@
 ---
 name: login
 description: >
-  Guide for getting access to and logging in to BriCS Isambard facilities
-  (Isambard-AI and Isambard 3, including MACS) over SSH with Clifton. Covers
+  Guide for getting access to and logging in to BriCS facilities
+  (Isambard-AI, Isambard 3 including MACS, and BlueCrystal 5) over SSH with
+  Clifton. Covers
   first-time portal setup (identity providers, accepting policies and
   invitations), setting the permanent UNIX short name, installing Clifton,
   clifton auth and clifton ssh-config write, the 12-hour SSH certificate, host
-  aliases such as PROJECT.aip2.isambard, checking host key fingerprints, and
+  aliases such as PROJECT.aip2.isambard or PROJECT.bc5.digital-labs, the
+  University of Bristol VPN for BlueCrystal 5, checking host key fingerprints, and
   the rules and resource limits on login nodes. Use this skill whenever a user
   can't log in or connect, sees "User short name is empty", "You are not
   authorised to connect", "clifton: command not found", dropped SSH sessions,
@@ -17,7 +19,8 @@ license: >
   CC-BY-SA-4.0. Markdown/image content derived from
   https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
-  Isambard-AI and Isambard 3 (Grace and MACS). Clifton runs on the user's own
+  Isambard-AI, Isambard 3 (Grace and MACS) and BlueCrystal 5 (early access).
+  Clifton runs on the user's own
   machine (macOS, Linux including WSL, or Windows). The portal steps and the
   browser step of clifton auth must be done by the user.
 metadata:
@@ -32,6 +35,7 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/guides/mobaxterm/
     - https://docs.isambard.ac.uk/user-documentation/guides/using_ai_agents/
     - https://docs.isambard.ac.uk/user-documentation/faqs/
+    - https://docs.isambard.ac.uk/user-documentation/faqs/bc5-launch/
 ---
 
 # Logging in to Isambard
@@ -93,7 +97,9 @@ Getting from "added to a project" to a shell prompt on Isambard:
 5. Set a UNIX short name.
 6. Install Clifton, then run `clifton auth` (every day) and
    `clifton ssh-config write` (after joining a new project).
-7. Connect with `ssh PROJECT.<facility>.isambard`.
+7. Connect with `ssh PROJECT.<facility>.isambard` (BlueCrystal 5:
+   `ssh PROJECT.bc5.digital-labs`, on the University of Bristol network or
+   VPN).
 
 Steps 1–5 are one-off. When diagnosing a login problem, find the first step
 that hasn't been completed.
@@ -109,6 +115,11 @@ award shows a "Pending" badge; once active it shows "Active" and a
   is lifted, not from the project start date. Embargoes can last much longer.
 - If it seems too slow, the user contacts their Project Lead, who follows it
   up with the allocator. Do not suggest contacting BriCS support.
+
+BlueCrystal 5 projects are allocated through the University of Bristol
+allocation portal (https://apply.isambard.ac.uk/bristol/, permanent UoB
+academic staff). Once allocated, the Project Lead gets an email invitation to
+the BriCS portal and then invites members, who accept as in step 4.
 
 ## 2. First portal login
 
@@ -219,13 +230,20 @@ clifton ssh-config write        # after joining a new project
 
 ### Connect
 
-Aliases have the form `PROJECT.<facility>.isambard`, for example:
+Aliases have the form `PROJECT.<facility>.isambard`, or
+`PROJECT.bc5.digital-labs` for BlueCrystal 5, for example:
 
 ```bash
-ssh PROJECT.aip2.isambard     # Isambard-AI
-ssh PROJECT.3.isambard        # Isambard 3
-ssh PROJECT.macs3.isambard    # Isambard 3 MACS
+ssh PROJECT.aip2.isambard       # Isambard-AI
+ssh PROJECT.3.isambard          # Isambard 3
+ssh PROJECT.macs3.isambard      # Isambard 3 MACS
+ssh PROJECT.bc5.digital-labs    # BlueCrystal 5
 ```
+
+BlueCrystal 5 is a University of Bristol facility: away from campus, or on
+any network other than eduroam, the user must first connect to the
+University of Bristol F5 VPN
+(https://uob.sharepoint.com/sites/itservices/SitePages/vpn.aspx).
 
 The account on the facility is project-specific (the prompt shows
 `user.project@...`). On first connection, check the host key fingerprint
@@ -304,6 +322,7 @@ that MobaXterm fails silently without a valid certificate, so run
 | `Killed`, `Cannot allocate memory` | Login node memory limit reached. |
 | Commands very slow on login node | CPU throttled at the login node limit. |
 | VS Code: "Unable to start process", "Terminal process failed to launch", lost connection | Often a login node limit hit by an extension or language server, not a network problem. |
+| Can't connect to BlueCrystal 5 | Off campus or not on eduroam: connect to the University of Bristol F5 VPN first. |
 | Can't connect from outside the UK | Often compliance or technical reasons outside BriCS's control. If it seems to be a BriCS service issue, raise a helpdesk ticket. |
 
 For the resource limit rows: move the work to a compute node, with the
@@ -318,5 +337,6 @@ Isambard-AI Phase 2 `interactive` reservation or a batch job (see the
 - How Isambard works: https://docs.isambard.ac.uk/user-documentation/information/how-isambard-works/
 - Using AI agents: https://docs.isambard.ac.uk/user-documentation/guides/using_ai_agents/
 - FAQs: https://docs.isambard.ac.uk/user-documentation/faqs/
+- BlueCrystal 5 FAQs: https://docs.isambard.ac.uk/user-documentation/faqs/bc5-launch/
 - Acceptable Use Policy: https://docs.isambard.ac.uk/policies/acceptable_use/
 - Clifton: https://github.com/isambard-sc/clifton

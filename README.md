@@ -15,7 +15,7 @@ the environment from scratch every session.
 
 | Skill | Description | URL |
 |---|---|---|
-| [Logging In](site/plugins/isambard/skills/login/SKILL.md) | Log in to Isambard-AI and Isambard 3 over SSH with Clifton. Covers first-time portal setup, the UNIX short name, SSH certificates, login node rules and limits, and common login errors | `https://skills.isambard.ac.uk/plugins/isambard/skills/login/SKILL.md` |
+| [Logging In](site/plugins/isambard/skills/login/SKILL.md) | Log in to Isambard-AI, Isambard 3 and BlueCrystal 5 over SSH with Clifton. Covers first-time portal setup, the UNIX short name, SSH certificates, login node rules and limits, and common login errors | `https://skills.isambard.ac.uk/plugins/isambard/skills/login/SKILL.md` |
 | [Slurm](site/plugins/isambard/skills/slurm/SKILL.md) | Submit, monitor and manage HPC jobs on Isambard using the Slurm workload manager | `https://skills.isambard.ac.uk/plugins/isambard/skills/slurm/SKILL.md` |
 | [Python](site/plugins/isambard/skills/python/SKILL.md) | Install and manage Python environments on Isambard using Conda (Miniforge), uv, or Cray Python | `https://skills.isambard.ac.uk/plugins/isambard/skills/python/SKILL.md` |
 | [Modules](site/plugins/isambard/skills/modules/SKILL.md) | Use the modules system, Cray Programming Environments, compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools on Isambard | `https://skills.isambard.ac.uk/plugins/isambard/skills/modules/SKILL.md` |
