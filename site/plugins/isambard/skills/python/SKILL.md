@@ -216,7 +216,98 @@ On Isambard-AI, `sys.platform` returns `"linux"` and `platform.uname().machine` 
 
 Support for popular ML packages on `aarch64` is documented on the [Isambard ML packages applications page](https://docs.isambard.ac.uk/user-documentation/applications/ML-packages/).
 
----
+### PyTorch on `aarch64` with CUDA
+
+The default PyPI `torch` wheel for `aarch64` is **not** the CUDA build. Take it
+from the PyTorch index and pin the local version explicitly, or the resolver
+will quietly give you a CPU build:
+
+```bash
+pip install --index-url https://download.pytorch.org/whl/cu126 "torch==2.9.1+cu126"
+python3 -c "import torch; print(torch.__version__, torch.version.cuda)"
+# want: 2.9.1+cu126 12.6      not: 2.9.1+cpu None
+```
+
+Adding `--extra-index-url https://pypi.org/simple` to that command is enough to
+let the CPU build win. Verify, don't assume.
+
+### PyTorch Geometric companion packages
+
+`torch-scatter`, `torch-cluster` and `pyg-lib` ship **no `aarch64` wheels**.
+They are source builds, and the OS default `g++` is gcc-7-era, which fails on
+modern C++ with errors that look unrelated to the compiler:
+
+```
+error: 'unordered_map' is not a member of 'std'
+error: 'move' is not a member of 'std'
+error: 'isfinite' was not declared in this scope
+```
+
+Point the build at a modern compiler and, for CUDA extensions, restrict the
+architecture so the compile finishes in minutes rather than an hour:
+
+```bash
+module load cudatoolkit/24.11_12.6
+export CC=/usr/bin/gcc-12 CXX=/usr/bin/g++-12   # also g++-13, g++-14 available
+export TORCH_CUDA_ARCH_LIST="9.0"               # GH200 is Hopper = sm_90
+pip install --no-build-isolation "torch_scatter==2.1.2"
+```
+
+`--no-build-isolation` matters: the build needs to see the already-installed
+`torch`.
+
+### A dependency you import may not be the one that needs building
+
+`torch-cluster` can be required without appearing anywhere in your code.
+`graphein`, for instance, calls `torch_geometric.nn.pool.knn_graph`, which
+raises at runtime unless `torch-cluster` or `pyg-lib` is installed:
+
+```
+ImportError: 'knn_graph' requires 'pyg-lib>=0.6.0'
+```
+
+Grepping your own source for `torch_cluster` will not find this. Check what
+your dependencies call.
+
+For k-NN graph construction specifically, a dense substitute avoids the build
+altogether and is exact for the graph sizes typical of protein structures (a
+few hundred to a few thousand nodes):
+
+```python
+def knn_graph(x, k, batch=None, loop=False, flow="source_to_target"):
+    """Drop-in for torch_cluster.knn_graph using cdist + topk."""
+    n = x.shape[0]
+    if batch is None:
+        batch = torch.zeros(n, dtype=torch.long, device=x.device)
+    dist = torch.cdist(x.float(), x.float())
+    dist = dist.masked_fill(batch.view(-1, 1) != batch.view(1, -1), float("inf"))
+    if not loop:
+        dist.fill_diagonal_(float("inf"))
+    idx = dist.topk(k, dim=-1, largest=False).indices
+    query = torch.arange(n, device=x.device).repeat_interleave(k)
+    neighbour = idx.reshape(-1)
+    # source_to_target returns [neighbour, query] so messages flow j -> i
+    return torch.stack([neighbour, query] if flow == "source_to_target"
+                       else [query, neighbour], dim=0)
+```
+
+Caveats: it is O(N²) in memory, so it suits graphs of thousands of nodes rather
+than millions; and exact distance ties may break differently from
+`torch_cluster` (`topk` orders by index), which changes *which* of two
+equidistant neighbours is chosen, not the method.
+
+### Reusing a prebuilt extension
+
+A compiled extension can be copied between environments when the interpreter
+version, architecture and the `torch` version it was built against all match
+(e.g. `cp312`, `aarch64`, `torch 2.9.1`). This is a legitimate way to avoid a
+long rebuild — but it is ABI-sensitive, so pin the same `torch` version first
+and verify the import before relying on it:
+
+```bash
+python3 -c "from torch_scatter import scatter_add; import torch; \
+  print(scatter_add(torch.ones(4,2).cuda(), torch.tensor([0,0,1,1]).cuda(), dim=0))"
+```
 
 ## Quick Decision Guide
 
