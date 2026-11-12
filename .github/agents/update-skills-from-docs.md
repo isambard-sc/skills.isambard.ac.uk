@@ -38,6 +38,14 @@ Names are working names; settle them when the skill is created.
 | `ml-packages` | `user-documentation/applications/ML-packages/`, `user-documentation/applications/alphafold/`, `user-documentation/tutorials/interactive-ml/`, `user-documentation/tutorials/interactive-alphafold/` |
 | `distributed-training` | `user-documentation/tutorials/distributed-training/`, `user-documentation/tutorials/distributed-inference/`, `user-documentation/tutorials/llms/pre-training/`, `user-documentation/tutorials/llms/fine-tuning/` |
 
+### BlueCrystal 5
+
+The docs are the source of truth, so a skill covers BlueCrystal 5 wherever
+the pages it cites do (for example the BlueCrystal 5 tabs of the login
+guide). `user-documentation/faqs/bc5-launch/` is temporary and will be merged
+into the main docs; until then, add it to `supplementary_urls` of any skill
+whose BlueCrystal 5 content comes from it, so the sync watches it.
+
 ### Pending a decision
 
 Do not create skills for these pages until the team decides how to cover
@@ -46,7 +54,6 @@ them.
 | Docs pages | Open question |
 |---|---|
 | `user-documentation/guides/inference/`, `user-documentation/guides/kubernetes/` (and its pages), `user-documentation/tutorials/data-mover/` | These services are invite-only early access, and the pages are excluded from the docs site search. `data-transfer` already cites the data mover tutorial, so the decision applies to it too. |
-| `user-documentation/faqs/bc5-launch/` | Whether BlueCrystal 5 belongs in the `isambard` plugin. The page says it is temporary and will be merged into the main docs. |
 
 ### No skill
 
