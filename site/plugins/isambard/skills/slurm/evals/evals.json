@@ -1,0 +1,105 @@
+{
+  "comment": [
+    "skillscope dataset for the slurm skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Expectations come from docs.isambard.ac.uk (guides/slurm*, information/job-scheduling), not from the skill,",
+    "so a case fails when the skill has drifted from the docs. Notes say which docs page each case pins."
+  ],
+  "evaluations": [
+    {
+      "id": "slurm-gpu-batch-script",
+      "skill_should_trigger": true,
+      "note": "Baseline job script. Docs: guides/slurm.md requests GPUs with --gpus and every example sets --time.",
+      "prompt": "I'm on Isambard-AI. Write a batch script, train.sbatch, that runs `python train.py` on one node with 4 GPUs for up to 6 hours.",
+      "expected_behavior": [
+        "Requests the GPUs with --gpus=4 (or --gpus-per-node=4)",
+        "Sets an explicit wall time of 6 hours or less with --time"
+      ],
+      "unexpected_behavior": [
+        "Tells the user to run the training directly on a login node"
+      ],
+      "logs_contain": ["--time"],
+      "files_exist": ["train.sbatch"]
+    },
+    {
+      "id": "slurm-wait-for-job",
+      "skill_should_trigger": true,
+      "note": "Critical rule. Docs: guides/slurm.md 'Avoid excessively polling the queue' - poll no more often than every 60 seconds; disruptive polling breaches the AUP.",
+      "prompt": "Write wait_then_analyse.sh: a bash script that waits until my Isambard Slurm job (job ID passed as $1) has finished and then runs ./analyse.sh.",
+      "expected_behavior": [
+        "Either uses a Slurm dependency (e.g. --dependency=afterok) instead of polling, or polls no more often than once every 60 seconds"
+      ],
+      "unexpected_behavior": [
+        "Uses `watch` on squeue or sinfo",
+        "Polls squeue, sinfo or sacct with a sleep shorter than 60 seconds"
+      ],
+      "files_exist": ["wait_then_analyse.sh"]
+    },
+    {
+      "id": "slurm-interactive-phase2",
+      "skill_should_trigger": true,
+      "note": "Docs: guides/slurm-advanced.md and information/job-scheduling.md - Phase 2 interactive reservation; adding --partition to it is unacceptable use. Expected to fail on skill versions without the reservation.",
+      "prompt": "On Isambard-AI Phase 2, what's the command to get a short interactive shell on a GPU node so I can debug something for about 20 minutes?",
+      "expected_behavior": [
+        "Gives an srun command that uses --reservation=interactive with --pty"
+      ],
+      "unexpected_behavior": [
+        "Adds a --partition flag to a command that also uses --reservation=interactive"
+      ],
+      "logs_contain": ["--reservation=interactive"]
+    },
+    {
+      "id": "slurm-macs-h100",
+      "skill_should_trigger": true,
+      "note": "Docs: information/job-scheduling.md lists Isambard 3 MACS GPU partitions ampere (A100), hopper (H100), instinct (MI100). Expected to fail on skill versions that say Isambard 3 has no GPUs.",
+      "prompt": "I want to test my CUDA code on an H100 on Isambard 3 MACS. Write the job script as h100_test.sbatch.",
+      "expected_behavior": [
+        "Targets the hopper partition"
+      ],
+      "unexpected_behavior": [
+        "Says Isambard 3 has no GPUs or that GPU jobs are not possible there"
+      ],
+      "logs_contain": ["hopper"],
+      "files_exist": ["h100_test.sbatch"]
+    },
+    {
+      "id": "slurm-large-array-phase2",
+      "skill_should_trigger": true,
+      "note": "Docs: information/job-scheduling.md - workq_qos max array size is 1000 per job on Isambard-AI Phase 2; over-limit submissions are rejected.",
+      "prompt": "I have 5000 independent input files to process on Isambard-AI Phase 2, one task per file. Set this up as a Slurm job array.",
+      "expected_behavior": [
+        "Keeps every job array at 1000 tasks or fewer, e.g. by splitting the work into several arrays or batching several files per task"
+      ],
+      "unexpected_behavior": [
+        "Submits a single array of 5000 tasks, such as --array=1-5000 or --array=0-4999"
+      ]
+    },
+    {
+      "id": "slurm-pending-priority",
+      "skill_should_trigger": true,
+      "prompt": "My Isambard job has been stuck in PD for hours and squeue shows the reason as Priority. What does that mean and should I cancel and resubmit it?"
+    },
+    {
+      "id": "slurm-chain-jobs",
+      "skill_should_trigger": true,
+      "prompt": "On Isambard 3 how do I make my postprocessing job only start once the simulation job has completed successfully?"
+    },
+    {
+      "id": "slurm-nearmiss-pbs",
+      "skill_should_trigger": false,
+      "note": "Adjacent domain: a different scheduler on a non-Isambard cluster.",
+      "prompt": "Write a PBS Pro qsub script for my university cluster that requests 2 nodes with 32 cores each for 4 hours."
+    },
+    {
+      "id": "slurm-nearmiss-k8s-job",
+      "skill_should_trigger": false,
+      "note": "Adjacent domain: batch jobs on Kubernetes, not Slurm or Isambard.",
+      "prompt": "Write a Kubernetes Job manifest that runs my training container once on a node with 2 NVIDIA GPUs in our lab's cluster."
+    },
+    {
+      "id": "slurm-nearmiss-other-site",
+      "skill_should_trigger": false,
+      "note": "Slurm, but on someone else's cluster: Isambard partitions, limits and policies would be wrong here. Tells us how site-specific the description is.",
+      "prompt": "On my department's own Slurm cluster, what's the sbatch flag to request a node with at least 256 GB of memory?"
+    }
+  ]
+}
