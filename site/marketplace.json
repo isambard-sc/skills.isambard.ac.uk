@@ -44,6 +44,11 @@
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/nccl/SKILL.md"
     },
     {
+      "name": "Projects and Accounting",
+      "description": "Understand node hour (NHR) accounting on Isambard-AI and Isambard 3 and manage projects. Covers how job charges are calculated, NHR versus GPU hours, checking budget and usage in the BriCS and Awards Portals, running out of node hours, project roles, inviting and removing members, follow-on projects, and requesting extensions.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/projects-and-accounting/SKILL.md"
+    },
+    {
       "name": "Python",
       "description": "Install and manage Python environments on Isambard using Conda (Miniforge), uv, or Cray Python. Covers virtual environments, building aarch64 packages from source, compiler flags, mpi4py, and finding arm64-compatible packages.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/python/SKILL.md"
