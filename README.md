@@ -281,3 +281,14 @@ registered in the marketplace.
 
 For full Isambard documentation visit
 [docs.isambard.ac.uk](https://docs.isambard.ac.uk).
+
+---
+
+## Licence
+
+This repository has more than one licence; see [`LICENCE`](LICENCE) for the full position.
+
+- Skills derived from the documentation are CC BY-SA 4.0 (each skill states this in its `SKILL.md` `license` field).
+- Code and tooling (workflows and scripts) are MIT.
+- Agent instruction files and configuration are CC0 1.0.
+- The `brics-hpc-ai-code` skill is proprietary.

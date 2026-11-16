@@ -1,22 +1,32 @@
 LICENCE
 =======
 
-Copyright (c) Bristol Centre for Supercomputing (BriCS).
+Copyright (c) University of Bristol (Bristol Centre for Supercomputing, BriCS).
 
-This repository contains material under more than one licence. The licence
-that applies to each skill is stated in the `license` field of the YAML
-frontmatter of that skill's `SKILL.md` file, under
-`site/plugins/isambard/skills/<skill-name>/`. That declaration takes
-precedence over this file. The terms below summarise the position.
+This repository contains material under more than one licence, following the
+approach used by https://github.com/isambard-sc/docs.isambard.ac.uk (see its
+CONTRIBUTING.md, "Licences used"). Use the licence that matches the type of
+file, as summarised below.
+
+| Licence      | Applies to                                                  |
+| ------------ | ----------------------------------------------------------- |
+| CC-BY-SA-4.0 | Skill content derived from docs.isambard.ac.uk (section 1)  |
+| MIT          | Code and tooling (section 2)                                |
+| CC0-1.0      | Agent instruction files (section 3)                         |
+| Proprietary  | The `brics-hpc-ai-code` skill (section 4)                   |
+
+Where a file states its own licence, that statement takes precedence. For
+skills, this is the `license` field in the YAML frontmatter of `SKILL.md`.
 
 
-1. Documentation-derived skills: CC BY-SA 4.0
----------------------------------------------
+1. Skill content derived from the documentation: CC BY-SA 4.0
+-------------------------------------------------------------
 
-Skills whose `license` field reads "CC-BY-SA-4.0" contain Markdown and image
-content derived from https://docs.isambard.ac.uk/ and are licensed under the
-Creative Commons Attribution-ShareAlike 4.0 International licence
-(CC BY-SA 4.0):
+The skills under `site/plugins/isambard/skills/` whose `license` field reads
+"CC-BY-SA-4.0" (everything in the skill directory, including `references/`)
+contain Markdown content derived from https://docs.isambard.ac.uk/. They are
+licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+licence:
 
     https://creativecommons.org/licenses/by-sa/4.0/legalcode
 
@@ -27,45 +37,70 @@ If you adapt or redistribute this content you must give appropriate credit,
 indicate any changes made, and distribute your contributions under the same
 licence.
 
-At the time of writing this applies to the following skills:
+At the time of writing this applies to: containers, cuda, data-transfer,
+getting-support, modules, mpi, nccl, python, slurm, spack.
 
-    containers, cuda, data-transfer, getting-support, modules, mpi, nccl,
-    python, slurm, spack
+Example commands and scripts that appear in these skills are taken from
+documentation pages; the documentation repository releases its example-script
+snippet files under CC0-1.0, but the skill text around them is CC BY-SA 4.0.
 
 
-2. Policy skill: proprietary
+2. Code and tooling: MIT
+------------------------
+
+The programs and build files that validate, build or publish the skills site
+are licensed under the MIT licence:
+
+    https://opensource.org/license/mit
+
+This covers:
+
+  * `.github/workflows/` (workflows and the Python scripts in `scripts/`);
+  * `site/index.html` and other files that build the published site.
+
+Plugin and marketplace metadata (`.claude-plugin/`, `site/marketplace.json`,
+`site/plugins/isambard/.claude-plugin/`) and `site/CNAME` are configuration,
+not code. In the documentation repository, site and tool configuration is
+CC0-1.0 or CC-BY-SA-4.0 and is not treated as code, and the same is intended
+here; these files are covered by section 3 until a specific licence is recorded.
+
+
+3. Agent instruction files and configuration: CC0 1.0
+-----------------------------------------------------
+
+Developer-tooling helpers for agents (`.github/agents/`), editor settings
+(`.vscode/`), and the configuration files named at the end of section 2 are
+released under CC0 1.0 Universal, as the equivalent files are in the
+documentation repository:
+
+    https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+
+4. Policy skill: proprietary
 ----------------------------
 
 The skill `brics-hpc-ai-code` describes BriCS policy and acceptable-use
-requirements. It is NOT licensed under CC BY-SA 4.0 and is not open licensed.
-It is proprietary to BriCS, and its terms are those published at:
+requirements. Its `license` field reads "Proprietary. See
+https://docs.isambard.ac.uk/policies/ for terms." It is NOT licensed under
+CC BY-SA 4.0. No right to copy, modify or redistribute it is granted except as
+those terms allow or as BriCS otherwise permits in writing. The published
+BriCS policies remain authoritative over this skill.
 
-    https://docs.isambard.ac.uk/policies/
-
-No right to copy, modify or redistribute this skill is granted except as
-those terms allow or as BriCS otherwise permits in writing. Using the skill
-with the Isambard services does not alter the policies it describes; the
-published BriCS policies remain authoritative.
-
-
-3. All other files
-------------------
-
-Files not covered by section 1 or 2 (for example workflow scripts, agent
-definitions and site or plugin configuration) carry no separate licence
-declaration. No licence is granted for them by this file, and all rights are
-reserved by BriCS except as the law permits.
+Note: the policy pages in the documentation repository carry an inline
+CC-BY-SA-4.0 header, and only the logos, favicons and HPE PDFs there are all
+rights reserved. This section records the licence the skill currently
+declares; it has not been reconciled with that header.
 
 
-4. Adding or changing a skill
+5. Adding or changing a skill
 -----------------------------
 
-Every skill must declare its licence in its `SKILL.md` frontmatter (this is
-checked by `.github/workflows/scripts/check_skill_frontmatter.py`). When a
-skill is added, or its licence changes, update the lists in sections 1 and 2.
+Every skill must declare its licence in its `SKILL.md` frontmatter (checked by
+`.github/workflows/scripts/check_skill_frontmatter.py`). When a skill is added
+or its licence changes, update the lists in sections 1 and 4.
 
 
-5. No warranty
+6. No warranty
 --------------
 
 Content is provided "as is", without warranty of any kind. Always check the
