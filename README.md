@@ -24,6 +24,7 @@ the environment from scratch every session.
 | [MPI](site/plugins/isambard/skills/mpi/SKILL.md) | Use MPI on Isambard with Cray MPICH or OpenMPI. Covers PMI types, srun --mpi flags, Slingshot 11 performance, and why mpirun/mpiexec must not be used | `https://skills.isambard.ac.uk/plugins/isambard/skills/mpi/SKILL.md` |
 | [NCCL](site/plugins/isambard/skills/nccl/SKILL.md) | Use NCCL for multi-node GPU communication on Isambard-AI over Slingshot 11. Covers the brics/nccl module, aws-ofi-nccl plugin, building from source, and NCCL in containers | `https://skills.isambard.ac.uk/plugins/isambard/skills/nccl/SKILL.md` |
 | [GPUs and CUDA](site/plugins/isambard/skills/cuda/SKILL.md) | Use GPUs and CUDA on Isambard-AI (NVIDIA GH200, sm_90). Covers cudatoolkit/nvhpc modules, compiling with nvcc, and CUDA forward compatibility via NGC containers or NVIDIA HPC SDK | `https://skills.isambard.ac.uk/plugins/isambard/skills/cuda/SKILL.md` |
+| [Projects and Accounting](site/plugins/isambard/skills/projects-and-accounting/SKILL.md) | Understand node hour (NHR) accounting and manage projects on Isambard-AI and Isambard 3. Covers job charges, NHR versus GPU hours, checking budget and usage, project roles and membership, and requesting extensions | `https://skills.isambard.ac.uk/plugins/isambard/skills/projects-and-accounting/SKILL.md` |
 | [Getting Support](site/plugins/isambard/skills/getting-support/SKILL.md) | Get help with Isambard-AI and Isambard 3 through the BriCS helpdesk. Covers checking service status and known issues first, raising a support ticket, and what to include in a ticket | `https://skills.isambard.ac.uk/plugins/isambard/skills/getting-support/SKILL.md` |
 | [BriCS Responsible AI Code](site/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md) | Guidance for writing, reviewing, and running AI-generated code responsibly on BriCS shared HPC resources, including Slurm job scripts, storage awareness, BriCS policy compliance, and safe use of AI coding agents with Isambard | `https://skills.isambard.ac.uk/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md` |
 | [Data Transfer](site/plugins/isambard/skills/data-transfer/SKILL.md) | Transfer data to, from, and between BriCS Isambard facilities using scp/rsync over SSH, and the early-access data mover S3 staging service | `https://skills.isambard.ac.uk/plugins/isambard/skills/data-transfer/SKILL.md` |
@@ -74,7 +75,7 @@ View skills provided by Isambard plugin:
 /skills
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Skills
-  12 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
+  13 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
 
   ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
   │ ⌕ Search skills…                                                                                                         │
@@ -88,6 +89,7 @@ View skills provided by Isambard plugin:
     🔒 on         isambard:modules · plugin · ~180 tok · locked by plugin
     🔒 on         isambard:mpi · plugin · ~170 tok · locked by plugin
     🔒 on         isambard:nccl · plugin · ~210 tok · locked by plugin
+    🔒 on         isambard:projects-and-accounting · plugin · ~250 tok · locked by plugin
     🔒 on         isambard:python · plugin · ~150 tok · locked by plugin
     🔒 on         isambard:slurm · plugin · ~190 tok · locked by plugin
     🔒 on         isambard:spack · plugin · ~200 tok · locked by plugin
@@ -214,7 +216,7 @@ Install the `isambard` plugin from the marketplace:
 
  Marketplace: isambard-skills
 
- Skills: 12 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, login, modules, mpi, nccl, python, slurm, spack)
+ Skills: 13 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, login, modules, mpi, nccl, projects-and-accounting, python, slurm, spack)
 
   → Install for you (user scope)
     Install for all collaborators on this repository (project scope)
