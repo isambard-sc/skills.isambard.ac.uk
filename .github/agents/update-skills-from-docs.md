@@ -32,7 +32,7 @@ Names are working names; settle them when the skill is created.
 | Skill | Docs pages |
 |---|---|
 | `login` | `user-documentation/guides/login/`, `user-documentation/guides/shortname/`, `user-documentation/guides/mobaxterm/`, `user-documentation/tutorials/setup/`, `user-documentation/getting_started/`, `user-documentation/information/how-isambard-works/` |
-| `accounting` | `user-documentation/guides/accounting/`, `user-documentation/guides/manage_project/`, `user-documentation/guides/follow_on_project/`, `user-documentation/guides/awards_portal/`, `user-documentation/information/portals/`, `user-documentation/information/project-policies/` |
+| `projects-and-accounting` | `user-documentation/guides/accounting/`, `user-documentation/guides/manage_project/`, `user-documentation/guides/follow_on_project/`, `user-documentation/guides/awards_portal/`, `user-documentation/information/portals/`, `user-documentation/information/project-policies/`, `access/` |
 | `storage` | `user-documentation/information/system-storage/`, `user-documentation/information/environment_variables/`, `user-documentation/tutorials/datasets-in-squashfs/` |
 | `interactive-sessions` | `user-documentation/guides/jupyter/`, `user-documentation/guides/jupyterhub/`, `user-documentation/guides/vscode/` |
 | `ml-packages` | `user-documentation/applications/ML-packages/`, `user-documentation/applications/alphafold/`, `user-documentation/tutorials/interactive-ml/`, `user-documentation/tutorials/interactive-alphafold/` |
@@ -64,7 +64,7 @@ them.
 | `training/`, `events/` (and their pages) | Dated event pages. |
 | `user-documentation/guides/e4s/` | Only links to the external E4S docs. Link it from Further Reading. |
 | `user-documentation/applications/relion/`, `user-documentation/applications/orca/` | Niche application guides. Reconsider if users ask about them. |
-| `index`, `about/`, `access/`, `acknowledge/`, and the section index pages | Navigation or one-line facts. Link them where relevant. |
+| `index`, `about/`, `acknowledge/`, and the section index pages | Navigation or one-line facts. Link them where relevant. |
 
 ---
 
