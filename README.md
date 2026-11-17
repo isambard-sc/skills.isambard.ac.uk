@@ -291,7 +291,8 @@ This repository is [REUSE][reuse]-compliant and follows the licensing of the
 See [`LICENCE`](LICENCE) for the summary, [`REUSE.toml`](REUSE.toml) for the
 licence of each file, and [`LICENSES/`](LICENSES/) for the licence texts.
 
-- Skills and this README are [CC BY-SA 4.0][cc-by-sa]. Each skill states this in its `SKILL.md` `license` field.
+- Skills and this README are [CC BY-SA 4.0][cc-by-sa]. Each skill states its licence in its `SKILL.md` `license` field.
+- The `brics-hpc-ai-code` skill is the exception: it is proprietary (all rights reserved), as it declares.
 - Code and tooling (workflows and scripts) are MIT.
 - Agent helpers and configuration are CC0 1.0.
 

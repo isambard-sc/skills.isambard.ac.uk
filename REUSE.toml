@@ -6,10 +6,17 @@ version = 1
 [[annotations]]
 # Skills: content derived from https://docs.isambard.ac.uk/, whose pages are
 # CC-BY-SA-4.0 (including the policy pages). Each SKILL.md also states this in
-# its `license` frontmatter field.
+# its `license` frontmatter field. The policy skill is overridden below.
 path = "site/plugins/isambard/skills/**"
 SPDX-FileCopyrightText = "© 2024 University of Bristol"
 SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+# Policy skill: declared proprietary in its SKILL.md. This annotation must stay
+# after the skills annotation above so that it takes precedence.
+path = "site/plugins/isambard/skills/brics-hpc-ai-code/**"
+SPDX-FileCopyrightText = "© 2024 University of Bristol"
+SPDX-License-Identifier = "LicenseRef-ARR"
 
 [[annotations]]
 # Repository documentation

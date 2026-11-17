@@ -52,7 +52,7 @@ metadata:
 
 - `name`: must match the parent directory name exactly (lowercase, hyphens, 1–64 characters)
 - `description`: required, max 1024 characters, should describe what the skill does AND when to use it
-- `license`: required. The content license or usage terms this skill is published under. For skills derived from `docs.isambard.ac.uk` Markdown/image content, use `CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © 2024 University of Bristol.` This includes skills that describe BriCS policy/AUP compliance, because the policy pages on `docs.isambard.ac.uk` are CC-BY-SA-4.0. Only the BriCS logos, favicons and HPE PDFs in the docs repository are all rights reserved; do not use that licence for skill content without agreement from the BriCS team.
+- `license`: required. The content license or usage terms this skill is published under. For skills derived from `docs.isambard.ac.uk` Markdown/image content, use `CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © 2024 University of Bristol.` For skills that describe BriCS policy/AUP compliance, use a proprietary notice pointing to the relevant policy page instead.
 - `compatibility`: optional but recommended for Isambard-specific skills
 - `metadata.version`: increment when making significant changes
 - `metadata.source_url`: the primary docs.isambard.ac.uk URL this skill was derived from; used by the update agent to detect stale content
