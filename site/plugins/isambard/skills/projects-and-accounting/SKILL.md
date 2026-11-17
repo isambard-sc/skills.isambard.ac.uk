@@ -16,7 +16,7 @@ description: >
   if they don't say "accounting".
 license: >
   CC-BY-SA-4.0. Markdown/image content derived from
-  https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
+  https://docs.isambard.ac.uk/, © 2024 University of Bristol.
 compatibility: >
   Isambard-AI and Isambard 3. Budgets, usage and membership are managed in web
   portals (https://portal.isambard.ac.uk and the Awards Portals); there is no
