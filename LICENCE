@@ -1,7 +1,7 @@
 LICENCE
 =======
 
-Copyright (c) University of Bristol (Bristol Centre for Supercomputing, BriCS).
+Copyright (c) University of Bristol.
 
 This repository is REUSE-compliant (https://reuse.software/): the licence and
 copyright holder of every file are recorded in `REUSE.toml`, and the licence
@@ -20,7 +20,7 @@ the policy pages) are CC-BY-SA-4.0. Each skill also states its licence in the
 `license` field of its `SKILL.md` frontmatter.
 
 Attribution for skills: "Markdown/image content derived from
-https://docs.isambard.ac.uk/, (c) Bristol Centre for Supercomputing (BriCS)."
+https://docs.isambard.ac.uk/, (c) 2024 University of Bristol."
 
 Licence texts:
 

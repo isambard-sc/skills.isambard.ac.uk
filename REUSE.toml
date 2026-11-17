@@ -8,7 +8,7 @@ version = 1
 # CC-BY-SA-4.0 (including the policy pages). Each SKILL.md also states this in
 # its `license` frontmatter field.
 path = "site/plugins/isambard/skills/**"
-SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-FileCopyrightText = "© 2024 University of Bristol"
 SPDX-License-Identifier = "CC-BY-SA-4.0"
 
 [[annotations]]

@@ -10,7 +10,7 @@ description: >
   or diagnosing CUDA version mismatches. Also trigger for general GPU programming setup
   questions on Isambard, even if the user doesn't say "CUDA" explicitly.
   Note: GPUs are only on Isambard-AI (Phase 1 and Phase 2) — not Isambard 3.
-license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © 2024 University of Bristol.
 compatibility: >
   Isambard-AI only. Requires access to an Isambard-AI login node, GPU compute
   resources, and CUDA toolkit or container runtime support.
