@@ -286,9 +286,14 @@ For full Isambard documentation visit
 
 ## Licence
 
-This repository has more than one licence; see [`LICENCE`](LICENCE) for the full position.
+This repository is [REUSE][reuse]-compliant and follows the licensing of the
+[documentation repository](https://github.com/isambard-sc/docs.isambard.ac.uk).
+See [`LICENCE`](LICENCE) for the summary, [`REUSE.toml`](REUSE.toml) for the
+licence of each file, and [`LICENSES/`](LICENSES/) for the licence texts.
 
-- Skills derived from the documentation are CC BY-SA 4.0 (each skill states this in its `SKILL.md` `license` field).
+- Skills and this README are [CC BY-SA 4.0][cc-by-sa]. Each skill states this in its `SKILL.md` `license` field.
 - Code and tooling (workflows and scripts) are MIT.
-- Agent instruction files and configuration are CC0 1.0.
-- The `brics-hpc-ai-code` skill is proprietary.
+- Agent helpers and configuration are CC0 1.0.
+
+[reuse]: https://reuse.software/
+[cc-by-sa]: https://creativecommons.org/licenses/by-sa/4.0/

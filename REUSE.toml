@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: © 2026 University of Bristol
+# SPDX-License-Identifier: CC0-1.0
+
+version = 1
+
+[[annotations]]
+# Skills: content derived from https://docs.isambard.ac.uk/, whose pages are
+# CC-BY-SA-4.0 (including the policy pages). Each SKILL.md also states this in
+# its `license` frontmatter field.
+path = "site/plugins/isambard/skills/**"
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+# Repository documentation
+path = "README.md"
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+# Code and tooling
+path = [
+  ".github/workflows/**",
+  "site/index.html",
+]
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+# Agent helpers, editor and site configuration, and metadata
+path = [
+  ".github/agents/**",
+  ".claude-plugin/**",
+  ".gitignore",
+  ".vscode/**",
+  "LICENCE",
+  "site/.claude-plugin/**",
+  "site/.nojekyll",
+  "site/CNAME",
+  "site/marketplace.json",
+  "site/plugins/isambard/.claude-plugin/**",
+]
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "CC0-1.0"

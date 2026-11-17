@@ -6,7 +6,7 @@ description: >
   and Isambard 3. Use this skill whenever generating, adapting, or debugging
   code intended to run on BriCS facilities, writing Slurm job scripts, managing
   storage, installing software, or ensuring compliance with BriCS policies.
-license: Proprietary. See https://docs.isambard.ac.uk/policies/ for terms.
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
 compatibility: >
   Designed for use with BriCS facilities (Isambard-AI Phase 1/2, Isambard 3
   Grace/MACS). Assumes Linux aarch64 (Arm64) on Isambard-AI and Isambard 3
