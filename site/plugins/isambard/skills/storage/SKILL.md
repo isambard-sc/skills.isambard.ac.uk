@@ -17,7 +17,7 @@ description: >
   "storage".
 license: >
   CC-BY-SA-4.0. Markdown/image content derived from
-  https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
+  https://docs.isambard.ac.uk/, © 2024 University of Bristol.
 compatibility: >
   Isambard-AI and Isambard 3 (Grace and MACS). Requires a shell on an
   Isambard login or compute node. The storage environment variables are set
