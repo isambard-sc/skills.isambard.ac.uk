@@ -29,6 +29,11 @@
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/cuda/SKILL.md"
     },
     {
+      "name": "Interactive Sessions",
+      "description": "Run interactive sessions on Isambard compute nodes. Covers JupyterHub on Isambard-AI Phase 2, JupyterLab as a Slurm job with an SSH tunnel, custom Jupyter kernels from Conda or virtual environments, and VS Code remote tunnels.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/interactive-sessions/SKILL.md"
+    },
+    {
       "name": "Modules",
       "description": "Use the modules system, Cray Programming Environments (PrgEnv-gnu, PrgEnv-cray), compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools (gprof, Cray perftools, Nsight) on Isambard.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/modules/SKILL.md"
