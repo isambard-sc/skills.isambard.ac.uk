@@ -17,7 +17,7 @@ description: >
   even if they don't mention Clifton.
 license: >
   CC-BY-SA-4.0. Markdown/image content derived from
-  https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
+  https://docs.isambard.ac.uk/, © 2024 University of Bristol.
 compatibility: >
   Isambard-AI, Isambard 3 (Grace and MACS) and BlueCrystal 5 (early access).
   Clifton runs on the user's own
