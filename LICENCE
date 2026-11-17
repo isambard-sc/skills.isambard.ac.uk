@@ -5,9 +5,9 @@ Copyright (c) University of Bristol.
 
 This repository is REUSE-compliant (https://reuse.software/): the licence and
 copyright holder of every file are recorded in `REUSE.toml`, and the licence
-texts are in `LICENSES/`. It follows the licensing of the documentation
-repository, https://github.com/isambard-sc/docs.isambard.ac.uk, which is the
-authoritative source (see "Licences used" in its CONTRIBUTING.md).
+texts are in `LICENSES/`. It follows the licensing of the Isambard
+documentation, https://docs.isambard.ac.uk/, which is the authoritative
+source.
 
 | Licence      | Applies to                                                         |
 | ------------ | ------------------------------------------------------------------ |
@@ -31,9 +31,6 @@ Licence texts:
   * MIT:          LICENSES/MIT.txt
   * CC0-1.0:      LICENSES/CC0-1.0.txt
   * ARR:          LICENSES/LicenseRef-ARR.txt
-
-The BriCS logos, favicons and HPE PDFs in the documentation repository are all
-rights reserved there. None of that material is included in this repository.
 
 When adding a file, use the licence that matches its type and add it to
 `REUSE.toml` (or give it an SPDX header). Run `reuse lint` to check.

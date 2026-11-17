@@ -287,7 +287,7 @@ For full Isambard documentation visit
 ## Licence
 
 This repository is [REUSE][reuse]-compliant and follows the licensing of the
-[documentation repository](https://github.com/isambard-sc/docs.isambard.ac.uk).
+[Isambard documentation](https://docs.isambard.ac.uk/).
 See [`LICENCE`](LICENCE) for the summary, [`REUSE.toml`](REUSE.toml) for the
 licence of each file, and [`LICENSES/`](LICENSES/) for the licence texts.
 
