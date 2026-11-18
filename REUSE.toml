@@ -1,0 +1,67 @@
+# SPDX-FileCopyrightText: © 2026 University of Bristol
+# SPDX-License-Identifier: CC0-1.0
+
+version = 1
+
+[[annotations]]
+# Skills: content derived from https://docs.isambard.ac.uk/, whose pages are
+# CC-BY-SA-4.0 (including the policy pages). Each SKILL.md also states this in
+# its `license` frontmatter field. The policy skill is overridden below.
+path = "site/plugins/isambard/skills/**"
+SPDX-FileCopyrightText = "© 2024 University of Bristol"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+# Policy skill: declared proprietary in its SKILL.md. This annotation must stay
+# after the skills annotation above so that it takes precedence.
+path = "site/plugins/isambard/skills/brics-hpc-ai-code/**"
+SPDX-FileCopyrightText = "© 2024 University of Bristol"
+SPDX-License-Identifier = "LicenseRef-ARR"
+
+[[annotations]]
+# Generated skills catalogue (OpenCode). Listing data rather than docs-derived
+# content, so CC0-1.0 like the marketplace.json files. Must stay after the
+# skills annotation above so that it takes precedence.
+path = "site/plugins/isambard/skills/index.json"
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+# Skill evaluation datasets. Original to this repository, but their
+# expectations are taken from docs.isambard.ac.uk pages, so they stay
+# CC-BY-SA-4.0 (recorded here deliberately rather than by the skills default).
+path = "site/plugins/isambard/skills/**/evals/**"
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+# Repository documentation
+path = "README.md"
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+# Code and tooling
+path = [
+  ".github/workflows/**",
+  "site/index.html",
+]
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+# Agent helpers, editor and site configuration, and metadata
+path = [
+  ".github/agents/**",
+  ".claude-plugin/**",
+  ".gitignore",
+  ".vscode/**",
+  "LICENCE",
+  "site/.claude-plugin/**",
+  "site/.nojekyll",
+  "site/CNAME",
+  "site/marketplace.json",
+  "site/plugins/isambard/.claude-plugin/**",
+]
+SPDX-FileCopyrightText = "© 2026 University of Bristol"
+SPDX-License-Identifier = "CC0-1.0"
