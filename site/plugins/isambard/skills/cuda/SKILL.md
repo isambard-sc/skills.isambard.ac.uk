@@ -11,7 +11,7 @@ description: >
   questions on Isambard, even if the user doesn't say "CUDA" explicitly.
   Note: covers the GH200 GPUs on Isambard-AI (Phase 1 and Phase 2). Isambard 3 Grace
   has no GPUs; the x86 GPU partitions on Isambard 3 MACS are not covered.
-license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © 2024 University of Bristol.
 compatibility: >
   Isambard-AI only. Requires access to an Isambard-AI login node, GPU compute
   resources, and CUDA toolkit or container runtime support.

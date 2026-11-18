@@ -5,7 +5,19 @@ on:
   push:
     branches: ["main"]
 
+permissions:
+  contents: read
+
 jobs:
+  licenses:
+    name: REUSE Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v4
+
   validate:
     runs-on: ubuntu-latest
     steps:

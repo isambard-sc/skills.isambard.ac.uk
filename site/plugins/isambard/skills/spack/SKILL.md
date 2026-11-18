@@ -11,7 +11,7 @@ description: >
   managing Spack environments, or using system compilers and MPI within Spack — even if
   the user doesn't explicitly say "Spack" but is clearly trying to build software with
   dependency management on Isambard.
-license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © 2024 University of Bristol.
 compatibility: >
   Isambard-AI and Isambard 3. Requires access to an Isambard login node and a
   Spack installation or clone.
