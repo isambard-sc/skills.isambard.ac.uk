@@ -53,6 +53,8 @@ SPDX-License-Identifier = "MIT"
 # Agent helpers, editor and site configuration, and metadata
 path = [
   ".github/agents/**",
+  "AGENTS.md",
+  "CLAUDE.md",
   ".claude-plugin/**",
   ".gitignore",
   ".vscode/**",
