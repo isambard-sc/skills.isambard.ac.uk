@@ -26,6 +26,7 @@ the environment from scratch every session.
 | [Getting Support](site/plugins/isambard/skills/getting-support/SKILL.md) | Get help with Isambard-AI and Isambard 3 through the BriCS helpdesk. Covers checking service status and known issues first, raising a support ticket, and what to include in a ticket | `https://skills.isambard.ac.uk/plugins/isambard/skills/getting-support/SKILL.md` |
 | [BriCS Responsible AI Code](site/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md) | Guidance for writing, reviewing, and running AI-generated code responsibly on BriCS shared HPC resources, including Slurm job scripts, storage awareness, and BriCS policy compliance | `https://skills.isambard.ac.uk/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md` |
 | [Data Transfer](site/plugins/isambard/skills/data-transfer/SKILL.md) | Transfer data to, from, and between BriCS Isambard facilities using scp/rsync over SSH, and the early-access data mover S3 staging service | `https://skills.isambard.ac.uk/plugins/isambard/skills/data-transfer/SKILL.md` |
+| [Storage](site/plugins/isambard/skills/storage/SKILL.md) | Use storage on Isambard-AI and Isambard 3. Covers storage areas, quotas and checking usage, data retention, sharing data, packaging many-file datasets with SquashFS, and detecting the system with ISAMBARD_HOST | `https://skills.isambard.ac.uk/plugins/isambard/skills/storage/SKILL.md` |
 
 ---
 
@@ -73,7 +74,7 @@ View skills provided by Isambard plugin:
 /skills
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Skills
-  11 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
+  12 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
 
   ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
   │ ⌕ Search skills…                                                                                                         │
@@ -89,6 +90,7 @@ View skills provided by Isambard plugin:
     🔒 on         isambard:python · plugin · ~150 tok · locked by plugin
     🔒 on         isambard:slurm · plugin · ~190 tok · locked by plugin
     🔒 on         isambard:spack · plugin · ~200 tok · locked by plugin
+    🔒 on         isambard:storage · plugin · ~240 tok · locked by plugin
 
   Plugin skills are managed via /plugin
 
@@ -212,7 +214,7 @@ Install the `isambard` plugin from the marketplace:
 
  Marketplace: isambard-skills
 
- Skills: 11 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, modules, mpi, nccl, python, slurm, spack)
+ Skills: 12 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, modules, mpi, nccl, python, slurm, spack, storage)
 
   → Install for you (user scope)
     Install for all collaborators on this repository (project scope)

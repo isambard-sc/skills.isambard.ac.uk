@@ -57,6 +57,11 @@
       "name": "Spack",
       "description": "Install, configure, and use Spack to build HPC software on Isambard-AI and Isambard 3. Covers the buildit config repository, Spack environments, concretizing, installing, and targeting neoverse_v2 / aarch64.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/spack/SKILL.md"
+    },
+    {
+      "name": "Storage",
+      "description": "Use storage on Isambard-AI and Isambard 3. Covers the storage areas ($HOME, $SCRATCHDIR, $PROJECTDIR, $PROJECTDIR_PUBLIC, $LOCALDIR), quotas and checking usage, data retention and deletion, sharing data, packaging many-file datasets with SquashFS, and detecting the system with ISAMBARD_HOST.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/storage/SKILL.md"
     }
   ]
 }
