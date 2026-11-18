@@ -39,6 +39,11 @@
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/login/SKILL.md"
     },
     {
+      "name": "ML Packages",
+      "description": "Install and run GPU-accelerated machine learning packages on Isambard-AI. Covers PyTorch, TensorFlow, JAX, Flash-Attention and vLLM with pip, Conda or NGC containers, AlphaFold 2 with ColabFold and MMseqs2, and BriCS shared datasets and models.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/ml-packages/SKILL.md"
+    },
+    {
       "name": "Modules",
       "description": "Use the modules system, Cray Programming Environments (PrgEnv-gnu, PrgEnv-cray), compiler wrappers (cc, CC, ftn), GNU and NVIDIA compilers, and profiling tools (gprof, Cray perftools, Nsight) on Isambard.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/modules/SKILL.md"
