@@ -1,0 +1,36 @@
+LICENCE
+=======
+
+Copyright (c) University of Bristol.
+
+This repository is REUSE-compliant (https://reuse.software/): the licence and
+copyright holder of every file are recorded in `REUSE.toml`, and the licence
+texts are in `LICENSES/`. It follows the licensing of the Isambard
+documentation, https://docs.isambard.ac.uk/, which is the authoritative
+source.
+
+| Licence      | Applies to                                                         |
+| ------------ | ------------------------------------------------------------------ |
+| CC-BY-SA-4.0 | Skills (under `site/plugins/isambard/skills/`) except `brics-hpc-ai-code`, and `README.md` |
+| ARR          | The `brics-hpc-ai-code` skill (`LicenseRef-ARR`, all rights reserved) |
+| MIT          | Code and tooling: `.github/workflows/` and `site/index.html`       |
+| CC0-1.0      | Agent helpers (`.github/agents/`), editor, plugin and site configuration, and this file |
+
+Skills are derived from https://docs.isambard.ac.uk/, whose pages are
+CC-BY-SA-4.0. The exception is `brics-hpc-ai-code`, which describes BriCS
+policy and keeps the proprietary notice it declares ("Proprietary. See
+https://docs.isambard.ac.uk/policies/ for terms."). Each skill states its
+licence in the `license` field of its `SKILL.md` frontmatter.
+
+Attribution for skills: "Markdown/image content derived from
+https://docs.isambard.ac.uk/, (c) 2024 University of Bristol."
+
+Licence texts:
+
+  * CC-BY-SA-4.0: LICENSES/CC-BY-SA-4.0.txt
+  * MIT:          LICENSES/MIT.txt
+  * CC0-1.0:      LICENSES/CC0-1.0.txt
+  * ARR:          LICENSES/LicenseRef-ARR.txt
+
+When adding a file, use the licence that matches its type and add it to
+`REUSE.toml` (or give it an SPDX header). Run `reuse lint` to check.

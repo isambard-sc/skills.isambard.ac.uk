@@ -130,7 +130,7 @@ description: >
   <One to two sentences covering: what the skill does, what commands it
   covers, and when an agent should activate it. Include keywords a user
   would say when they need this skill.>
-license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
+license: CC-BY-SA-4.0. Markdown/image content derived from https://docs.isambard.ac.uk/, © 2024 University of Bristol.
 compatibility: >
   Isambard-AI and/or Isambard 3 (Grace, MACS). Requires access to an
   Isambard login node.
