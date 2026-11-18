@@ -11,14 +11,22 @@ These errors appear immediately when running `sbatch` or `srun`.
 
 **`Unable to allocate resources: Job violates accounting/QOS policy`**
 
-Your project has reached a resource limit. Slurm reserves credits based on **requested**
-resources × **requested** walltime — not actual usage. The reservation is held until the
-job finishes.
+Either your project has reached a resource limit, or the job would exceed one of the
+[user or project limits](https://docs.isambard.ac.uk/user-documentation/information/job-scheduling/#user-and-project-limits)
+for the system (e.g. Isambard-AI Phase 2: 256 running or 512 pending + running jobs per
+user).
+
+For a resource limit: Slurm reserves credits based on **requested** resources ×
+**requested** walltime — not actual usage. The reservation is held until the job
+finishes.
 
 - Wait for running jobs to complete, then resubmit.
 - Set `--time` as close to the expected runtime as possible.
 - Check your project's allocation at the [portal](https://portal.isambard.ac.uk).
 - See also: `AssocGrpGRESMinutesLimit` in the PENDING section below.
+
+For a user or project limit: resubmit once your running or queued job count drops below
+the limit.
 
 **`error: Invalid generic resource (GRES) specification`**
 
@@ -54,6 +62,7 @@ has not started.
 |--------|-----------|
 | `Priority` | Normal queue behaviour — wait for resources. Your job will run when it reaches the front of the queue. |
 | `Resources` | Resources are currently in use — wait. |
+| `None` | The scheduler has not yet assigned a reason. Not a problem on its own — the job is queued. Do not raise a support request. |
 | `Dependency` | A job this one depends on has not completed. Check with `squeue` or `sacct`. |
 | `PartitionTimeLimit` | `--time` exceeds the partition maximum (24 hours). Reduce it, or chain jobs with `--dependency=afterok`. |
 | `ReqNodeNotAvail` | A specific node requested with `--nodelist` is unavailable. Remove the constraint or wait. |

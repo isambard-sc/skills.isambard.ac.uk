@@ -13,7 +13,7 @@ description: >
   staging buckets on Isambard — even if the user doesn't name a specific tool.
 license: >
   CC-BY-SA-4.0. Markdown/image content derived from
-  https://docs.isambard.ac.uk/, © Bristol Centre for Supercomputing (BriCS).
+  https://docs.isambard.ac.uk/, © 2024 University of Bristol.
 compatibility: >
   Isambard-AI (Phase 1 and Phase 2) and Isambard 3. The scp/rsync workflow
   requires SSH access set up via clifton. The data mover service additionally
