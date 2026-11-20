@@ -63,6 +63,7 @@ them.
 | `policies/` (and its pages) | Legal text. Link from Further Reading; `brics-hpc-ai-code` cites `policies/acceptable_use/` for its rules. |
 | `training/`, `events/` (and their pages) | Dated event pages. |
 | `user-documentation/guides/e4s/` | Only links to the external E4S docs. Link it from Further Reading. |
+| `user-documentation/tutorials/intro-tour/` | Beginner walkthrough of logging in, modules, Slurm, Conda, uv and containers, all covered by their own skills from the guides. |
 | `user-documentation/applications/relion/`, `user-documentation/applications/orca/` | Niche application guides. Reconsider if users ask about them. |
 | `index`, `about/`, `acknowledge/`, and the section index pages | Navigation or one-line facts. Link them where relevant. |
 
