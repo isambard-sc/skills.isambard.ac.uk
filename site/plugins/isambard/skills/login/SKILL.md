@@ -33,6 +33,7 @@ metadata:
     - https://docs.isambard.ac.uk/user-documentation/getting_started/
     - https://docs.isambard.ac.uk/user-documentation/information/how-isambard-works/
     - https://docs.isambard.ac.uk/user-documentation/guides/mobaxterm/
+    - https://docs.isambard.ac.uk/user-documentation/guides/aws_accounts/
     - https://docs.isambard.ac.uk/user-documentation/guides/using_ai_agents/
     - https://docs.isambard.ac.uk/user-documentation/faqs/
     - https://docs.isambard.ac.uk/user-documentation/faqs/bc5-launch/
@@ -314,6 +315,7 @@ that MobaXterm fails silently without a valid certificate, so run
 | Invitation link doesn't work | Expired (the Project Lead resends it), sent to a different address from the one the institution gives MyAccessID (e.g. `ab12345@university.ac.uk` vs `first.last@...`; the Project Lead must re-invite at the right address), or an outage (check https://docs.isambard.ac.uk/service-status/). |
 | "Your invitation ... is under review" | A manual review, normally within 72 hours. If longer, email support@isambard.ac.uk or ask the Project Lead to raise a ticket. |
 | Institution not in MyAccessID list | Try "Other Login (IdP of last resort)". If the institution has limited MyAccessID support, contact its IT team first, then ask the Project Lead to raise a ticket for an IdP of last resort account. |
+| IdP of last resort: AWS asks for a password without first verifying the email | Account not created yet (allow 3 working days after the invitation) or a different email from the one invited. If it persists, contact the Project Lead or BriCS support. |
 | Portal login loops or fails | Try a private browser window. If that works, clear the site's cookies. |
 | SSH fails after working earlier | Certificate expired (12 hours). Run `clifton auth`. |
 | New project's alias missing, or no access to it | Run `clifton auth` then `clifton ssh-config write`. If still missing, sign out at https://account.isambard.ac.uk and repeat. |
