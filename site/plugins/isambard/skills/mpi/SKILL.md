@@ -78,8 +78,10 @@ mpicc -show
 ```
 
 The `-lmpi_gnu` or `-lmpi_cray` library is the Cray MPICH build tuned for Slingshot
-(older cray-mpich 8.x names the GNU one `-lmpi_gnu_123`). Paths and versions change with
-each Cray Programming Environment release, so don't treat a version mismatch as an error.
+(cray-mpich 8.x names the GNU one `-lmpi_gnu_123`). At the time of writing Isambard 3 has
+cray-mpich 9.1 and Isambard-AI has 8.1, so paths and versions differ between systems and
+change with each Cray Programming Environment release: don't treat a version mismatch as an
+error.
 
 > **aarch64 known issues:** Cray MPICH support for aarch64 was recently added. If you
 > hit MPICH problems, check the
@@ -100,7 +102,7 @@ srun --mpi=list
 # cray_shasta
 # none
 # pmi2
-# pmix  (pmix_v4)
+# pmix
 ```
 
 ### Choosing the right `--mpi` flag
