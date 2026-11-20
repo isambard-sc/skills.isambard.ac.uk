@@ -18,8 +18,11 @@ compatibility: >
   resources, and the brics/nccl module.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/nccl/
+  supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/guides/containers/apptainer-multi-node/
+    - https://docs.isambard.ac.uk/user-documentation/guides/modules/
 ---
 
 # NCCL on Isambard
@@ -29,7 +32,7 @@ for collective operations (all-reduce, broadcast, etc.). On Isambard-AI it uses 
 GPUDirect** over the **Slingshot 11** high-speed network.
 
 > **Supported systems:** Isambard-AI Phase 1 ✓ and Phase 2 ✓ only.
-> Isambard 3 does not support NCCL (no GPUs).
+> NCCL is not supported on Isambard 3.
 
 The critical component is the **`aws-ofi-nccl`** network plugin, which bridges NCCL to
 `libfabric` and enables RDMA on Slingshot. Without it, NCCL falls back to TCP sockets
@@ -147,7 +150,7 @@ Read this file when the user needs a custom NCCL version on the host system.
 
 ## NCCL in Containers
 
-See **`references/containers.md`** for:
+Use Apptainer for containerised NCCL workloads (the docs' recommended engine). See **`references/containers.md`** for:
 - Using the host NCCL via `brics/apptainer-multi-node` (simplest)
 - Building NCCL and `aws-ofi-nccl` inside an Apptainer container against a container's
   own CUDA runtime (e.g. an NGC PyTorch image requiring a newer CUDA than the host)
