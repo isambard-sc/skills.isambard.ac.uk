@@ -14,20 +14,24 @@ compatibility: >
   environment tools such as Miniforge, pip, or uv.
 metadata:
   author: isambard-sc
-  version: "1.0"
+  version: "1.1"
   source_url: https://docs.isambard.ac.uk/user-documentation/guides/python/
+  supplementary_urls:
+    - https://docs.isambard.ac.uk/user-documentation/guides/python-advanced/
+    - https://docs.isambard.ac.uk/user-documentation/guides/python-troubleshooting/
+    - https://docs.isambard.ac.uk/user-documentation/guides/mpi/
 ---
 
 # Python on Isambard AI
 
 Isambard supercomputers run **Linux on Arm64 (`aarch64`)** — this shapes almost every aspect of Python environment management, since many packages lack prebuilt `aarch64` wheels and must be compiled from source.
 
-Python and packages can be managed with `pip`, `conda`, or `uv`. **Conda via Miniforge** is the recommended approach. All workflows should use **virtual environments** to isolate dependencies.
+Python and packages can be managed with `pip`, `conda`, or `uv`. **Conda and `uv` are both reasonable defaults** when starting from scratch; install Conda via **Miniforge**. All workflows should use **virtual environments** to isolate dependencies.
 
 Use:
-- **Conda** for reproducible environment management, binary packages, and complex dependency sets.
-- **uv** for fast venv creation and lightweight dependency installation when system Python is not required.
-- **Cray Python** only when the environment is already module-managed and you want the system-supported runtime.
+- **Conda** when you need non-Python dependencies too (e.g. compilers, `cuda`, system libraries).
+- **uv** when you want fast installs, lockfiles, or are working from a `pyproject.toml`.
+- **pip + venv** (e.g. with Cray Python) when you already have a `pip`/`venv`-based workflow and don't want to change it.
 
 ## Critical Rules
 
@@ -35,7 +39,8 @@ Use:
 - Never install packages into the Conda `base` environment.
 - Do not run `conda init`; activate Miniforge manually.
 - Always use `python3 -m pip` rather than bare `pip`.
-- Prefer Conda on Isambard, and use `uv` only when you need a simpler local venv workflow.
+- Never use a plain `conda install mpi4py` (or conda OpenMPI) for multi-node MPI — it
+  bypasses Cray MPICH and the Slingshot interconnect. See *MPI libraries* below.
 
 ---
 
@@ -149,14 +154,40 @@ CC=/usr/bin/gcc-12 CXX=/usr/bin/g++-12 pip install <PACKAGE>
 
 ### MPI libraries (`mpi4py`)
 
-Conda's `mpi4py` installs its own MPI, which won't use the system high-speed interconnect (Slingshot 11). Force a source build against the Cray MPI stack instead:
+A plain `conda install mpi4py` bundles its own MPI runtime, which does not know about the Slingshot interconnect or the Slurm process manager, so it will not work correctly across multiple nodes.
+
+**Recommended:** use the conda-forge *external* MPICH build, which binds to the vendor Cray MPICH at run time:
 
 ```bash
-module load PrgEnv-gnu
-python3 -m pip install --no-cache --no-binary mpi4py mpi4py
+conda create --name mpi4py-mpich \
+    --channel conda-forge/label/mpi-external \
+    --channel conda-forge \
+    mpi4py "mpich=*=external_*"
 ```
 
-For simple use-cases, `module load cray-mpich-abi` can help pip find the correct MPI library without a source build.
+In the job script, load the Cray environment and point the dynamic linker at the Cray MPICH ABI libraries before launching with `srun`:
+
+```bash
+module reset
+module load PrgEnv-gnu
+source ~/miniforge3/bin/activate
+conda activate mpi4py-mpich
+export LD_LIBRARY_PATH="${MPICH_DIR}/lib-abi-mpich:${LD_LIBRARY_PATH:-}"
+srun python mpi_hello.py
+```
+
+**Best performance (production MPI workloads):** build `mpi4py` from source against Cray MPICH using the `cc` wrapper, in a minimal environment:
+
+```bash
+module reset
+module load PrgEnv-gnu
+conda create --name mpi4py-source python pip
+conda activate mpi4py-source
+MPICC="cc -shared" python -m pip install \
+    --force-reinstall --no-cache-dir --no-binary mpi4py mpi4py
+```
+
+Load `PrgEnv-gnu` in the job script too (no `LD_LIBRARY_PATH` change needed). Conda OpenMPI is **not** a supported configuration on Isambard — it does not work correctly with `srun`. See the [MPI guide](https://docs.isambard.ac.uk/user-documentation/guides/mpi/) for test programs and full job scripts.
 
 ### Build isolation
 
@@ -222,18 +253,34 @@ Support for popular ML packages on `aarch64` is documented on the [Isambard ML p
 
 | Situation | Recommended approach |
 |-----------|---------------------|
-| General Python environment management | Conda (Miniforge) |
-| Fast pip/venv workflows | uv |
-| System Python already available | `module load cray-python` + `venv` |
+| Need non-Python dependencies (compilers, `cuda`, system libraries) | Conda (Miniforge) |
+| Fast installs, lockfiles, or a `pyproject.toml` project | uv |
+| Existing `pip`/`venv` workflow | `module load cray-python` + `venv` |
 | Package not on conda, no `aarch64` wheel | Build from source; set `CC`/`CXX`; try `--no-build-isolation` |
-| MPI (mpi4py) | `module load PrgEnv-gnu` + `pip install --no-binary mpi4py mpi4py` |
+| MPI (mpi4py) | Conda env with `mpi4py "mpich=*=external_*"` from `conda-forge/label/mpi-external`; source build with `MPICC="cc -shared"` for best performance |
 | Checking package compatibility | Search anaconda.org filtered to `linux-aarch64`; inspect GitHub Actions workflows |
+
+---
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| `ERROR: Could not find a version that satisfies the requirement <package>` / `No matching distribution found` | No `aarch64` wheel (or none for this Python version). Check Conda (`linux-aarch64` on anaconda.org); otherwise build from source |
+| Build fails with a compiler error | Default system compiler is too old — set `CC`/`CXX` (e.g. `/usr/bin/gcc-12`, `/usr/bin/g++-12`) and retry |
+| Build can't detect a pre-installed dependency (e.g. `torch`) or ARM compiler flags | Retry with `--no-build-isolation` |
+| `mpi4py` installs but fails at runtime, or brings its own MPI | Use the conda-forge external-MPICH build (see *MPI libraries*) |
+| `conda: command not found` in a new session or an interactive job on a compute node | Activation doesn't persist between login and compute nodes — run `source ~/miniforge3/bin/activate` again |
+| Package installed but `import <package>` fails | Wrong environment — check `which python3` and use `python3 -m pip`, not bare `pip` |
 
 ---
 
 ## Useful Resources
 
 - [Isambard documentation](https://docs.isambard.ac.uk)
+- [Python: building from source on aarch64](https://docs.isambard.ac.uk/user-documentation/guides/python-advanced/)
+- [Python: troubleshooting](https://docs.isambard.ac.uk/user-documentation/guides/python-troubleshooting/)
+- [Isambard MPI guide](https://docs.isambard.ac.uk/user-documentation/guides/mpi/)
 - [Miniforge on GitHub](https://github.com/conda-forge/miniforge)
 - [uv docs](https://docs.astral.sh/uv/)
 - [Anaconda.org package search](https://anaconda.org)
