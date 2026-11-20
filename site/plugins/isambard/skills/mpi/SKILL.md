@@ -70,14 +70,16 @@ After loading, verify the MPI link flags:
 ```bash
 # With PrgEnv-gnu
 mpicc -show
-# gcc -I/opt/cray/pe/mpich/.../ofi/gnu/12.3/include -L.../lib -lmpi_gnu_123
+# gcc -I/opt/cray/pe/mpich/<version>/ofi/gnu/12.3/include -L.../lib -lmpi_gnu ...
 
 # With PrgEnv-cray
 mpicc -show
-# craycc -I/opt/cray/pe/mpich/.../ofi/cray/17.0/include -L.../lib -lmpi_cray
+# craycc -I/opt/cray/pe/mpich/<version>/ofi/cray/<version>/include -L.../lib -lmpi_cray ...
 ```
 
-The `-lmpi_gnu_*` or `-lmpi_cray` library is the Cray MPICH build tuned for Slingshot.
+The `-lmpi_gnu` or `-lmpi_cray` library is the Cray MPICH build tuned for Slingshot
+(older cray-mpich 8.x names the GNU one `-lmpi_gnu_123`). Paths and versions change with
+each Cray Programming Environment release, so don't treat a version mismatch as an error.
 
 > **aarch64 known issues:** Cray MPICH support for aarch64 was recently added. If you
 > hit MPICH problems, check the
