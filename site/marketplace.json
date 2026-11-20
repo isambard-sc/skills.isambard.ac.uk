@@ -19,6 +19,11 @@
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/data-transfer/SKILL.md"
     },
     {
+      "name": "Distributed Training",
+      "description": "Train, fine-tune and serve models across GPUs and nodes on Isambard-AI. Covers multi-node PyTorch DDP with srun and NCCL, LLM pre-training with Megatron Bridge, QLoRA fine-tuning with TRL, and vLLM serving on one or more nodes with Ray.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/distributed-training/SKILL.md"
+    },
+    {
       "name": "Getting Support",
       "description": "Get help with Isambard-AI and Isambard 3 through the BriCS helpdesk. Covers checking service status and known issues first, raising a support ticket at support.isambard.ac.uk, and what to include in a ticket.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/getting-support/SKILL.md"
