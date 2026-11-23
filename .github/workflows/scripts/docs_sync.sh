@@ -41,6 +41,9 @@
 #   0 9 * * 1 /path/to/skills.isambard.ac.uk/.github/workflows/scripts/docs_sync.sh >> "$HOME/docs-sync.log" 2>&1
 
 set -euo pipefail
+# No __pycache__ from the validators, whoever runs them, so that any .pyc in
+# the worktree after the agent has run is one it wrote (see the check below).
+export PYTHONDONTWRITEBYTECODE=1
 
 scripts=$(cd "$(dirname "$0")" && pwd)
 repo=$(git -C "$scripts" rev-parse --show-toplevel)
@@ -223,9 +226,10 @@ else
     > "$tmp/summary.md"
 fi
 
-# Belt and braces: whatever the agent's own rules allowed, refuse to commit
-# anything outside site/ and README.md.
-stray=$(git status --porcelain --untracked-files=all | cut -c4- | grep -vE '^(site/|README\.md$)' || true)
+# Belt and braces: whatever the agent's own rules allowed, refuse to go on if
+# it changed anything outside site/ and README.md, including ignored files: a
+# planted __pycache__/skills_lib.*.pyc would run when the validators do.
+stray=$(git status --porcelain --untracked-files=all --ignored | cut -c4- | grep -vE '^(site/|README\.md$)' || true)
 if [ -n "$stray" ]; then
   echo "The agent changed files outside site/ and README.md; not committing:" >&2
   echo "$stray" >&2
@@ -248,9 +252,13 @@ if [ ${#skill_args[@]} -eq 0 ]; then
   git commit --quiet -m "chore(sync): record docs commit ${to:0:12} as synced"
 fi
 
+# The validators import from the worktree, so run them without this script's
+# credentials. ($py may be several words, so it's deliberately unquoted.)
 checks=""
 for check in check_skill_frontmatter check_skill_indexes check_readme_examples; do
-  checks+="$($py ".github/workflows/scripts/$check.py" 2>&1 || true)"$'\n'
+  # shellcheck disable=SC2086
+  checks+="$(env -u GH_TOKEN -u GITHUB_TOKEN -u ANTHROPIC_API_KEY -u COPILOT_GITHUB_TOKEN \
+    $py ".github/workflows/scripts/$check.py" 2>&1 || true)"$'\n'
 done
 
 {
