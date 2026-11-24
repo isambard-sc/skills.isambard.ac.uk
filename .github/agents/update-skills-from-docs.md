@@ -258,9 +258,11 @@ with `--dry-run` to see the report only.
 The review of a sync PR asks one question: do the skill changes reflect the
 docs changes? The docs are the source of truth, so a reviewer doesn't re-check
 facts about the system; anything wrong in the docs is fixed in the docs first.
-The PR body therefore holds the docs diff for each changed page (with a link
-to the published page for context) and a few lines per skill from the agent,
-and the skill changes are the PR's own diff. It skips while an earlier sync PR is
+So the PR body (`render_sync_pr.py`) pairs each docs change with the skill
+lines that follow it: the docs hunk, linked to its section of the published
+page, above the skill lines, linked to them in the PR's Files changed tab.
+The agent only says which goes with which. Both diffs come from git, and
+anything its answer leaves out is listed under "Not covered". It skips while an earlier sync PR is
 still open. Run it locally, or let the `docs-sync.yml` workflow run it every
 weekday once its secrets are set (see the comments in that file).
 

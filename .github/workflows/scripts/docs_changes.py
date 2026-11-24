@@ -8,15 +8,17 @@ pymdownx.snippets `--8<--` includes, so example scripts count as part of the
 page), then diffs those files between --from and --to.
 
 It writes a Markdown report (changed pages, the skills citing each, and cited
-URLs that no longer map to a page) to stdout, and with --diff, a unified diff
-of the changed pages to a file. The diff file is empty when no cited page
-changed.
+URLs that no longer map to a page) to stdout. With --diff, it writes a unified
+diff of the changed pages to a file, each hunk header tagged with an id
+([D1], [D2], ...) that the sync agent uses to say which docs change each skill
+edit follows. With --hunks, it writes the same hunks as JSON for
+render_sync_pr.py. Both are empty when no cited page changed.
 
 The docs repo is private while this repo and its pull requests are public, so
 the report contains docs paths and commit hashes only, never commit subjects
 or authors, and the diff is built from the files with what the published site
 doesn't show (front matter and HTML comments, closed or not) removed. The
---pr-diff output goes into public PR bodies verbatim.
+hunks go into public PR bodies verbatim.
 
 Usage (from the repo root):
   python3 .github/workflows/scripts/docs_changes.py \\
@@ -25,6 +27,7 @@ Usage (from the repo root):
 
 import argparse
 import difflib
+import json
 import os
 import re
 import subprocess
@@ -38,13 +41,7 @@ DOCS_SITE = "https://docs.isambard.ac.uk"
 # links to service status so the agent checks it live, not to copy its content.
 VOLATILE_PREFIXES = ("service-status/",)
 
-# The PR body shows the docs diff (--pr-diff). GitHub caps a body at 65,536
-# characters, and the rest of the body needs room too.
-PR_DIFF_BUDGET = 45_000
-PR_DIFF_PAGE_LINES = 400  # lines of diff shown per page
-PR_DIFF_OPEN_LINES = 60  # diffs this short start expanded
-
-SNIPPET_RE =re.compile(r'^\s*--8<--\s+"([^"]+)"', re.MULTILINE)
+SNIPPET_RE = re.compile(r'^\s*--8<--\s+"([^"]+)"', re.MULTILINE)
 # An unclosed comment hides the rest of the page, so it runs to the end.
 COMMENT_RE = re.compile(r"<!--.*?(?:-->|\Z)", re.DOTALL)
 # YAML front matter: page settings the site doesn't display.
@@ -122,7 +119,7 @@ def main():
     ap.add_argument("--to", default="HEAD", help="docs commit to compare against (default: HEAD)")
     ap.add_argument("--skill", help="only check the pages this skill cites")
     ap.add_argument("--diff", help="write the diff of the changed pages to this file")
-    ap.add_argument("--pr-diff", help="write the diff as collapsible Markdown sections for a PR body to this file")
+    ap.add_argument("--hunks", help="write the diff's hunks as JSON (for render_sync_pr.py) to this file")
     args = ap.parse_args()
 
     repo = args.docs_repo
@@ -165,67 +162,88 @@ def main():
         lines.append("")
     sys.stdout.write("\n".join(lines))
 
-    diffs = {}
+    hunks = []
     for path in changed:
         old = published_text(repo, base, path).splitlines(keepends=True)
         new = published_text(repo, head, path).splitlines(keepends=True)
-        diffs[path] = list(difflib.unified_diff(old, new, f"a/{path}", f"b/{path}"))
+        e = by_path[path]
+        for group in difflib.SequenceMatcher(None, old, new).get_grouped_opcodes(3):
+            lines = []
+            for tag, i1, i2, j1, j2 in group:
+                if tag == "equal":
+                    lines += [" " + l for l in old[i1:i2]]
+                    continue
+                lines += ["-" + l for l in old[i1:i2]]
+                lines += ["+" + l for l in new[j1:j2]]
+            hunks.append({
+                "id": f"D{len(hunks) + 1}",
+                "path": path,
+                "urls": sorted(e["urls"]),
+                "is_page": e["is_page"],
+                "skills": sorted(e["skills"]),
+                "header": unified_header(group),
+                # The heading the change sits under, for a link to that section.
+                "section": section_above(new, first_change(group)) if e["is_page"] else None,
+                # A missing newline at the end of a file would join two lines.
+                "lines": [l if l.endswith("\n") else l + "\n" for l in lines],
+            })
 
     if args.diff:
         with open(args.diff, "w", encoding="utf-8") as f:
-            for path in changed:
-                f.writelines(diffs[path])
+            for i, h in enumerate(hunks):
+                if i == 0 or hunks[i - 1]["path"] != h["path"]:
+                    f.write(f"--- a/{h['path']}\n+++ b/{h['path']}\n")
+                f.write(f"{h['header']} [{h['id']}]\n")
+                f.writelines(h["lines"])
 
-    if args.pr_diff:
-        with open(args.pr_diff, "w", encoding="utf-8") as f:
-            f.write(pr_diff_markdown(changed, by_path, diffs))
-
-
-def fence_for(text):
-    """A code fence longer than any backtick run in text, so a ``` line in
-    the docs (indented one space by the diff) can't close it early."""
-    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
-    return "`" * max(3, longest + 1)
+    if args.hunks:
+        with open(args.hunks, "w", encoding="utf-8") as f:
+            json.dump(hunks, f, indent=1)
 
 
-def pr_diff_markdown(changed, by_path, diffs):
-    """One collapsible diff per changed page for the PR body, each linking to
-    the published page. Small diffs start open; the total is capped because
-    GitHub limits a PR body to 65,536 characters."""
-    out, budget = [], PR_DIFF_BUDGET
-    for path in changed:
-        e = by_path[path]
-        lines = diffs[path][2:]  # drop the ---/+++ header; the summary names the file
-        added = sum(1 for l in lines if l.startswith("+"))
-        removed = sum(1 for l in lines if l.startswith("-"))
-        skills = ", ".join(f"<code>{s}</code>" for s in sorted(e["skills"]))
-        pages = ", ".join(f"[{u[len(DOCS_SITE):].strip('/')}]({u})" for u in sorted(e["urls"]))
+def section_above(lines, index):
+    """(heading text, anchor) of the last Markdown heading before lines[index],
+    skipping fenced code blocks (where # starts a comment), or None. The
+    anchor follows MkDocs' default toc slugify."""
+    found, fence = None, None
+    for line in lines[:index]:
+        m = re.match(r"\s*(`{3,}|~{3,})", line)
+        if m:
+            mark = m.group(1)
+            if fence is None:
+                fence = mark
+            elif mark[0] == fence[0] and len(mark) >= len(fence):
+                fence = None
+            continue
+        h = re.match(r"(#{1,6})\s+(.+?)\s*#*\s*$", line)
+        if fence is None and h:
+            text = re.sub(r"\{[^}]*\}\s*$", "", h.group(2)).strip()  # attr_list {#id}
+            custom = re.search(r"\{\s*#([\w-]+)", h.group(2))
+            # Keep link text, drop link targets and inline markup.
+            plain = re.sub(r"\[([^\]]*)\](?:\([^)]*\)|\[[^\]]*\])", r"\1", text)
+            plain = re.sub(r"[`*_]", "", plain)
+            slug = custom.group(1) if custom else re.sub(
+                r"[-\s]+", "-", re.sub(r"[^\w\s-]", "", plain).strip().lower())
+            found = (plain, slug)
+    return found
 
-        shown, cut = [], 0
-        for line in lines:
-            if len(shown) >= PR_DIFF_PAGE_LINES or len(line) > budget:
-                cut = len(lines) - len(shown)
-                break
-            shown.append(line)
-            budget -= len(line)
-        body = "".join(shown)
-        fence = fence_for(body)
-        opened = " open" if len(lines) <= PR_DIFF_OPEN_LINES and not cut else ""
 
-        out += [
-            f"<details{opened}>",
-            f"<summary><code>{path}</code>: +{added} −{removed}, cited by {skills}</summary>",
-            "",
-            ("Published page:" if e["is_page"] else "Included in") + f" {pages}",
-            "",
-            f"{fence}diff",
-            body.rstrip("\n"),
-            fence,
-        ]
-        if cut:
-            out += ["", f"*{cut} more lines not shown: see the published page.*"]
-        out += ["", "</details>", ""]
-    return "\n".join(out)
+def first_change(group):
+    """Index in the new file just past the first changed line, so a heading
+    that is itself the change counts as the section."""
+    tag, _, _, j1, j2 = next(op for op in group if op[0] != "equal")
+    return j1 + (1 if j2 > j1 else 0)
+
+
+def unified_header(group):
+    """The @@ line for a group of opcodes, as difflib.unified_diff writes it."""
+    def rng(start, stop):
+        length = stop - start
+        if length == 1:
+            return f"{start + 1}"
+        return f"{start if length == 0 else start + 1},{length}"
+    first, last = group[0], group[-1]
+    return f"@@ -{rng(first[1], last[2])} +{rng(first[3], last[4])} @@"
 
 
 if __name__ == "__main__":
