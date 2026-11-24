@@ -266,6 +266,17 @@ if [ -n "$stray" ]; then
   exit 1
 fi
 
+# File names go into the PR body and are parsed back out of git diff, so
+# allow only plain ones: a name git would quote could otherwise slip a change
+# past the review. (-z output is never quoted, so this sees the real names.)
+odd=$(git status --porcelain -z --untracked-files=all | tr '\0' '\n' | cut -c4- \
+  | grep -vE '^[A-Za-z0-9._/-]+$' || true)
+if [ -n "$odd" ]; then
+  echo "The agent created or changed files with unusual names; not committing:" >&2
+  printf '%s\n' "$odd" >&2
+  exit 1
+fi
+
 echo "Committing edits and running validators ..." >&2
 # Commit Claude's edits: one commit per skill, then any index files.
 for dir in $(git status --porcelain -- site/plugins | awk '{print $2}' \

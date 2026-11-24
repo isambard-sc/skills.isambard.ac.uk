@@ -76,6 +76,17 @@ def skill_hunks(base):
     return [h for h in hunks if h["path"]]
 
 
+def changed_paths(base):
+    """Every file changed since base, from -z output (never quoted), so a file
+    the hunk parser missed (an odd name, a binary file, a mode change) can be
+    listed rather than left out of the review."""
+    out = subprocess.run(
+        ["git", "diff", "--name-only", "-z", "--no-renames", base, "HEAD", "--", "site", "README.md"],
+        capture_output=True, text=True, check=True,
+    ).stdout
+    return [p for p in out.split("\0") if p]
+
+
 def read_answer(path):
     """The agent's JSON answer: the last {...} object in its output."""
     try:
@@ -124,7 +135,15 @@ class Body:
         pr = self.args.pr or "PR"
         anchor = f"R{start}" if start == end else f"R{start}-R{end}"
         where = f"line {start}" if start == end else f"lines {start}–{end}"
-        return f"[`{path.split('/skills/', 1)[-1]}` {where}]({self.args.repo_url}/pull/{pr}/files#diff-{h}{anchor})"
+        return f"[{show_path(path.split('/skills/', 1)[-1])} {where}]({self.args.repo_url}/pull/{pr}/files#diff-{h}{anchor})"
+
+
+def show_path(path):
+    """A file path for link text: in code if it's a plain name (docs_sync.sh
+    allows no others), otherwise escaped so it can't add Markdown or HTML."""
+    if re.fullmatch(r"[A-Za-z0-9._/-]+", path):
+        return f"`{path}`"
+    return re.sub(r"([\\`*_\[\]()<>@!#|~])", r"\\\1", clean(path, 200))
 
 
 def docs_link(h):
@@ -215,6 +234,10 @@ def main():
             head.line()
         head.out += b.out
 
+    unparsed = sorted(set(changed_paths(args.base)) - {h["path"] for h in skill})
+    if unparsed:
+        alerts.append(f"{len(unparsed)} changed file(s) have no text diff to show (binary, a "
+                      "mode change or an unusual name): see Not covered.")
     if args.checks_failed:
         alerts.append("The skill validators failed: see Validation below.")
     if problem:
@@ -269,7 +292,7 @@ def main():
 
     left_docs = [i for i in docs if i not in used_docs]
     left_skill = [h for k, h in enumerate(skill) if k not in used_skill]
-    if left_docs or left_skill:
+    if left_docs or left_skill or unparsed:
         b.line("### Not covered")
         b.line()
         b.line("The agent's answer didn't account for these. Check them against the docs as well.")
@@ -280,6 +303,10 @@ def main():
         for h in left_skill:
             b.line(f"**Skill** · {b.skill_link(h['path'], h['start'], h['end'])}")
             b.diff_block(h["lines"])
+        for path in unparsed:
+            b.line(f"**Skill** · {show_path(path)}: changed, but no text diff to show here. "
+                   "Check it in **Files changed**.")
+            b.line()
         b.line()
 
     if args.report:
