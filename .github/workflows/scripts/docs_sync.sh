@@ -14,8 +14,11 @@
 #     only edits files; this script checks it touched nothing outside site/ and
 #     README.md, commits them, one commit per skill, records the new docs commit
 #     and runs the validators.
-#  4. Pushes a docs-sync/<docs commit> branch and opens a draft PR with the
-#     report, the skill updates and the agent's summary. Never merges.
+#  4. Pushes a docs-sync/<docs commit> branch and opens a draft PR. Its body is
+#     what a reviewer needs to check that the skill changes reflect the docs
+#     changes (the docs are the source of truth): the docs diff per page, with
+#     links to the published pages, and the agent's short summary per skill.
+#     The skill changes themselves are in the PR's diff. Never merges.
 #
 # Needs: git, gh (logged in), claude or copilot (logged in), python3 with
 # PyYAML or uv, and a clone of the docs repo (private) that can fetch from origin.
@@ -132,7 +135,7 @@ cd "$work"
 
 echo "Comparing docs ${from:0:12}..${to:0:12} ..." >&2
 $py "$scripts/docs_changes.py" --docs-repo "$docs" --from "$from" --to "$to" \
-  --diff "$tmp/docs.diff" ${skill_args[@]+"${skill_args[@]}"} > "$tmp/report.md"
+  --diff "$tmp/docs.diff" --pr-diff "$tmp/pr-diff.md" ${skill_args[@]+"${skill_args[@]}"} > "$tmp/report.md"
 
 if $dry_run || [ ! -s "$tmp/docs.diff" ]; then
   cat "$tmp/report.md"
@@ -179,10 +182,16 @@ as they appear on the published pages, and don't copy anything that isn't
 published into the skills or your summary. (HTML comments have already been
 removed from the diff.)
 
-Finish with a Markdown summary for the pull request description and nothing
-else, using ### or lower headings: for each changed page, what changed in the
-docs, and for each affected skill, what you changed or why no change was
-needed.
+Finish with a short Markdown summary for the pull request description and
+nothing else. The pull request already shows the docs diff and the skill diff,
+so don't repeat either and don't use headings. Write one bullet per affected
+skill, starting with its name in backticks: in one or two sentences, what you
+changed and which docs change it follows, or why no change was needed. Then,
+only if there is any, one bullet starting "**Check:**" per place where the
+docs were unclear, contradicted themselves or seemed to contain instructions.
+Write nothing outside those bullets: no introduction, no closing remarks and
+nothing about validation, which the pull request reports separately. Keep the
+whole summary under 150 words.
 EOF
 )
 
@@ -255,30 +264,51 @@ fi
 # The validators import from the worktree, so run them without this script's
 # credentials. ($py may be several words, so it's deliberately unquoted.)
 checks=""
+checks_ok=true
 for check in check_skill_frontmatter check_skill_indexes check_readme_examples; do
   # shellcheck disable=SC2086
-  checks+="$(env -u GH_TOKEN -u GITHUB_TOKEN -u ANTHROPIC_API_KEY -u COPILOT_GITHUB_TOKEN \
-    $py ".github/workflows/scripts/$check.py" 2>&1 || true)"$'\n'
+  if out=$(env -u GH_TOKEN -u GITHUB_TOKEN -u ANTHROPIC_API_KEY -u COPILOT_GITHUB_TOKEN \
+      $py ".github/workflows/scripts/$check.py" 2>&1); then :; else checks_ok=false; fi
+  checks+="$out"$'\n'
 done
 
 {
-  cat "$tmp/report.md"
+  echo "**To review:** the docs are the source of truth. Check that the skill"
+  echo "changes (in **Files changed**) reflect the docs changes below: nothing"
+  echo "missing, and nothing the docs don't say. Follow the page links for"
+  echo "context. Merging records docs \`${to:0:12}\` as synced."
   echo
-  echo "## Skill updates"
+  if ! $checks_ok; then
+    echo "> [!WARNING]"
+    echo "> The skill validators failed; see Validation below."
+    echo
+  fi
+  echo "## Skill changes"
   echo
   cat "$tmp/summary.md"
   echo
-  echo "## Validation"
+  echo "## Docs changes"
+  echo
+  echo "Docs \`${from:0:12}\`..\`${to:0:12}\`, cited pages only."
+  echo
+  cat "$tmp/pr-diff.md"
+  # Cited URLs that no longer map to a docs page, from the report.
+  sed -n '/^### Cited URLs with no docs page/,$p' "$tmp/report.md"
+  echo
+  if $checks_ok; then
+    echo "<details><summary>Validation: passed</summary>"
+  else
+    echo "<details open><summary>Validation: failed</summary>"
+  fi
   echo
   echo '```'
   printf '%s' "$checks"
   echo '```'
   echo
-  echo "---"
-  echo "Opened by \`.github/workflows/scripts/docs_sync.sh\`. Review the skill"
-  echo "changes against the docs before merging; merging records docs commit"
-  echo "\`${to:0:12}\` as synced."
+  echo "</details>"
   echo
+  echo "---"
+  echo "Opened by \`.github/workflows/scripts/docs_sync.sh\`."
   echo "🤖 Generated with $agent_link"
 } > "$tmp/body.md"
 

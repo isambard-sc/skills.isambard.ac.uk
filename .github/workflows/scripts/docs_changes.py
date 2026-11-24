@@ -37,7 +37,13 @@ DOCS_SITE = "https://docs.isambard.ac.uk"
 # links to service status so the agent checks it live, not to copy its content.
 VOLATILE_PREFIXES = ("service-status/",)
 
-SNIPPET_RE = re.compile(r'^\s*--8<--\s+"([^"]+)"', re.MULTILINE)
+# The PR body shows the docs diff (--pr-diff). GitHub caps a body at 65,536
+# characters, and the rest of the body needs room too.
+PR_DIFF_BUDGET = 45_000
+PR_DIFF_PAGE_LINES = 400  # lines of diff shown per page
+PR_DIFF_OPEN_LINES = 60  # diffs this short start expanded
+
+SNIPPET_RE =re.compile(r'^\s*--8<--\s+"([^"]+)"', re.MULTILINE)
 COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
 
 
@@ -108,6 +114,7 @@ def main():
     ap.add_argument("--to", default="HEAD", help="docs commit to compare against (default: HEAD)")
     ap.add_argument("--skill", help="only check the pages this skill cites")
     ap.add_argument("--diff", help="write the diff of the changed pages to this file")
+    ap.add_argument("--pr-diff", help="write the diff as collapsible Markdown sections for a PR body to this file")
     args = ap.parse_args()
 
     repo = args.docs_repo
@@ -125,7 +132,8 @@ def main():
             broken.append((url, skills))
             continue
         for path in with_snippets(page, repo, head):
-            entry = by_path.setdefault(path, {"urls": set(), "skills": set()})
+            entry = by_path.setdefault(path, {"urls": set(), "skills": set(), "is_page": False})
+            entry["is_page"] |= path == page
             entry["urls"].add(url)
             entry["skills"] |= skills
 
@@ -149,12 +157,67 @@ def main():
         lines.append("")
     sys.stdout.write("\n".join(lines))
 
+    diffs = {}
+    for path in changed:
+        old = published_text(repo, base, path).splitlines(keepends=True)
+        new = published_text(repo, head, path).splitlines(keepends=True)
+        diffs[path] = list(difflib.unified_diff(old, new, f"a/{path}", f"b/{path}"))
+
     if args.diff:
         with open(args.diff, "w", encoding="utf-8") as f:
             for path in changed:
-                old = published_text(repo, base, path).splitlines(keepends=True)
-                new = published_text(repo, head, path).splitlines(keepends=True)
-                f.writelines(difflib.unified_diff(old, new, f"a/{path}", f"b/{path}"))
+                f.writelines(diffs[path])
+
+    if args.pr_diff:
+        with open(args.pr_diff, "w", encoding="utf-8") as f:
+            f.write(pr_diff_markdown(changed, by_path, diffs))
+
+
+def fence_for(text):
+    """A code fence longer than any backtick run in text, so a ``` line in
+    the docs (indented one space by the diff) can't close it early."""
+    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
+    return "`" * max(3, longest + 1)
+
+
+def pr_diff_markdown(changed, by_path, diffs):
+    """One collapsible diff per changed page for the PR body, each linking to
+    the published page. Small diffs start open; the total is capped because
+    GitHub limits a PR body to 65,536 characters."""
+    out, budget = [], PR_DIFF_BUDGET
+    for path in changed:
+        e = by_path[path]
+        lines = diffs[path][2:]  # drop the ---/+++ header; the summary names the file
+        added = sum(1 for l in lines if l.startswith("+"))
+        removed = sum(1 for l in lines if l.startswith("-"))
+        skills = ", ".join(f"<code>{s}</code>" for s in sorted(e["skills"]))
+        pages = ", ".join(f"[{u[len(DOCS_SITE):].strip('/')}]({u})" for u in sorted(e["urls"]))
+
+        shown, cut = [], 0
+        for line in lines:
+            if len(shown) >= PR_DIFF_PAGE_LINES or len(line) > budget:
+                cut = len(lines) - len(shown)
+                break
+            shown.append(line)
+            budget -= len(line)
+        body = "".join(shown)
+        fence = fence_for(body)
+        opened = " open" if len(lines) <= PR_DIFF_OPEN_LINES and not cut else ""
+
+        out += [
+            f"<details{opened}>",
+            f"<summary><code>{path}</code>: +{added} −{removed}, cited by {skills}</summary>",
+            "",
+            ("Published page:" if e["is_page"] else "Included in") + f" {pages}",
+            "",
+            f"{fence}diff",
+            body.rstrip("\n"),
+            fence,
+        ]
+        if cut:
+            out += ["", f"*{cut} more lines not shown: see the published page.*"]
+        out += ["", "</details>", ""]
+    return "\n".join(out)
 
 
 if __name__ == "__main__":
