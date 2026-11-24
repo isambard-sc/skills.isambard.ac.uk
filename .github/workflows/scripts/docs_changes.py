@@ -14,8 +14,9 @@ changed.
 
 The docs repo is private while this repo and its pull requests are public, so
 the report contains docs paths and commit hashes only, never commit subjects
-or authors, and the diff is built from the files with HTML comments (which the
-published site doesn't show) removed.
+or authors, and the diff is built from the files with what the published site
+doesn't show (front matter and HTML comments, closed or not) removed. The
+--pr-diff output goes into public PR bodies verbatim.
 
 Usage (from the repo root):
   python3 .github/workflows/scripts/docs_changes.py \\
@@ -44,7 +45,10 @@ PR_DIFF_PAGE_LINES = 400  # lines of diff shown per page
 PR_DIFF_OPEN_LINES = 60  # diffs this short start expanded
 
 SNIPPET_RE =re.compile(r'^\s*--8<--\s+"([^"]+)"', re.MULTILINE)
-COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
+# An unclosed comment hides the rest of the page, so it runs to the end.
+COMMENT_RE = re.compile(r"<!--.*?(?:-->|\Z)", re.DOTALL)
+# YAML front matter: page settings the site doesn't display.
+FRONT_MATTER_RE = re.compile(r"\A---[ \t]*\n.*?^---[ \t]*\n", re.DOTALL | re.MULTILINE)
 
 
 def git(repo, *args):
@@ -67,10 +71,14 @@ def url_to_page(url, repo, rev):
 
 
 def published_text(repo, rev, path):
-    """The file at rev without HTML comments, or "" if it doesn't exist."""
+    """The file at rev without what the site doesn't display (front matter
+    and HTML comments), or "" if it doesn't exist. The diff of this goes into
+    public PRs, so this is the line between the private repo and the public
+    one: keep it in step with anything else the docs build hides."""
     if not exists(repo, rev, path):
         return ""
-    return COMMENT_RE.sub("", git(repo, "show", f"{rev}:{path}"))
+    text = git(repo, "show", f"{rev}:{path}")
+    return COMMENT_RE.sub("", FRONT_MATTER_RE.sub("", text, count=1))
 
 
 def with_snippets(page, repo, rev):
