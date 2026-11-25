@@ -5,7 +5,7 @@
   "skills": [
     {
       "name": "BriCS Responsible AI Code",
-      "description": "Guidance for writing, reviewing, and running AI-generated code responsibly on BriCS shared HPC resources (Isambard-AI and Isambard 3), including Slurm job scripts, storage awareness, and BriCS policy compliance.",
+      "description": "Guidance for writing, reviewing, and running AI-generated code responsibly on BriCS shared HPC resources (Isambard-AI and Isambard 3), including Slurm job scripts, storage awareness, BriCS policy compliance, and safe use of AI coding agents with Isambard.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/brics-hpc-ai-code/SKILL.md"
     },
     {
