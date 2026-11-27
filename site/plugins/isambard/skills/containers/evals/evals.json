@@ -1,0 +1,38 @@
+{
+  "comment": [
+    "skillscope dataset for the containers skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "containers-apptainer-ngc",
+      "skill_should_trigger": true,
+      "note": "Boundary: containers vs ml-packages (NGC PyTorch) and cuda (NGC images).",
+      "prompt": "How do I pull an NGC PyTorch container and run it with Apptainer on an Isambard-AI compute node?"
+    },
+    {
+      "id": "containers-podman-build",
+      "skill_should_trigger": true,
+      "prompt": "I've got a Dockerfile. How do I build it into an image on Isambard with podman-hpc?"
+    },
+    {
+      "id": "containers-multinode",
+      "skill_should_trigger": true,
+      "note": "Boundary: containers vs nccl (slow multi-node) and mpi.",
+      "prompt": "My Apptainer container runs fine on one node but multi-node runs on Isambard are really slow. How do I get the full Slingshot bandwidth inside the container?"
+    },
+    {
+      "id": "containers-nearmiss-docker-desktop",
+      "skill_should_trigger": false,
+      "note": "Containers, but local Docker.",
+      "prompt": "Docker Desktop on my Mac says it's out of disk space. How do I clean up old images?"
+    },
+    {
+      "id": "containers-nearmiss-k8s",
+      "skill_should_trigger": false,
+      "note": "Containers on Kubernetes, not Isambard.",
+      "prompt": "Write a Kubernetes Deployment for my container image with three replicas."
+    }
+  ]
+}

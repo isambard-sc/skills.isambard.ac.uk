@@ -1,0 +1,37 @@
+{
+  "comment": [
+    "skillscope dataset for the login skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "login-first-time",
+      "skill_should_trigger": true,
+      "prompt": "I've just been invited to an Isambard-AI project. How do I log in for the first time?"
+    },
+    {
+      "id": "login-not-authorised",
+      "skill_should_trigger": true,
+      "note": "Boundary: login vs getting-support (an error).",
+      "prompt": "ssh to Isambard 3 says 'You are not authorised to connect'. What's wrong?"
+    },
+    {
+      "id": "login-eagain",
+      "skill_should_trigger": true,
+      "prompt": "I keep getting 'Resource temporarily unavailable' when I start processes on the Isambard login node."
+    },
+    {
+      "id": "login-nearmiss-ssh-keygen",
+      "skill_should_trigger": false,
+      "note": "SSH, but not Isambard.",
+      "prompt": "How do I generate an ed25519 SSH key and add it to GitHub?"
+    },
+    {
+      "id": "login-nearmiss-other-hpc",
+      "skill_should_trigger": false,
+      "note": "HPC login, another site.",
+      "prompt": "How do I log in to ARCHER2 for the first time?"
+    }
+  ]
+}

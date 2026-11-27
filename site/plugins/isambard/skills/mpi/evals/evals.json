@@ -1,0 +1,38 @@
+{
+  "comment": [
+    "skillscope dataset for the mpi skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "mpi-mpirun",
+      "skill_should_trigger": true,
+      "prompt": "Can I use mpirun to launch my MPI program on Isambard 3?"
+    },
+    {
+      "id": "mpi-mpi4py",
+      "skill_should_trigger": true,
+      "note": "Boundary: mpi vs python (mpi4py in both descriptions).",
+      "prompt": "How do I get mpi4py working with Cray MPICH on Isambard?"
+    },
+    {
+      "id": "mpi-pmi",
+      "skill_should_trigger": true,
+      "note": "Boundary: mpi vs slurm (srun).",
+      "prompt": "Which srun --mpi option should I use for an OpenMPI build on Isambard-AI?"
+    },
+    {
+      "id": "mpi-nearmiss-openmp",
+      "skill_should_trigger": false,
+      "note": "Parallel programming, not MPI on Isambard.",
+      "prompt": "How do I parallelise a for loop with OpenMP in C on my desktop?"
+    },
+    {
+      "id": "mpi-nearmiss-local-mpich",
+      "skill_should_trigger": false,
+      "note": "MPI, local machine.",
+      "prompt": "How do I install MPICH on Ubuntu with apt and run hello world on 4 cores?"
+    }
+  ]
+}

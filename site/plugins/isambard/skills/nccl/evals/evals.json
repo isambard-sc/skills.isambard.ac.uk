@@ -1,0 +1,37 @@
+{
+  "comment": [
+    "skillscope dataset for the nccl skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "nccl-tests",
+      "skill_should_trigger": true,
+      "prompt": "How do I run nccl-tests to check the all-reduce bandwidth between nodes on Isambard-AI?"
+    },
+    {
+      "id": "nccl-env-vars",
+      "skill_should_trigger": true,
+      "prompt": "Which NCCL environment variables do I need so NCCL uses the Slingshot network on Isambard-AI?"
+    },
+    {
+      "id": "nccl-slow-allreduce",
+      "skill_should_trigger": true,
+      "note": "Boundary: nccl vs distributed-training (slow multi-node training).",
+      "prompt": "All-reduce between my two Isambard-AI nodes only gets a few GB/s. What's wrong?"
+    },
+    {
+      "id": "nccl-nearmiss-infiniband",
+      "skill_should_trigger": false,
+      "note": "NCCL, another site and fabric.",
+      "prompt": "How do I set NCCL_IB_HCA on our InfiniBand cluster?"
+    },
+    {
+      "id": "nccl-nearmiss-single-node",
+      "skill_should_trigger": false,
+      "note": "NCCL concepts with no Isambard context.",
+      "prompt": "Explain the difference between NCCL all-reduce and all-gather."
+    }
+  ]
+}

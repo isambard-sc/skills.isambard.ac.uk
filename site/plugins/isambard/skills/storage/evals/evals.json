@@ -1,0 +1,38 @@
+{
+  "comment": [
+    "skillscope dataset for the storage skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "storage-quota",
+      "skill_should_trigger": true,
+      "prompt": "I'm getting 'Disk quota exceeded' on Isambard-AI. How do I check what I'm using?"
+    },
+    {
+      "id": "storage-where",
+      "skill_should_trigger": true,
+      "note": "Boundary: storage vs brics-hpc-ai-code (both mention storage) and data-transfer.",
+      "prompt": "Where should I put a 2 TB training dataset on Isambard-AI so my whole project can use it?"
+    },
+    {
+      "id": "storage-many-files",
+      "skill_should_trigger": true,
+      "note": "SquashFS route; boundary vs containers (Apptainer bind).",
+      "prompt": "My dataset is millions of small images and reading them on Isambard is really slow. What can I do?"
+    },
+    {
+      "id": "storage-nearmiss-onedrive",
+      "skill_should_trigger": false,
+      "note": "Storage, another service.",
+      "prompt": "How do I free up space in my OneDrive?"
+    },
+    {
+      "id": "storage-nearmiss-lustre-concepts",
+      "skill_should_trigger": false,
+      "note": "Filesystem concepts with no Isambard context.",
+      "prompt": "Explain how Lustre striping works in general."
+    }
+  ]
+}
