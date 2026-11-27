@@ -29,6 +29,11 @@
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/cuda/SKILL.md"
     },
     {
+      "name": "Interactive Sessions",
+      "description": "Run interactive sessions on Isambard compute nodes. Covers JupyterHub on Isambard-AI Phase 2, JupyterLab as a Slurm job with an SSH tunnel, custom Jupyter kernels from Conda or virtual environments, and VS Code remote tunnels.",
+      "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/interactive-sessions/SKILL.md"
+    },
+    {
       "name": "Logging In",
       "description": "Log in to Isambard-AI, Isambard 3 and BlueCrystal 5 over SSH with Clifton. Covers first-time portal setup, the permanent UNIX short name, clifton auth and ssh-config, the 12-hour SSH certificate, login node rules and resource limits, and common login errors.",
       "url": "https://skills.isambard.ac.uk/plugins/isambard/skills/login/SKILL.md"
