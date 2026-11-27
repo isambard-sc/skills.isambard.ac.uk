@@ -1,0 +1,37 @@
+{
+  "comment": [
+    "skillscope dataset for the getting-support skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "support-raise-ticket",
+      "skill_should_trigger": true,
+      "prompt": "How do I raise a support ticket with the Isambard team?"
+    },
+    {
+      "id": "support-outage",
+      "skill_should_trigger": true,
+      "note": "Boundary: getting-support (outage) vs slurm (pending jobs).",
+      "prompt": "Is Isambard-AI down right now? None of my jobs are starting."
+    },
+    {
+      "id": "support-ticket-contents",
+      "skill_should_trigger": true,
+      "prompt": "I think I've found a bug in a module on Isambard 3. What should I include when I report it?"
+    },
+    {
+      "id": "support-nearmiss-github",
+      "skill_should_trigger": false,
+      "note": "Bug reporting, but not BriCS.",
+      "prompt": "How do I open a good bug report on a GitHub project?"
+    },
+    {
+      "id": "support-nearmiss-it-helpdesk",
+      "skill_should_trigger": false,
+      "note": "Support request, unrelated service.",
+      "prompt": "My university email isn't syncing on my phone. Who should I contact?"
+    }
+  ]
+}

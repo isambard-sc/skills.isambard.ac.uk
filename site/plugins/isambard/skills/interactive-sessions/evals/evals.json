@@ -1,0 +1,39 @@
+{
+  "comment": [
+    "skillscope dataset for the interactive-sessions skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "interactive-jupyterhub",
+      "skill_should_trigger": true,
+      "note": "Boundary: interactive-sessions vs slurm (interactive reservation).",
+      "prompt": "How do I start a Jupyter notebook with a GPU on Isambard-AI Phase 2?"
+    },
+    {
+      "id": "interactive-kernel",
+      "skill_should_trigger": true,
+      "note": "Boundary: interactive-sessions vs python (conda).",
+      "prompt": "I made a conda environment on Isambard but it doesn't show up as a kernel in JupyterLab. How do I add it?"
+    },
+    {
+      "id": "interactive-vscode-tunnel",
+      "skill_should_trigger": true,
+      "note": "Boundary: interactive-sessions (code tunnel) vs login (VS Code Remote-SSH to a login node).",
+      "prompt": "Can I use VS Code on an Isambard compute node so I can debug with a GPU?"
+    },
+    {
+      "id": "interactive-nearmiss-local-jupyter",
+      "skill_should_trigger": false,
+      "note": "Jupyter, but local.",
+      "prompt": "How do I change the default port JupyterLab uses on my laptop?"
+    },
+    {
+      "id": "interactive-nearmiss-codespaces",
+      "skill_should_trigger": false,
+      "note": "VS Code remote, but a different service.",
+      "prompt": "How do I open my repo in GitHub Codespaces with VS Code?"
+    }
+  ]
+}

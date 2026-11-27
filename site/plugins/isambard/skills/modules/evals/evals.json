@@ -1,0 +1,38 @@
+{
+  "comment": [
+    "skillscope dataset for the modules skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "modules-prgenv",
+      "skill_should_trigger": true,
+      "prompt": "How do I switch from the Cray compiler to GCC on Isambard 3?"
+    },
+    {
+      "id": "modules-neoverse-flags",
+      "skill_should_trigger": true,
+      "note": "Boundary: modules vs spack (neoverse targeting).",
+      "prompt": "What compiler flags should I use to optimise my C++ code for the Grace CPUs on Isambard?"
+    },
+    {
+      "id": "modules-profile",
+      "skill_should_trigger": true,
+      "note": "Boundary: modules vs cuda.",
+      "prompt": "How do I profile my application with Nsight Systems on Isambard-AI?"
+    },
+    {
+      "id": "modules-nearmiss-lmod-other-site",
+      "skill_should_trigger": false,
+      "note": "Module systems, another site.",
+      "prompt": "On my department's cluster, module avail shows nothing. How do I configure Lmod?"
+    },
+    {
+      "id": "modules-nearmiss-gcc-local",
+      "skill_should_trigger": false,
+      "note": "Compilers, local machine.",
+      "prompt": "How do I install GCC 14 on macOS with Homebrew?"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "comment": [
+    "skillscope dataset for the projects-and-accounting skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "accounting-budget",
+      "skill_should_trigger": true,
+      "prompt": "How many node hours does my Isambard-AI project have left?"
+    },
+    {
+      "id": "accounting-job-cost",
+      "skill_should_trigger": true,
+      "note": "Boundary: projects-and-accounting vs slurm (job accounting).",
+      "prompt": "How much of my allocation will a 4-node, 12-hour job on Isambard-AI use?"
+    },
+    {
+      "id": "accounting-add-member",
+      "skill_should_trigger": true,
+      "prompt": "How do I add a new student to my Isambard project?"
+    },
+    {
+      "id": "accounting-nearmiss-aws-billing",
+      "skill_should_trigger": false,
+      "note": "Budgets, another provider.",
+      "prompt": "How do I set a monthly budget alert on my AWS account?"
+    },
+    {
+      "id": "accounting-nearmiss-github-org",
+      "skill_should_trigger": false,
+      "note": "Membership, another service.",
+      "prompt": "How do I invite someone to my GitHub organisation?"
+    }
+  ]
+}

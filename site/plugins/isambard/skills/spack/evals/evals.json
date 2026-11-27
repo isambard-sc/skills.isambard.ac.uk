@@ -1,0 +1,37 @@
+{
+  "comment": [
+    "skillscope dataset for the spack skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "spack-setup",
+      "skill_should_trigger": true,
+      "prompt": "How do I set up Spack on Isambard 3 so it uses the system compilers and MPI?"
+    },
+    {
+      "id": "spack-buildit",
+      "skill_should_trigger": true,
+      "prompt": "What is the buildit repository and how do I use it with Spack on Isambard?"
+    },
+    {
+      "id": "spack-build-from-source",
+      "skill_should_trigger": true,
+      "note": "Description claims building HPC software with dependency management even without the word Spack.",
+      "prompt": "I need to build GROMACS and all its dependencies from source on Isambard-AI. What's the best approach?"
+    },
+    {
+      "id": "spack-nearmiss-conda-forge",
+      "skill_should_trigger": false,
+      "note": "Package building, unrelated.",
+      "prompt": "How do I submit a new package recipe to conda-forge?"
+    },
+    {
+      "id": "spack-nearmiss-other-site",
+      "skill_should_trigger": false,
+      "note": "Spack, but not Isambard.",
+      "prompt": "How do I configure Spack's packages.yaml on my laptop to use Homebrew's OpenSSL?"
+    }
+  ]
+}

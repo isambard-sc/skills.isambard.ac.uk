@@ -1,0 +1,39 @@
+{
+  "comment": [
+    "skillscope dataset for the brics-hpc-ai-code skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "brics-agent-setup",
+      "skill_should_trigger": true,
+      "note": "Setting up an AI coding agent with Isambard is in this skill's description and no other's.",
+      "prompt": "I want to use Claude Code on Isambard-AI to help with my research code. What should I set up so the agent behaves responsibly on a shared system?"
+    },
+    {
+      "id": "brics-review-generated-code",
+      "skill_should_trigger": true,
+      "note": "Reviewing AI-generated code before running it on BriCS.",
+      "prompt": "An AI assistant wrote this training pipeline for me. Before I run it on Isambard-AI, what should I check so it doesn't misuse the shared resources?"
+    },
+    {
+      "id": "brics-policy-compliance",
+      "skill_should_trigger": true,
+      "note": "Boundary: policy compliance vs slurm (job submission).",
+      "prompt": "Is it OK under the Isambard acceptable use policy to have an agent automatically submit and resubmit jobs overnight?"
+    },
+    {
+      "id": "brics-nearmiss-local-agent",
+      "skill_should_trigger": false,
+      "note": "Agent safety, but nothing to do with BriCS.",
+      "prompt": "What's a good way to make my AI coding assistant ask before it runs shell commands on my laptop?"
+    },
+    {
+      "id": "brics-nearmiss-cloud-policy",
+      "skill_should_trigger": false,
+      "note": "Acceptable use, but a different provider.",
+      "prompt": "What are the acceptable use rules for running GPU workloads on AWS EC2?"
+    }
+  ]
+}

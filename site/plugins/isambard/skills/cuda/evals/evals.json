@@ -1,0 +1,38 @@
+{
+  "comment": [
+    "skillscope dataset for the cuda skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "cuda-nvcc-arch",
+      "skill_should_trigger": true,
+      "prompt": "What -arch flag should I pass to nvcc when compiling my CUDA kernels for Isambard-AI?"
+    },
+    {
+      "id": "cuda-version-mismatch",
+      "skill_should_trigger": true,
+      "note": "Forward compatibility; boundary vs containers (NGC route).",
+      "prompt": "My code needs CUDA 12.8 but the driver on Isambard-AI is older. How can I run it?"
+    },
+    {
+      "id": "cuda-modules",
+      "skill_should_trigger": true,
+      "note": "Boundary: cuda vs modules.",
+      "prompt": "Which module do I load on Isambard-AI to get nvcc and the CUDA libraries?"
+    },
+    {
+      "id": "cuda-nearmiss-gaming-gpu",
+      "skill_should_trigger": false,
+      "note": "CUDA, but a local machine.",
+      "prompt": "How do I install the CUDA toolkit on Ubuntu 24.04 for my RTX 4090?"
+    },
+    {
+      "id": "cuda-nearmiss-colab",
+      "skill_should_trigger": false,
+      "note": "GPU availability, but on Colab.",
+      "prompt": "Why does Google Colab say no GPU is available when I run torch.cuda.is_available()?"
+    }
+  ]
+}

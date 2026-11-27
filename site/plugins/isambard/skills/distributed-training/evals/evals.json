@@ -1,0 +1,38 @@
+{
+  "comment": [
+    "skillscope dataset for the distributed-training skill: https://github.com/amd/skillscope/blob/v0.1.3/docs/authoring-evals.md",
+    "Routing cases only: run with --routing-room all to see which skill each prompt lands on.",
+    "A prompt that should fire a neighbouring skill lives in that skill's dataset; false means no skill should fire."
+  ],
+  "evaluations": [
+    {
+      "id": "dist-ddp-multinode",
+      "skill_should_trigger": true,
+      "note": "Boundary: distributed-training vs slurm (sbatch) and nccl.",
+      "prompt": "Write a Slurm script to train my PyTorch model with DDP across 2 nodes (8 GH200s) on Isambard-AI."
+    },
+    {
+      "id": "dist-qlora",
+      "skill_should_trigger": true,
+      "prompt": "I want to QLoRA fine-tune Llama 3 8B on Isambard-AI. How much GPU memory will I need and how do I set it up?"
+    },
+    {
+      "id": "dist-vllm-multinode",
+      "skill_should_trigger": true,
+      "note": "Boundary: distributed-training (multi-node serving) vs ml-packages (installing vLLM).",
+      "prompt": "How do I serve a 70B model with vLLM across two nodes on Isambard-AI?"
+    },
+    {
+      "id": "dist-nearmiss-single-laptop",
+      "skill_should_trigger": false,
+      "note": "Training, but no Isambard and no distribution.",
+      "prompt": "How do I use gradient accumulation in PyTorch to fit a bigger batch on my single laptop GPU?"
+    },
+    {
+      "id": "dist-nearmiss-sagemaker",
+      "skill_should_trigger": false,
+      "note": "Distributed training on a different platform.",
+      "prompt": "How do I launch a distributed PyTorch training job on AWS SageMaker?"
+    }
+  ]
+}
