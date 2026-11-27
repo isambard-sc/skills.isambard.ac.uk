@@ -140,7 +140,13 @@ def render(meta, runs, baseline, notes):
         for cid in sorted(ids):
             prompt = short(runs[cid][0]["prompt"])
             note = f" _{short(notes[cid], 120)}_" if cid in notes else ""
-            out.append(f"  - `{cid}`: \"{prompt}\"{note}")
+            capped = sum("budget" in c["stop_reason"] for c in runs[cid])
+            cap = (
+                f" (stopped at skillscope's tool-call cap in {capped} of "
+                f"{len(runs[cid])} runs, so the cap may be the cause)"
+                if capped else ""
+            )
+            out.append(f"  - `{cid}`: \"{prompt}\"{note}{cap}")
         return out
 
     lines += ["", "### What to look at", ""]
@@ -182,7 +188,12 @@ def render(meta, runs, baseline, notes):
         ]
         for cid in sorted(flaky):
             _, _, n, ok = graded[cid]
-            lines.append(f"- `{cid}`: right in {ok} of {n} runs")
+            wrong = Counter(
+                c["observed"] or NONE for c in runs[cid]
+                if c["verdict"] != "error" and not c["passed"]
+            )
+            went = ", ".join(f"`{skill}` ({count})" for skill, count in wrong.items())
+            lines.append(f"- `{cid}`: right in {ok} of {n} runs; otherwise went to {went}")
 
     per_skill = defaultdict(lambda: [0, 0])
     for exp, _, n, ok in graded.values():
