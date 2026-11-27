@@ -9,13 +9,12 @@ description: >
   network with brics/nccl, torchrun in NGC containers, Megatron-LM and
   Megatron Bridge pre-training in FP8 with the NeMo image, QLoRA fine-tuning
   with Hugging Face TRL and PEFT, vLLM serving on one node or across nodes
-  with Ray, vllm bench and vllm chat, gated Hugging Face models, checkpoints
-  across time-limited jobs, and the BriCS pre-downloaded weights and
-  datasets. Use this skill whenever a user wants to train, fine-tune or serve
-  a model on more than one GPU or node on Isambard-AI, sees slow multi-node
-  training or a hanging process group, or asks about torchrun, DDP, gloo vs
-  nccl, Megatron, LoRA/QLoRA, Ray or vLLM tensor parallelism — even if they
-  don't say "distributed".
+  with Ray, gated Hugging Face models, checkpoints across time-limited jobs,
+  and the BriCS pre-downloaded weights and datasets. Use this skill whenever
+  a user wants to train, fine-tune or serve a model on more than one GPU or
+  node on Isambard-AI, sees slow multi-node training or a hanging process
+  group, or asks about torchrun, DDP, gloo vs nccl, Megatron, LoRA/QLoRA, Ray
+  or vLLM tensor parallelism — even if they don't say "distributed".
 license: >
   CC-BY-SA-4.0. Markdown/image content derived from
   https://docs.isambard.ac.uk/, © 2024 University of Bristol.

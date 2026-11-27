@@ -12,6 +12,10 @@ from skills_lib import discover_skills, load_frontmatter, report_and_exit
 
 REQUIRED_TOP_LEVEL = ["name", "description", "license"]
 REQUIRED_METADATA = ["author", "version", "source_url"]
+# Length limits from the Agent Skills specification
+# (https://agentskills.io/specification); harnesses may reject or truncate
+# longer values.
+MAX_LENGTH = {"name": 64, "description": 1024, "compatibility": 500}
 
 
 def check(skill):
@@ -31,6 +35,14 @@ def check(skill):
     for key in REQUIRED_TOP_LEVEL:
         if not data.get(key):
             errors.append(f"{path}: missing or empty required field '{key}'")
+
+    for key, limit in MAX_LENGTH.items():
+        value = data.get(key)
+        if isinstance(value, str) and len(value.strip()) > limit:
+            errors.append(
+                f"{path}: '{key}' is {len(value.strip())} characters; "
+                f"the limit is {limit}"
+            )
 
     metadata = data.get("metadata")
     if not isinstance(metadata, dict):
