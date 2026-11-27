@@ -1,0 +1,115 @@
+name: Skill routing
+
+# Checks which skill an agent picks for each prompt in the skills' evals.json
+# files, with every skill installed together, and compares the result with the
+# base branch. An agent chooses from names and descriptions alone, so a run is
+# only worth it when one of those, or a routing dataset, has changed; the first
+# step lists what has.
+#
+# Manual only for now: each run spends Copilot premium requests (about 20 per
+# side). Start it from the Actions tab, choosing the branch to test.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: Branch to compare against
+        default: main
+        type: string
+
+permissions:
+  contents: read
+  copilot-requests: write
+
+concurrency:
+  group: routing-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BASE_REF: ${{ inputs.base }}
+  # Pinned: the Copilot harness isn't in a skillscope release yet.
+  SKILLSCOPE: git+https://github.com/amd/skillscope@01209d3bb0ba36536abcda36a957e0152eee92a0
+  MODEL: haiku
+
+jobs:
+  routing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: List what could change routing
+        run: |
+          {
+            echo "Changes since $BASE_REF that could affect routing:"
+            echo
+            if reasons=$(python3 .github/workflows/scripts/routing_inputs_changed.py \
+                "origin/$BASE_REF"); then
+              echo "$reasons" | sed 's/^/- /'
+            else
+              echo "- none: no name, description or routing dataset changed"
+            fi
+            echo
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d  # v10.4.0
+
+      - name: Install Copilot CLI
+        run: npm install --global @github/copilot@1.0.114
+
+      - name: Route the branch's prompts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          uvx --from "$SKILLSCOPE" skillscope routing --harness copilot \
+            --model "$MODEL" --skills-dir 'site/plugins/*/skills/*' \
+            --routing-room all --min-accuracy 0 --output "$RUNNER_TEMP/head.json"
+
+      # The baseline uses the base branch's skills with this branch's
+      # datasets, so any difference comes from the skills, not the prompts.
+      - name: Route the same prompts on the base branch
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          base="$RUNNER_TEMP/base"
+          git worktree add --detach "$base" "origin/$BASE_REF"
+          for evals in site/plugins/*/skills/*/evals; do
+            skill_dir="$base/$(dirname "$evals")"
+            if [ -d "$skill_dir" ]; then
+              rm -rf "$skill_dir/evals" && cp -r "$evals" "$skill_dir/evals"
+            fi
+          done
+          cd "$base"
+          uvx --from "$SKILLSCOPE" skillscope routing --harness copilot \
+            --model "$MODEL" --skills-dir 'site/plugins/*/skills/*' \
+            --routing-room all --min-accuracy 0 --output "$RUNNER_TEMP/base.json"
+
+      - name: Summarise
+        run: |
+          baseline=()
+          if [ -f "$RUNNER_TEMP/base.json" ]; then
+            baseline=(--baseline "$RUNNER_TEMP/base.json")
+          fi
+          python3 .github/workflows/scripts/summarise_routing.py \
+            "$RUNNER_TEMP/head.json" "${baseline[@]}" \
+            --output "$RUNNER_TEMP/summary.md"
+
+      - name: Keep the reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: routing-reports
+          path: |
+            ${{ runner.temp }}/*.json
+            ${{ runner.temp }}/summary.md
