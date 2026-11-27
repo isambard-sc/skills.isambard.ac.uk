@@ -31,6 +31,7 @@ the environment from scratch every session.
 | [Storage](site/plugins/isambard/skills/storage/SKILL.md) | Use storage on Isambard-AI and Isambard 3. Covers storage areas, quotas and checking usage, data retention, sharing data, packaging many-file datasets with SquashFS, and detecting the system with ISAMBARD_HOST | `https://skills.isambard.ac.uk/plugins/isambard/skills/storage/SKILL.md` |
 | [Interactive Sessions](site/plugins/isambard/skills/interactive-sessions/SKILL.md) | Run Jupyter and VS Code on Isambard compute nodes. Covers JupyterHub on Isambard-AI Phase 2, JupyterLab over an SSH tunnel, custom Jupyter kernels, and VS Code remote tunnels | `https://skills.isambard.ac.uk/plugins/isambard/skills/interactive-sessions/SKILL.md` |
 | [ML Packages](site/plugins/isambard/skills/ml-packages/SKILL.md) | Install and run GPU-accelerated machine learning packages on Isambard-AI. Covers PyTorch, TensorFlow, JAX, Flash-Attention and vLLM with pip, Conda or NGC containers, and AlphaFold 2 with ColabFold | `https://skills.isambard.ac.uk/plugins/isambard/skills/ml-packages/SKILL.md` |
+| [Distributed Training](site/plugins/isambard/skills/distributed-training/SKILL.md) | Train, fine-tune and serve models across GPUs and nodes on Isambard-AI. Covers multi-node PyTorch DDP with srun and NCCL, LLM pre-training with Megatron Bridge, QLoRA fine-tuning, and vLLM serving with Ray | `https://skills.isambard.ac.uk/plugins/isambard/skills/distributed-training/SKILL.md` |
 
 ---
 
@@ -78,7 +79,7 @@ View skills provided by Isambard plugin:
 /skills
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Skills
-  16 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
+  17 skills · Space to cycle, Enter to save, / to search, t to sort, Esc to cancel
 
   ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
   │ ⌕ Search skills…                                                                                                         │
@@ -87,6 +88,7 @@ View skills provided by Isambard plugin:
     🔒 on         isambard:containers · plugin · ~200 tok · locked by plugin
     🔒 on         isambard:cuda · plugin · ~190 tok · locked by plugin
     🔒 on         isambard:data-transfer · plugin · ~230 tok · locked by plugin
+    🔒 on         isambard:distributed-training · plugin · ~280 tok · locked by plugin
     🔒 on         isambard:getting-support · plugin · ~110 tok · locked by plugin
     🔒 on         isambard:interactive-sessions · plugin · ~250 tok · locked by plugin
     🔒 on         isambard:login · plugin · ~230 tok · locked by plugin
@@ -222,7 +224,7 @@ Install the `isambard` plugin from the marketplace:
 
  Marketplace: isambard-skills
 
- Skills: 16 (containers, cuda, data-transfer, brics-hpc-ai-code, getting-support, interactive-sessions, login, ml-packages, modules, mpi, nccl, projects-and-accounting, python, slurm, spack, storage)
+ Skills: 17 (containers, cuda, data-transfer, distributed-training, brics-hpc-ai-code, getting-support, interactive-sessions, login, ml-packages, modules, mpi, nccl, projects-and-accounting, python, slurm, spack, storage)
 
   → Install for you (user scope)
     Install for all collaborators on this repository (project scope)
