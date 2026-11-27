@@ -27,16 +27,9 @@ proceeding.
 
 ### Planned skills
 
-Names are working names; settle them when the skill is created.
-
-| Skill | Docs pages |
-|---|---|
-| `login` | `user-documentation/guides/login/`, `user-documentation/guides/shortname/`, `user-documentation/guides/mobaxterm/`, `user-documentation/tutorials/setup/`, `user-documentation/getting_started/`, `user-documentation/information/how-isambard-works/` |
-| `projects-and-accounting` | `user-documentation/guides/accounting/`, `user-documentation/guides/manage_project/`, `user-documentation/guides/follow_on_project/`, `user-documentation/guides/awards_portal/`, `user-documentation/information/portals/`, `user-documentation/information/project-policies/`, `access/` |
-| `storage` | `user-documentation/information/system-storage/`, `user-documentation/information/environment_variables/`, `user-documentation/tutorials/datasets-in-squashfs/` |
-| `interactive-sessions` | `user-documentation/guides/jupyter/`, `user-documentation/guides/jupyterhub/`, `user-documentation/guides/vscode/` |
-| `ml-packages` | `user-documentation/applications/ML-packages/`, `user-documentation/applications/alphafold/`, `user-documentation/tutorials/interactive-ml/`, `user-documentation/tutorials/interactive-alphafold/` |
-| `distributed-training` | `user-documentation/tutorials/distributed-training/`, `user-documentation/tutorials/distributed-inference/`, `user-documentation/tutorials/llms/pre-training/`, `user-documentation/tutorials/llms/fine-tuning/` |
+None at the moment. When a docs page should become a new skill, add a row
+here (`| Skill | Docs pages |`) with a working name, and settle the name when
+the skill is created.
 
 ### BlueCrystal 5
 
