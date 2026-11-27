@@ -57,6 +57,7 @@ metadata:
 - `metadata.version`: increment when making significant changes
 - `metadata.source_url`: the primary docs.isambard.ac.uk URL this skill was derived from; used by the update agent to detect stale content
 - `metadata.supplementary_urls`: optional list of additional docs.isambard.ac.uk pages that contributed content to this skill
+- The docs sync (see "Checking All Skills for Staleness" in `update-skills-from-docs.md`) watches exactly the pages in `source_url` and `supplementary_urls`, so list every page the skill's content comes from
 
 ### Markdown body sections
 
